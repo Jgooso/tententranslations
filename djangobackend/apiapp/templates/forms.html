@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Download</title>
+  </head>
+  <body>
+   
+      <form method="post">
+        <h1 id = "NewNovel">New Novel</h1>
+        {% csrf_token %}
+        {{ form }}
+        
+        <button type = "submit">Submit</button>
+    </form>
+    <div id = "schedular">
+  <table>
+    <th>
+      <th></th>
+      <th>Sunday</th>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th>Saturday</th>
+    </tr>
+    {% for i in range %}
+    <tr class = {{i}}>
+      <th>{{i}}:00</th>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Sunday">Monday{{i}}</td>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Monday"></td>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Tuesday"></td>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Wednesday"></td>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Thursday"></td>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Friday"></td>
+      <td ondrop="drop(event)" ondragover="allowDrop(event)" class = "Saturday"></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <ul id ="novellist">
+    {% for i in novels %}
+       <li id={{i.id}} class="novel" draggable="true" ondragstart="drag(event)">{{i.id}}</li>
+    {% endfor %}
+  </ul>
+
+</div>
+  </body>
+  </html>
+  <style>
+      body{
+        background-color: purple;
+        display:flex;
+        flex-direction: row;
+      }
+      form{
+          position:absolute;
+          background-color: blueviolet;
+          width:490px;
+          height:858px;
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+      #id_url{
+          height:12px;
+          width: 160px;
+          background-color: white;
+          position: absolute;
+          left:30px;
+          top:60px;
+      }
+      #id_tags{
+          height:658px;
+          width:200px;
+          background-color: white;
+          overflow-y: auto;
+          position: absolute;
+          left:30px;
+          top:102px;
+          
+      }
+      #id_genres{
+          width:200px;
+          background-color: white;
+          position: absolute;
+          left:260px;
+          top:60px;
+      }
+      #NewNovel{
+        position: absolute;
+        top:0;
+        left:30px;
+      }
+      label{
+        display:none;
+      }
+      #id_genres label{
+        display:block;
+      }
+      #id_tags label{
+        display:block;
+      }
+      
+      button[type=submit]{
+        position: absolute;
+        top:790px;
+        left:260px;
+        width:200px;
+        height:50px;
+      }
+      td{
+       width:140px;
+       border: 2px solid black;
+       height:50px;
+       }
+       th{
+        width:140px;
+       }
+       #schedular{
+         background-color: blueviolet;
+         position: absolute;
+         display:flex;
+         flex-direction: row;
+         top:1000px;
+         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+         margin:30px;
+         height: 850px;
+       }
+       #novellist{
+         
+          background-color: blueviolet;
+          
+          width:430px;
+          padding: 30px;
+      }
+      #novellist li{
+        background-color: red;
+        width:430px;
+      }
+      li{
+        list-style: none;
+      }
+      
+  </style>
+  <script>
+    console.log(document.getElementsByClassName('8 Sunday')[0].innerHTML);
+    function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+  
+}
+  </script>
