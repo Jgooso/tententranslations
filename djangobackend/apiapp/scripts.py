@@ -63,7 +63,7 @@ def update(novel):
 
 
 def processChapeters(chapternumber,section,new_novel,chapter_list):
-    removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'&#013;&#010;','</p>':'&#013;&#010;'}
+    removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'','</p>':'&#013;&#010;'}
     novel_id = new_novel.id
     for i in range(len(chapter_list)):
         ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapternumber))
@@ -74,7 +74,7 @@ def processChapeters(chapternumber,section,new_novel,chapter_list):
         else:
             content = ""
             chapter_obj = BeautifulSoup(requests.get("https://ncode.syosetu.com" + str(chapter_list[i]['href']),headers={"User-Agent":"Mozilla/5.0"}).text, "html.parser")
-            text = ''.join([str(p)[str(p).index(">")+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
+            text = '   '+'   '.join([str(p)[str(p).index(">")+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
             #process text content
             for key,value in removals.items():text = text.replace(key,value)
             while "</rt>" in text:text = text[:text.index("<rt>")-1] + text[text.index("</rt>")+6:]

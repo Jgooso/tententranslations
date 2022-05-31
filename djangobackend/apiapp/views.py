@@ -32,7 +32,7 @@ class SingleNovelView(ObjectMultipleModelAPIView):
     tier = int(self.request.query_params['tier'])
     querylist = (
         {'queryset': Novel.objects.filter(id=title), 'serializer_class': NovelSerializer},
-        {'queryset': Chapter.objects.filter(novel=title, active__lte=tier).exclude(active=0), 'serializer_class': ChapterSerializer},
+        {'queryset': Chapter.objects.filter(novel=title, active__lte=tier).exclude(active=0).order_by('chapterOrder'), 'serializer_class': ChapterSerializer},
     )
     return querylist
 def contact(request):

@@ -3,8 +3,9 @@
     <select id = "myselect" @change="selectChapter()">
         <option 
             v-for="chapter in chapterList" 
-            :key="chapter.chapterNumber+1"
-            :value="chapter.chapterNumber+1" >
+            :key="chapter.chapterNumber"
+            :value="chapter.chapterNumber" 
+            :selected = "{'selected':($route.params.chapter===5)}">
             {{chapter.chapterNumber}} - {{chapter.title}}
         </option>
     </select>
@@ -30,6 +31,8 @@ import NavButton from './Navbutton'
             selectChapter(){
                 const x = document.getElementById("myselect").value
                 this.$emit('changeChapter', x)
+                document.getElementsByTagName('option')[8].selected='selected'
+                console.log(document.getElementsByTagName('option')[8].selected)
                 this.$router.push({name: 'chapterPage', params:{title:this.$route.params.title,chapter:x}})
                 
 

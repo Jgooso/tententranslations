@@ -5,7 +5,6 @@
         <router-link :to = "{name: 'Browse'}" class='nav'  @click.native='swap()' >Browse</router-link>
         <router-link :to = "{name: 'aboutPage'}" class='nav' @click.native='swap()'>About</router-link>
         <router-link :to = "{name: 'contactPage'}" class='nav' @click.native='swap()'>Contact</router-link>
-        <router-link :to = "{name: 'supportPage'}" class='nav' @click.native='swap()'>Support</router-link>
     </div>
     <div id ='shade' @click='swap()' ref='shade'/>
     </div>

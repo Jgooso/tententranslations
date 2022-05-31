@@ -13,14 +13,14 @@
             </div>
         </div>  
     </div>
-
+<!--
     <div id = "login">
         <div class = "content">
          <button> Sign-in </button>
          <button> Sign-up </button>
          </div>
     </div>
-
+-->
     </header>
 </template>
 

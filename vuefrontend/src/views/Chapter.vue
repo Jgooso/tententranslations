@@ -47,6 +47,9 @@ import Navigator from '../components/Navigator'
             
         }
     },
+    created(){
+        this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? 1:-1))
+    }
     
     }
 </script>
@@ -54,7 +57,7 @@ import Navigator from '../components/Navigator'
 pre{
 font-family: Helvetica,sans-serif;
 font-size:19px;
-line-height:19px;
+
 white-space: pre-wrap;
 font-weight:lighter;
 overflow:hidden;

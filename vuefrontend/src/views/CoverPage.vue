@@ -128,6 +128,9 @@
        },
        
        
+    },
+    created(){
+         this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? -1:1))
     }
   }
 </script>
