@@ -29,7 +29,7 @@ export default {
   },
   data(){
     return{
-    tier: 4
+    tier: 5
     }
   },
   methods:{

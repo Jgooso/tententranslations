@@ -181,16 +181,12 @@
   }
   
   #image-border{
-    max-height:100%;
+    max-height:313px;
     background-color: white;
     float:left;
-    max-width: 100%;
     padding-left: 15px;
     padding-right:15px;
     margin-right:30px;
-    position: relative;
-    object-fit:none;
-    left:0px;
     transition: all .2s ease;
 }
   #noveltitle{

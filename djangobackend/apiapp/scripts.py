@@ -14,6 +14,10 @@ def translate(text):
 def distancefromthousand(elem):
     return elem%1000
 def download(URL,genres,tags):
+    try:
+       Novel.objects.get(url=URL).delete()
+    except Novel.DoesNotExist:
+        pass
     response = requests.get(URL,headers={"User-Agent":"Mozilla/5.0"}).text
     novel_obj = BeautifulSoup(response, "html.parser")
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
@@ -36,7 +40,7 @@ def download(URL,genres,tags):
         active=0,
         views=0
     )
-    processChapeters(chapternumber=0,section=0,chapter_order=0,new_novel=new_novel,chapter_list=chapter_list)
+    processChapeters(chapternumber=1,section=0,new_novel=new_novel,chapter_list=chapter_list)
 def update(novel):
     for novel in Novel.objects.filter(completed=0):
         response = requests.get(novel.url,headers={"User-Agent":"Mozilla/5.0"}).text
@@ -48,7 +52,6 @@ def update(novel):
             last_chapter = chapters.last()
             chapternumber = last_chapter.chapterNumber+1
             section = last_chapter.section
-            chapter_order = last_chapter.chapterOrder
             processChapeters(chapternumber=chapternumber,section=section,new_novel=novel,chapter_list=chapter_list)
         if novel.completed==0:
             r = requests.get(novel.url[:25]+'/novelview/infotop/ncode'+novel.url[25:],headers={"User-Agent":"Mozilla/5.0"}).text
@@ -60,7 +63,7 @@ def update(novel):
         
 
 
-def processChapeters(chapternumber,section,new_novel,chapter_order,chapter_list):
+def processChapeters(chapternumber,section,new_novel,chapter_list):
     removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'&#013;&#010;','</p>':'&#013;&#010;'}
     novel_id = new_novel.id
     for i in range(len(chapter_list)):
@@ -68,7 +71,7 @@ def processChapeters(chapternumber,section,new_novel,chapter_order,chapter_list)
         print(type(ch_id))
         if 'class' in str(chapter_list[i]):
             section+=1
-            Chapter.objects.create(id=ch_id,novel=new_novel,title=translate(chapter_list[i].text),section=section,chapterNumber=0,active=1)
+            Chapter.objects.create(id=ch_id,novel=new_novel,title=translate(chapter_list[i].text),section=section,chapterNumber=0, chapterOrder=chapternumber+section, active=5)
         else:
             content = ""
             chapter_obj = BeautifulSoup(requests.get("https://ncode.syosetu.com" + str(chapter_list[i]['href']),headers={"User-Agent":"Mozilla/5.0"}).text, "html.parser")
@@ -93,8 +96,8 @@ def processChapeters(chapternumber,section,new_novel,chapter_order,chapter_list)
                 content = content,
                 chapterNumber=chapternumber,
                 section=section,
-                active=1,
-                chapterOrder=chapter_order)
+                active=5,
+                chapterOrder=chapternumber+section)
             chapternumber += 1
 def upload():
     now = pytz.timezone('America/Los_Angeles') 

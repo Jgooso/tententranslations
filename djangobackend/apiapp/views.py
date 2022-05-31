@@ -16,11 +16,11 @@ from django.contrib.auth.forms import UserCreationForm
 class MultiNovelView(ObjectMultipleModelAPIView):
    def get_querylist(self):
     tier = int(self.request.query_params['tier'])
-    allchapters=Chapter.objects.filter(active__lte=tier).exclude(content='',active=0)
+    allchapters=Chapter.objects.filter(active__lte=tier).exclude(chapterNumber=0,active=0)
     releasechapters = Chapter.objects.filter(content='a')
     novels = Novel.objects.filter(active=True)
     for nvl in novels:
-        releasechapters = releasechapters | allchapters.filter(novel=nvl).order_by("-id")[:2]
+        releasechapters = releasechapters | allchapters.filter(novel=nvl).order_by("-chapterNumber")[:2]
     querylist = (
         {'queryset':novels, 'serializer_class': NovelSerializer},
         {'queryset': releasechapters, 'serializer_class': ChapterSerializer},

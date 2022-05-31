@@ -76,8 +76,8 @@ import UtfBox from '../components/UtfBox'
                     if(a.title > b.title) { return 1; }
                     return 0;
                 case 'length':
-                    if(a.firstchapter.chapterNum < b.firstchapter.chapterNum) { return 1; }
-                    if(a.firstchapter.chapterNum > b.firstchapter.chapterNum) { return -1; }
+                    if(a.firstchapter.chapterNumber < b.firstchapter.chapterNumber) { return 1; }
+                    if(a.firstchapter.chapterNumber > b.firstchapter.chapterNumber) { return -1; }
                     return 0;
                 case 'views':
                     if(a.views < b.views) { return 1; }
@@ -94,7 +94,7 @@ import UtfBox from '../components/UtfBox'
         
     },
     created(){
-       getAPI.get('/novels/?tier=2')
+       getAPI.get('/novels/?tier=5')
           .then(response => {
             console.log('Post API has recieved data')
         this.novelData=response.data['Novel']
