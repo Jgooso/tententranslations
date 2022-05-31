@@ -53,12 +53,11 @@ def update(novel):
             chapternumber = last_chapter.chapterNumber+1
             section = last_chapter.section
             processChapeters(chapternumber=chapternumber,section=section,new_novel=novel,chapter_list=chapter_list)
-        if novel.completed==0:
-            r = requests.get(novel.url[:25]+'/novelview/infotop/ncode'+novel.url[25:],headers={"User-Agent":"Mozilla/5.0"}).text
-            o=BeautifulSoup(r,'html.parser')
-            if o.find(id='noveltype'):
-                novel.completed = 1
-            novel.save()
+        r = requests.get(novel.url[:25]+'/novelview/infotop/ncode'+novel.url[25:],headers={"User-Agent":"Mozilla/5.0"}).text
+        o=BeautifulSoup(r,'html.parser')
+        if o.find(id='noveltype'):
+            novel.completed = 1
+        novel.save()
         
         
 
@@ -108,9 +107,10 @@ def upload():
         chapters = Chapter.objects.filter(novel=novel)
         for i in range(4,-1,-1):
             latest_chapters = chapters.filter(active=i).last().chapterOrder
-            new_chapter = Chapter.object.get(chapterOrder=latest_chapters+1)
-            if len(new_chapter)==0:
-                break
+            try:
+                new_chapter = Chapter.object.get(chapterOrder=latest_chapters+1)
+            except Chapter.DoesNotExist:
+                continue
             new_chapter.active = i
             new_chapter.date = now
             if not new_chapter.content:

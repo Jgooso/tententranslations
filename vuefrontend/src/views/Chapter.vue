@@ -52,9 +52,11 @@ import Navigator from '../components/Navigator'
 </script>
 <style scoped>
 pre{
-scroll-behavior: smooth;
-font-family: Arial, Helvetica, sans-serif;
-font-size:20px;
+font-family: Helvetica,sans-serif;
+font-size:19px;
+line-height:19px;
 white-space: pre-wrap;
+font-weight:lighter;
+overflow:hidden;
 }
 </style>
