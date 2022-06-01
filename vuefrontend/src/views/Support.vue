@@ -1,21 +1,14 @@
 <template>
-<body>
-    <h3>Text</h3>
-</body>
+  <div>
+    <a href = 'https://buy.stripe.com/test_7sI14ggPXa1WeEE6oo'>Donate</a>
+    <StripeCard/>
+  </div>
 </template>
-
 <script>
-
+import StripeCard from '../components/StripeCard'
 export default{
-    name:'Support',
-    created(){
-        console.log('about')
-    } 
+    components:{
+        StripeCard
+    }
 }
 </script>
-<style>
-body{
-    background-color:red;
-    height:200px;
-}
-</style>

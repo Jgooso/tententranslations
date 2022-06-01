@@ -7,12 +7,36 @@ from . models import Novel, Chapter, Schedule
 from slugify import slugify
 import datetime
 import pytz
+import language_tool_python
 
 translator = Translator()
+tool = language_tool_python.LanguageTool('en-US')
 def translate(text):
     return translator.translate(text, dest = 'en').text
-def distancefromthousand(elem):
+def distance_from_thousand(elem):
     return elem%1000
+def correct_grammer(text):
+    my_mistakes = []
+    my_corrections = []
+    start_positions = []
+    end_positions = []
+    matches = [a for a in tool.check(text) if a.category != 'TYPOS' and '   ' not in  a.context]
+    for rules in matches:
+        if len(rules.replacements)>0:
+            start_positions.append(rules.offset)
+            end_positions.append(rules.errorLength+rules.offset)
+            my_mistakes.append(text[rules.offset:rules.errorLength+rules.offset])
+            my_corrections.append(rules.replacements[0]) 
+    my_new_text = list(text)
+    for m in range(len(start_positions)):
+        for i in range(len(text)):
+            my_new_text[start_positions[m]] = my_corrections[m]
+            if (i>start_positions[m] and i<end_positions[m]):
+                my_new_text[i]=""
+     
+    my_new_text = "".join(my_new_text)
+    return my_new_text
+
 def download(URL,genres,tags):
     try:
        Novel.objects.get(url=URL).delete()
@@ -31,7 +55,7 @@ def download(URL,genres,tags):
         alternativetitle = jp_title,
         url = URL,
         author = translate(novel_obj.find(class_ = "novel_writername").text)[8:],
-        description = translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;')),
+        description = correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   '))),
         genres = ",".join(genres),
         tags = ",".join(tags),
         status = 0,
@@ -40,7 +64,7 @@ def download(URL,genres,tags):
         active=0,
         views=0
     )
-    processChapeters(chapternumber=1,section=0,new_novel=new_novel,chapter_list=chapter_list)
+    processChapeters(chapter_number=1,section=0,new_novel=new_novel,chapter_list=chapter_list)
 def update(novel):
     for novel in Novel.objects.filter(completed=0):
         response = requests.get(novel.url,headers={"User-Agent":"Mozilla/5.0"}).text
@@ -50,27 +74,24 @@ def update(novel):
         if len(chapter_list) > len(chapters):
             chapter_list = chapter_list[len(chapters):]
             last_chapter = chapters.last()
-            chapternumber = last_chapter.chapterNumber+1
+            chapter_number = last_chapter.chapterNumber+1
             section = last_chapter.section
-            processChapeters(chapternumber=chapternumber,section=section,new_novel=novel,chapter_list=chapter_list)
+            processChapeters(chapter_number=chapter_number,section=section,new_novel=novel,chapter_list=chapter_list)
         r = requests.get(novel.url[:25]+'/novelview/infotop/ncode'+novel.url[25:],headers={"User-Agent":"Mozilla/5.0"}).text
         o=BeautifulSoup(r,'html.parser')
         if o.find(id='noveltype'):
             novel.completed = 1
         novel.save()
         
-        
-
-
-def processChapeters(chapternumber,section,new_novel,chapter_list):
+def processChapeters(chapter_number,section,new_novel,chapter_list):
     removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'','</p>':'&#013;&#010;'}
     novel_id = new_novel.id
     for i in range(len(chapter_list)):
-        ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapternumber))
+        ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapter_number))
         print(type(ch_id))
         if 'class' in str(chapter_list[i]):
             section+=1
-            Chapter.objects.create(id=ch_id,novel=new_novel,title=translate(chapter_list[i].text),section=section,chapterNumber=0, chapterOrder=chapternumber+section, active=5)
+            Chapter.objects.create(id=ch_id,novel=new_novel,title=translate(chapter_list[i].text),section=section,chapterNumber=0, chapterOrder=chapter_number+section, active=5)
         else:
             content = ""
             chapter_obj = BeautifulSoup(requests.get("https://ncode.syosetu.com" + str(chapter_list[i]['href']),headers={"User-Agent":"Mozilla/5.0"}).text, "html.parser")
@@ -78,26 +99,30 @@ def processChapeters(chapternumber,section,new_novel,chapter_list):
             #process text content
             for key,value in removals.items():text = text.replace(key,value)
             while "</rt>" in text:text = text[:text.index("<rt>")-1] + text[text.index("</rt>")+6:]
-            newlines=[_.start() for _ in re.finditer('&#013;&#010;', text)]
-            newlines.sort(key=distancefromthousand)
+            new_lines=[_.start() for _ in re.finditer('&#013;&#010;', text)]
+            new_lines.sort(key=distance_from_thousand)
             divide_index={0:0}
-            for line in newlines:
+            
+            for line in new_lines:
                 if line//1000 !=0 and line//1000 not in divide_index:
                     divide_index[line//1000]=line
             divide_index[len(divide_index)]=len(text)
             divide_index=dict(sorted(divide_index.items(), key=lambda item: item[1]))
             for i in range(len(divide_index)-1):content += translate(text[divide_index[i]:divide_index[i+1]])
+            if(chapter_number==1):
+                print(tool.check(content))
+            content = correct_grammer(content)
             chapter_title = translate(str(chapter_obj.find(class_ = 'novel_subtitle').text))
             Chapter.objects.create(
                 id=ch_id,
                 novel = new_novel,
                 title = chapter_title,
                 content = content,
-                chapterNumber=chapternumber,
+                chapterNumber=chapter_number,
                 section=section,
                 active=5,
-                chapterOrder=chapternumber+section)
-            chapternumber += 1
+                chapterOrder=chapter_number+section)
+            chapter_number += 1
 def upload():
     now = pytz.timezone('America/Los_Angeles') 
     now = datetime.datetime.now(now)
@@ -113,7 +138,7 @@ def upload():
                 continue
             new_chapter.active = i
             new_chapter.date = now
-            if not new_chapter.content:
+            if new_chapter.content=='' or not new_chapter.content:
                 i+=1
             new_chapter.save()
     except:
