@@ -130,34 +130,39 @@ def processChapeters(chapter_number,section,new_novel,chapter_list):
 def upload():
     now = pytz.timezone('America/Los_Angeles') 
     now = datetime.datetime.now(now)
+    
+    print(now.hour)
     try:
         schedule = Schedule.objects.get(day=now.strftime("%A"),time=now.strftime("%H"))
         novel = schedule.novel
         chapters = Chapter.objects.filter(novel=novel)
-        for i in range(4,-1,-1):
-            latest_chapters = chapters.filter(active=i).last().chapterOrder
-            try:
-                new_chapter = Chapter.object.get(chapterOrder=latest_chapters+1)
-            except Chapter.DoesNotExist:
+        for i in range(4,0,-1):
+            try :
+                latest_chapters = chapters.filter(active=i).last().chapterOrder
+                new_chapter = Chapter.objects.get(chapterOrder=latest_chapters+1)
+            except:
                 continue
             new_chapter.active = i
             new_chapter.date = now
+            novel.last_updated=now
             if new_chapter.content=='' or not new_chapter.content:
+                print(i)
                 i+=1
             new_chapter.save()
-            botupload(new_chapter,now)
-    except:
+            novel.save()
+            print(i)
+            if i==1:
+                print('what')
+                #botupload(new_chapter)
+    except Schedule.DoesNotExist:
         print('no uploads now')
     
 
-def botupload(chapter,today):
-    chapter.active = True
-    chapter.date = today.strftime("%B %d, %Y")
-    novel= Novel.objects.get(title=chapter.novel)
-    novel.last_updated = today.strftime("%B %d, %Y")
-    link = "http://localhost:8080/novel/"+novel.novel_id+"/"+str(chapter.chapternumber)
-    novel_title = novel.title
+def botupload(chapter):
+    print('text')
     browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    novel= Novel.objects.get(title=chapter.novel)
+    link = "http://localhost:8080/novel/"+novel.id+"/"+str(chapter.chapterNumber)
     browser.get('https://www.novelupdates.com')
     browser.find_element(by=By.LINK_TEXT, value='Login').click()
     browser.find_element(by=By.NAME, value='log').send_keys("jgooso")
@@ -166,11 +171,10 @@ def botupload(chapter,today):
     browser.find_elements(by=By.ID, value='menu_right_item')[1].click()
     browser.find_element(by=By.LINK_TEXT, value='User Profile').click()
     browser.find_element(by=By.PARTIAL_LINK_TEXT, value='Release').click()
-    browser.find_element(by=By.ID, value='title_change_100').send_keys(novel_title)
-    browser.find_element(by=By.NAME, value='arrelease').send_keys(chapter)
+    browser.find_element(by=By.ID, value='title_change_100').send_keys(chapter.novel)
+    browser.find_element(by=By.NAME, value='arrelease').send_keys(chapter.chapterNumber)
     browser.find_element(by=By.NAME, value='arlink').send_keys(link)
     browser.find_element(by=By.ID, value='group_change_100').send_keys("tententranslations")
-    novel.save()
 
 
 

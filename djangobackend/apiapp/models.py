@@ -44,7 +44,7 @@ class Chapter(models.Model):
     def __str__(self):
         return self.title
 class Schedule(models.Model):
-    day = models.CharField(max_length=8)
+    day = models.CharField(max_length=9)
     time = models.CharField(max_length=5)
     novel = models.ForeignKey(Novel, on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):

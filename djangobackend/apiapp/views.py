@@ -42,12 +42,13 @@ def contact(request):
             url = form.cleaned_data['url']
             tags = form.cleaned_data['tags']
             genres = form.cleaned_data['genres']
-            download(URL=url,genres=genres,tags=tags)
-            #upload()
+            #download(URL=url,genres=genres,tags=tags)
+            
 
     form = NovelForm
     novels = Novel.objects.all()
     args = {'form':form, 'novels':novels,'range': range(8,21)}
+    upload()
     return render(request ,'forms.html',args)
 
 class UpdateNovel(generics.UpdateAPIView):
@@ -55,3 +56,8 @@ class UpdateNovel(generics.UpdateAPIView):
     queryset = Novel.objects.all()
     serializer_class=NovelSerializer
     lookup_field='id'
+
+def uploadNovel(requests):
+    print(requests)
+    upload()
+    return HttpResponse('hello',requests)

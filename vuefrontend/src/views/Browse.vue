@@ -68,8 +68,8 @@ import UtfBox from '../components/UtfBox'
         sort(a,b){
             switch (this.attributesort){
                 case 'latest':
-                    if(a.last_updated < b.last_updated) { return 1; }
-                    if(a.last_updated > b.last_updated) { return -1; }
+                    if(Date.parse(a.last_updated) < Date.parse(b.last_updated)) { return 1; }
+                    if(Date.parse(a.last_updated) > Date.parse(b.last_updated)) { return -1; }
                     return 0;
                 case 'alphabetical':
                     if(a.title < b.title) { return -1; }
@@ -94,8 +94,8 @@ import UtfBox from '../components/UtfBox'
         
     },
     created(){
-        document.title='Browse'
-       getAPI.get('/novels/?tier=5')
+        //document.title='Browse'
+       getAPI.get('/novels/?tier=3')
           .then(response => {
             console.log('Post API has recieved data')
         this.novelData=response.data['Novel']
@@ -105,7 +105,7 @@ import UtfBox from '../components/UtfBox'
             novel['firstchapter']=this.chapterList.filter(chapter => chapter.novel==novel.id)[1]
             novel['secondchapter']=this.chapterList.filter(chapter => chapter.novel==novel.id)[0]
         }
-        console.log(this.attributesort)
+
           })
           .catch(err => {
             console.log(err)
@@ -161,7 +161,7 @@ button.category:hover{
     border-bottom:4px solid purple;
 }
 
-button.category:focus{
+.category:focus{
     color:purple;
     border-bottom:4px solid purple;
    outline: none;

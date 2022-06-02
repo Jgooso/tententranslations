@@ -45,8 +45,16 @@ import Navigator from '../components/Navigator'
             this.chapterNum = chp-1
             window.scrollTo({top:0,left:0,behavoir:'smooth'});
             
-        }
-    },
+        },
+        changeFontSize(change)
+        {
+            if(change == 1){
+                document.getElementsByTagName('pre')[0].style.fontSize='larger'
+            }else{
+                document.getElementsByTagName('pre')[0].style.fontSize='smaller'
+            }
+        }    
+},
     created(){
         this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? 1:-1))
         
@@ -63,7 +71,6 @@ import Navigator from '../components/Navigator'
 pre{
 font-family: Helvetica,sans-serif;
 font-size:19px;
-
 white-space: pre-wrap;
 font-weight:lighter;
 overflow:hidden;

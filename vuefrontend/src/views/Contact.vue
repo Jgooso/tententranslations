@@ -15,7 +15,7 @@
 export default{
     name:'Contact',
     created(){
-        document.title='Contact'
+        //document.title='Contact'
     }
 }
 </script>

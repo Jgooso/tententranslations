@@ -74,7 +74,7 @@
                 <router-link 
                     :to = "{name: 'chapterPage', params:{title:$route.params.title,chapter:chapter.chapterNumber}}" id="group">
                     <p id = "title">{{chapter.title}}</p>
-                    <p id = "date">{{chapter.date}}</p>
+                    <p id = "date">{{new Date(chapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
                 </router-link>
                 </li>
             </ul>
@@ -85,7 +85,7 @@
                 <router-link 
                     :to = "{name: 'chapterPage', params:{title:$route.params.title,chapter:chapter.chapterNumber}}" id="group">
                     <p id = "title">{{chapter.title}}</p>
-                    <p id = "date">{{chapter.date}}</p>
+                    <p id = "date">{{new Date(chapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
                 </router-link>
                 </li>
             </ul>
@@ -130,7 +130,7 @@
        
     },
     created(){
-        console.log(this.chapterList)
+        
         this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? -1:1))
         this.sectionList.sort((a,b) =>(a.section > b.section ? -1:1))
     },

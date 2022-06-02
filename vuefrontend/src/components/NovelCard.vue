@@ -10,14 +10,15 @@
          :to = "{name: 'chapterPage', params:{title:novelData.id, chapter:novelData.firstchapter.chapterNumber}}" 
          v-text='novelData.firstchapter.chapterNumber' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = 'novelData.firstchapter.date'/>
+        <p class = 'date' v-text = "new Date(novelData.firstchapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        
     </div>
     <div class = 'chapter'>
         <router-link 
          :to = "{name: 'chapterPage', params:{title:novelData.id, chapter:novelData.secondchapter.chapterNumber}}" 
          v-text='novelData.secondchapter.chapterNumber' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = 'novelData.secondchapter.date'/>
+        <p class = 'date' v-text = "new Date(novelData.secondchapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
     </div>
 </div>
 </template>

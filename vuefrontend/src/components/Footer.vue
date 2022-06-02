@@ -8,7 +8,6 @@
                 <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
             </div>
             <br>
-            <p id = 'copyright'>Copyright&copy; TenTenTranslations. All Rights Reserved</p>
         </div>  
     </div>
     </header>
@@ -62,12 +61,6 @@ export default{
       flex-direction:column;
       
       
-  }
-  #copyright{
-      color:gray;
-      font-size:12px;
-      width:fit-content;
-      margin:auto;
   }
 
 

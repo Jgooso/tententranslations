@@ -29,7 +29,7 @@ export default {
   },
   data(){
     return{
-    tier: 5
+    tier: 3
     }
   },
   methods:{
@@ -64,6 +64,7 @@ export default {
     margin: 0;
     padding: 0;
     background-color:white!important;
+    color:black;
   }
   .content{
       width: 1110px;
