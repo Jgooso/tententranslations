@@ -13,7 +13,10 @@
 
 <script>
 export default{
-    name:'Contact'
+    name:'Contact',
+    created(){
+        document.title='Contact'
+    }
 }
 </script>
 

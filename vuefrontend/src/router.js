@@ -12,12 +12,12 @@ const routes = [
         {path:'/about',name: 'aboutPage',component: ()=> import('@/views/About.vue')},
         {path:'/contact',name: 'contactPage',component: ()=> import('@/views/Contact.vue')},
         {path:'/support',name: 'supportPage',component: ()=> import('@/views/Support.vue')},
+        {path:'/404',name:'errorPage',component: ()=>import('@/views/Error.vue')}
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
 })
-
 export default router
 

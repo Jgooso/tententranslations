@@ -49,6 +49,12 @@ import Navigator from '../components/Navigator'
     },
     created(){
         this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? 1:-1))
+        
+    },
+    mounted(){
+        if(!this.chapterList[this.chapterNum]){
+          this.$router.push({name:'errorPage'})
+        }
     }
     
     }

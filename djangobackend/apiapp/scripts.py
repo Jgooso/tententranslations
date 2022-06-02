@@ -8,6 +8,10 @@ from slugify import slugify
 import datetime
 import pytz
 import language_tool_python
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 
 translator = Translator()
 tool = language_tool_python.LanguageTool('en-US')
@@ -141,8 +145,33 @@ def upload():
             if new_chapter.content=='' or not new_chapter.content:
                 i+=1
             new_chapter.save()
+            botupload(new_chapter,now)
     except:
         print('no uploads now')
+    
+
+def botupload(chapter,today):
+    chapter.active = True
+    chapter.date = today.strftime("%B %d, %Y")
+    novel= Novel.objects.get(title=chapter.novel)
+    novel.last_updated = today.strftime("%B %d, %Y")
+    link = "http://localhost:8080/novel/"+novel.novel_id+"/"+str(chapter.chapternumber)
+    novel_title = novel.title
+    browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    browser.get('https://www.novelupdates.com')
+    browser.find_element(by=By.LINK_TEXT, value='Login').click()
+    browser.find_element(by=By.NAME, value='log').send_keys("jgooso")
+    browser.find_element(by=By.NAME, value='pwd').send_keys("testingpassword")
+    browser.find_element(by=By.NAME, value='wp-submit').click()
+    browser.find_elements(by=By.ID, value='menu_right_item')[1].click()
+    browser.find_element(by=By.LINK_TEXT, value='User Profile').click()
+    browser.find_element(by=By.PARTIAL_LINK_TEXT, value='Release').click()
+    browser.find_element(by=By.ID, value='title_change_100').send_keys(novel_title)
+    browser.find_element(by=By.NAME, value='arrelease').send_keys(chapter)
+    browser.find_element(by=By.NAME, value='arlink').send_keys(link)
+    browser.find_element(by=By.ID, value='group_change_100').send_keys("tententranslations")
+    novel.save()
+
 
 
         

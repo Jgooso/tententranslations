@@ -130,8 +130,10 @@
        
     },
     created(){
-         this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? -1:1))
-    }
+        console.log(this.chapterList)
+        this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? -1:1))
+        this.sectionList.sort((a,b) =>(a.section > b.section ? -1:1))
+    },
   }
 </script>
 <style scoped>

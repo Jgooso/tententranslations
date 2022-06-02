@@ -22,7 +22,10 @@
 
 <script>
 export default{
-    name:'About'
+    name:'About',
+    created(){
+        document.title='About'
+    }
 }
 </script>
 

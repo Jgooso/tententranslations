@@ -94,6 +94,7 @@ import UtfBox from '../components/UtfBox'
         
     },
     created(){
+        document.title='Browse'
        getAPI.get('/novels/?tier=5')
           .then(response => {
             console.log('Post API has recieved data')

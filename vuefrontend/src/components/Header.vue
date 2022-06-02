@@ -8,7 +8,7 @@
                 <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
                 <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
                 <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
-                <router-link :to = "{name: 'Browse'}" id = 'search'><img src = '../assets/search.png' alt = 'Search'></router-link>
+                <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
         </div>  
@@ -98,19 +98,11 @@ export default{
       height:35px;
       border-radius:20px;
       background-color:white;
-      display: flex;
-      align-items:center;
-      float: right;
-      align-self:right;
+      padding-top:4px;
+      padding-left:9px;
       position: absolute;
       right:70px;
-  }
-  #search img{
-      width: 20px;
-      height: 20px;
-      background-color:white;
-      
-      margin:auto;
+      color:purple;
   }
   .content{
       display: flex;

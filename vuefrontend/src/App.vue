@@ -47,7 +47,11 @@ export default {
           
         }
             
-        }
+        },
+    errorCaptured: function(err) {
+      this.$router.push({name:'errorPage'})
+      
+    },
   
 }
 </script>
