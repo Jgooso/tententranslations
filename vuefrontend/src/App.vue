@@ -29,7 +29,8 @@ export default {
   },
   data(){
     return{
-    tier: 3
+    tier: 3,
+    darkmore:false,
     }
   },
   methods:{
@@ -45,6 +46,12 @@ export default {
             menuBtn.classList.add('open');
           }
           
+        },
+        darkmode(){
+          if(darkmode){
+            document.style.color='white'
+            document.body.style.backgroundColor='black'
+          }
         }
             
         },
@@ -59,12 +66,13 @@ export default {
 <style>
 *{
   font:Arial, Helvetica;
+  color:black;
 }
   body {
     margin: 0;
     padding: 0;
     background-color:white!important;
-    color:black;
+    
   }
   .content{
       width: 1110px;

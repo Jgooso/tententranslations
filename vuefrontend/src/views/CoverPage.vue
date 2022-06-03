@@ -1,7 +1,7 @@
 <template>
 <div>
  <!--COVER-->
-  <div id="cover">
+  <div id="cover" ref = 'cover'>
     <div class = "content"  v-if='novelData.title'>
         <Navigator
          :novelid='novelData.id'
@@ -382,7 +382,6 @@ ul{
     padding-left:10px;
     position:absolute;
     line-height:15px;
-    color:black;
     left:5;
     font-size:17px;
 }

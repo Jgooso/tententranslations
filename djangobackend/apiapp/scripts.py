@@ -136,6 +136,7 @@ def upload():
         schedule = Schedule.objects.get(day=now.strftime("%A"),time=now.strftime("%H"))
         novel = schedule.novel
         chapters = Chapter.objects.filter(novel=novel)
+        new_chapter=None
         for i in range(4,0,-1):
             try :
                 latest_chapters = chapters.filter(active=i).last().chapterOrder
@@ -145,21 +146,22 @@ def upload():
             new_chapter.active = i
             new_chapter.date = now
             novel.last_updated=now
+            new_chapter.save()
+            novel.save()
             if new_chapter.content=='' or not new_chapter.content:
                 print(i)
                 i+=1
-            new_chapter.save()
-            novel.save()
             print(i)
             if i==1:
                 print('what')
-                #botupload(new_chapter)
+        #botupload(new_chapter)
     except Schedule.DoesNotExist:
         print('no uploads now')
     
 
 def botupload(chapter):
     print('text')
+    working = False
     browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     novel= Novel.objects.get(title=chapter.novel)
     link = "http://localhost:8080/novel/"+novel.id+"/"+str(chapter.chapterNumber)
@@ -169,9 +171,15 @@ def botupload(chapter):
     browser.find_element(by=By.NAME, value='pwd').send_keys("testingpassword")
     browser.find_element(by=By.NAME, value='wp-submit').click()
     browser.find_elements(by=By.ID, value='menu_right_item')[1].click()
-    browser.find_element(by=By.LINK_TEXT, value='User Profile').click()
-    browser.find_element(by=By.PARTIAL_LINK_TEXT, value='Release').click()
-    browser.find_element(by=By.ID, value='title_change_100').send_keys(chapter.novel)
+    
+    while working==False:
+        try:
+            browser.find_element(by=By.LINK_TEXT, value='User Profile').click()
+            browser.find_element(by=By.PARTIAL_LINK_TEXT, value='Release').click()
+            working=True
+        except:
+            continue
+    browser.find_element(by=By.ID, value='title_change_100').send_keys(novel.title)
     browser.find_element(by=By.NAME, value='arrelease').send_keys(chapter.chapterNumber)
     browser.find_element(by=By.NAME, value='arlink').send_keys(link)
     browser.find_element(by=By.ID, value='group_change_100').send_keys("tententranslations")
