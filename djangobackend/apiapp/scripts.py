@@ -3,7 +3,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from googletrans import Translator
-from . models import Novel, Chapter, Schedule
+from apiapp. models import Novel, Chapter, Schedule
 from slugify import slugify
 import datetime
 import pytz
