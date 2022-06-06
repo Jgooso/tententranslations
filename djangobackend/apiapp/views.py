@@ -58,6 +58,5 @@ class UpdateNovel(generics.UpdateAPIView):
     lookup_field='id'
 
 def uploadNovel(requests):
-    print(requests)
     upload()
     return HttpResponse('hello',requests)
