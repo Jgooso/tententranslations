@@ -50,3 +50,6 @@ class Schedule(models.Model):
     def __str__(self):
         return self.day +" "+self.time
 
+def printNovels():
+    print(Novel.objects.all())
+
