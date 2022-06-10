@@ -12,6 +12,7 @@ const routes = [
         {path:'/about',name: 'aboutPage',component: ()=> import('@/views/About.vue')},
         {path:'/contact',name: 'contactPage',component: ()=> import('@/views/Contact.vue')},
         {path:'/support',name: 'supportPage',component: ()=> import('@/views/Support.vue')},
+        {path:'/upload',name: 'uploadPage',component: ()=> import('@/views/Upload.vue')},
         {path:'/404',name:'errorPage',component: ()=>import('@/views/Error.vue')}
 ]
 

@@ -57,10 +57,10 @@ import UtfBox from '../components/UtfBox'
                 if(this.$route.params.browsetype.includes('author')){
                     return novel.author==identifier;
                 }else if(this.$route.params.browsetype.includes('tag')){
-                    return novel.tags.includes(identifier);
+                    return novel.tags.includes(identifier+',') || novel.genres.includes(','+identifier);
                 }
                 else if(this.$route.params.browsetype.includes('genre')){
-                    return novel.genres.includes(identifier);
+                    return novel.genres.includes(identifier+',') || novel.genres.includes(','+identifier);
             }else{
                 return true
             }
@@ -76,8 +76,8 @@ import UtfBox from '../components/UtfBox'
                     if(a.title > b.title) { return 1; }
                     return 0;
                 case 'length':
-                    if(a.firstchapter.chapterNumber < b.firstchapter.chapterNumber) { return 1; }
-                    if(a.firstchapter.chapterNumber > b.firstchapter.chapterNumber) { return -1; }
+                    if(a.firstChapter[0] < b.firstChapter[0]) { return 1; }
+                    if(a.firstChapter[0] > b.firstChapter[0]) { return -1; }
                     return 0;
                 case 'views':
                     if(a.views < b.views) { return 1; }
@@ -95,17 +95,11 @@ import UtfBox from '../components/UtfBox'
     },
     created(){
         //document.title='Browse'
-       getAPI.get('/novels/?tier=3')
+       getAPI.get('/novels?tier=5')
           .then(response => {
             console.log('Post API has recieved data')
-        this.novelData=response.data['Novel']
-        this.chapterList=response.data['Chapter']
-        for (let i = 0; i < this.novelData.length; i++) { 
-            var novel=this.novelData[i]
-            novel['firstchapter']=this.chapterList.filter(chapter => chapter.novel==novel.id)[1]
-            novel['secondchapter']=this.chapterList.filter(chapter => chapter.novel==novel.id)[0]
-        }
-
+            this.novelData=response.data
+            console.log(this.novelData[0].firstChapter[0])
           })
           .catch(err => {
             console.log(err)

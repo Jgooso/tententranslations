@@ -1,21 +1,29 @@
 <template>
-<div id = 'chapter' v-if='chapterList.length>0'>
+<div id = 'chapter' v-if='chapter'>
     <div class = "content">
      <br>
-        <h3 style = "font-size: 25px" v-html='novelData.title+" - "+chapterList[chapterNum].chapterNumber'/>
+        <h3 style = "font-size: 25px" v-html='novelData.title+" - "+chapter.chapternumber'/>
         <Navigator
          :novel-id='novelData.novel'
          :novel='novelData.title'
-         :chapter='chapterList[chapterNum]'
+         :chapter='chapter'
         />
-        <br><br><br>
+        <br>
+        <div class='controlbuttonscontainer' selectable='false'>
+            <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
+            <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
+            <button class = 'controlbuttons'>{</button>
+            <button class = 'controlbuttons'>{</button>
+        </div>
+        <br>
+        <br>
         <ChapterSelector
             :chapterList= 'chapterList'
             v-on:changeChapter="updateContent($event)"
         />
-        <br><br>
-          <pre v-html = 'chapterList[chapterNum].content' v-if='this.$route.params.password=="abcd"' contenteditable="true" id = 'editable'/>
-          <pre v-html = 'chapterList[chapterNum].content' v-else/>
+       
+        <br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br>
+          <pre v-html = 'chapterContent' id = 'content'/>
         <ChapterSelector
             :chapterList='chapterList'
             v-on:changeChapter="updateContent($event)"
@@ -27,6 +35,7 @@
 <script>
 import ChapterSelector from '../components/ChapterSelector'
 import Navigator from '../components/Navigator'
+import { getAPI } from '../axios-api'
     export default{
         name: 'Chapter',
         components:{
@@ -35,36 +44,42 @@ import Navigator from '../components/Navigator'
         },props:[
         'novelData',
         'chapterList',
-    ],
-        data () {
-            return {
-                chapterNum: this.$route.params.chapter-1,
+        'tier'
+        ],data(){
+            return{
+                chapter:this.chapterList[this.$route.params.chapter-1],
+                chapterContent:''
             }
         },methods:{
-        updateContent(chp){
-            this.chapterNum = chp-1
-            window.scrollTo({top:0,left:0,behavoir:'smooth'});
-            
+            changeFontSize(change){
+                const txt = document.getElementById('content');
+                const style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
+                const currentSize = parseFloat(style);
+                txt.style.fontSize = (currentSize + change) + 'px';
+            },
+            triggerEdit(){
+                if(document.getElementById('content').contentEditable=='true'){
+                    document.getElementById('content').contentEditable='false'
+                    document.getElementById('editButton').innerHTML='Edit'
+                }else{
+                document.getElementById('content').contentEditable='true'
+                document.getElementById('editButton').innerHTML='Save'
+                }
+            }    
         },
-        changeFontSize(change)
-        {
-            if(change == 1){
-                document.getElementsByTagName('pre')[0].style.fontSize='larger'
-            }else{
-                document.getElementsByTagName('pre')[0].style.fontSize='smaller'
-            }
-        }    
-},
-    created(){
-        this.chapterList.sort((a,b) =>(a.chapterNumber > b.chapterNumber ? 1:-1))
+        created(){
+            const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber
+            getAPI.get(url)
+          .then(response => {
+            console.log('Chapter API has recieved data')
+            this.chapterContent = response.data
+          })
+          .catch(err => {
+            console.log(err)
+          })
+            
         
-    },
-    mounted(){
-        if(!this.chapterList[this.chapterNum]){
-          this.$router.push({name:'errorPage'})
-        }
-    }
-    
+        },
     }
 </script>
 <style scoped>
@@ -74,5 +89,36 @@ font-size:19px;
 white-space: pre-wrap;
 font-weight:lighter;
 overflow:hidden;
+}
+#editButton{
+    width:170px;
+    background-color:purple;
+    color:white;
+    float:right;
+    border-radius:5px;
+}
+.controlbuttonscontainer{
+    float:right;
+    
+}
+button.controlbuttons{
+    border-radius:15px;
+    background-color:lightgray;
+    height:30px;
+    width:30px;
+    font-size:20px;
+    text-align:center;
+    vertical-align:middle;
+    line-height:20px;
+    margin-left:17px;
+    color:purple;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none; 
+}
+button.controlbuttons:hover{
+    color:white;
+    background-color:purple;
+    transition: all .2s ease;
 }
 </style>

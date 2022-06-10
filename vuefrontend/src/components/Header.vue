@@ -8,6 +8,7 @@
                 <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
                 <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
                 <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
+                <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='tier==5'>Manage</router-link>
                 <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
@@ -27,6 +28,9 @@
 <script>
 export default{
     name: 'Header',
+    props:[
+      'tier'
+    ]
 }
 </script>
 <style scoped>

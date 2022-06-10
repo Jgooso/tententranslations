@@ -1,9 +1,11 @@
 <template>
 <div>
-    <router-view
+    <router-view v-if='isMounted'
       :novelData="novelData"
       :chapterList="chapterList"
       :sectionList='sectionList'
+      :tier='tier'
+      :key='$route.params.chapter'
     />
 </div>
 </template>
@@ -15,29 +17,29 @@
     },
     data () {
       return {
-          novelData: [],
           chapterList:[],
           sectionList:[],
+          novelData:[],
+          isMounted:false
         }
     },
     props:[
       'tier'
     ],
     created () {
-    const url = '/singlenovel/?novel='+this.$route.params.title+'&tier='+this.tier
-    
-       getAPI.get(url)
+    const url = '/singlenovel?novel='+this.$route.params.title+'&tier='+this.tier
+            getAPI.get(url)
           .then(response => {
-            console.log('Post API has recieved data')
-        this.novelData=response.data['Novel'][0]
-        this.sectionList=response.data['Chapter'].filter(chapter => !chapter.content)
-        this.chapterList=response.data['Chapter'].filter(chapter => chapter.content)
+            console.log('Post Novel has recieved data')
+            this.novelData=response.data['Novel']
+            this.sectionList=response.data['Chapters'].filter(chapter => chapter.chapternumber == 0)
+            this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapternumber != 0)
+            this.isMounted=true
           })
           .catch(err => {
             console.log(err)
           })
        
-        
   },
   
  

@@ -4,21 +4,21 @@
         <img :src="novelData.image" v-if='novelData.image'/>
         <span class='overlay'></span>
     </div>
-    <router-link :to = "{name: 'coverPage', params:{title:novelData.id}}" v-text='novelData.title' id = 'title'/>
+    <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
     <div class = 'chapter'> 
         <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.id, chapter:novelData.firstchapter.chapterNumber}}" 
-         v-text='novelData.firstchapter.chapterNumber' 
+         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter[0]}}" 
+         v-text='novelData.firstChapter[0]' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = "new Date(novelData.firstchapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        <p class = 'date' v-text = "new Date(novelData.firstChapter[1]).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
         
     </div>
     <div class = 'chapter'>
         <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.id, chapter:novelData.secondchapter.chapterNumber}}" 
-         v-text='novelData.secondchapter.chapterNumber' 
+         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter[0]}}" 
+         v-text='novelData.secondChapter[0]' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = "new Date(novelData.secondchapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        <p class = 'date' v-text = "new Date(novelData.secondChapter[1]).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
     </div>
 </div>
 </template>
@@ -31,7 +31,6 @@ export default{
     ],
         methods:{
             goTo(novel){
-                console.log(novel)
                 this.$router.push({name: 'coverPage', params:{title:novel}})
             }
         }

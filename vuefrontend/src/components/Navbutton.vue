@@ -5,8 +5,8 @@
         <button @click ="go(last)">Read Last</button>
     </div>
     <div id = "MoveButton" v-else>
-        <button v-if='previous' @click ="move(-1)">&#8592; Prev</button>
-        <button v-if='next' @click ="move(1)">Next &#8594;</button>
+        <button v-if='previous' @click ="go(this.$route.params.chapter-1)">&#8592; Prev</button>
+        <button v-if='next' @click ="go(parseInt(this.$route.params.chapter)+1)">Next &#8594;</button>
     </div>
 </div>
 </template>
@@ -20,9 +20,6 @@
             'next'
         ],
         methods:{
-            move(direction){
-                this.$emit('move', direction)
-            },
             go(chapter){
               this.$router.push({name: 'chapterPage', params:{title:this.$route.params.title,chapter:chapter}})
             }

@@ -5,6 +5,7 @@
      />
   <Header ref='header'
    v-on:changesidebar='changesidebar()'
+   :tier='tier'
   />
 
     <router-view
@@ -19,6 +20,7 @@
 import Header from './components/Header'
 import Footer from './components/Footer'
 import sidebar from './components/Sidebar'
+import { getAPI } from './axios-api'
 export default {
   
   name: 'App',
@@ -29,8 +31,9 @@ export default {
   },
   data(){
     return{
-    tier: 3,
+    tier: 5,
     darkmore:false,
+    testing:[],
     }
   },
   methods:{
@@ -56,9 +59,11 @@ export default {
             
         },
     errorCaptured: function(err) {
-      this.$router.push({name:'errorPage'})
+      //this.$router.push({name:'errorPage'})
       
     },
+    created(){
+    }
   
 }
 </script>
