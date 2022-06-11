@@ -151,13 +151,13 @@ import UtfBox from '../components/UtfBox'
     min-width:75px;
 }
 button.category:hover{
-    color:purple;
-    border-bottom:4px solid purple;
+    color:var(--styleColor);
+    border-bottom:4px solid var(--styleColor);
 }
 
 .category:focus{
-    color:purple;
-    border-bottom:4px solid purple;
+    color:var(--styleColor);
+    border-bottom:4px solid var(--styleColor);
    outline: none;
     }
 #sortCategory{

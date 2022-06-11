@@ -30,7 +30,7 @@
 <style scoped>
 #NavButton button {
     cursor: pointer;
-    background: purple;
+    background: var(--styleColor);
     color: white;
     font-size: 12px;
     border: 0;
@@ -46,7 +46,7 @@
   }
   #MoveButton button {
     cursor: pointer;
-    background: purple;
+    background: var(--styleColor);
     color: white;
     font-size: 17px;
     font-weight: 300;

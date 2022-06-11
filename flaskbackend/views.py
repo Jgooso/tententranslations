@@ -70,11 +70,15 @@ def singlenovel():
 def get_chapter():
     chapter = request.args.get('chapter')
     novel = request.args.get('novel')
-    chapter_sql = "SELECT DISTINCT content FROM Chapters WHERE chapternumber = %s AND novelid=%s"
-    chapter_val = (chapter,novel)
-    novelcursor.execute(chapter_sql,chapter_val)
-    chapter_results = novelcursor.fetchone()
-    return jsonify(chapter_results[0]) 
+    chapter_sql = "SELECT DISTINCT content FROM Chapters WHERE chapternumber = %s AND novelid=%s;UPDATE Novel SET views = views +1 WHERE novelid = %s"
+    chapter_val = (chapter,novel,novel)
+    novelcursor.execute(chapter_sql,chapter_val,multi = True)
+    for result in novelcursor.execute(chapter_sql,chapter_val,multi=True):
+        if result.with_rows:
+            chapter_results = novelcursor.fetchall()[0][0]
+    noveldb.commit()
+    return jsonify(chapter_results) 
+
 @app.route('/uploaddata',methods=['Get'])
 def get_genres_and_tags():
     return jsonify({'genres':genres})

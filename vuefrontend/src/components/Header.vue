@@ -44,7 +44,7 @@ export default{
       width: 100%;
       align-items: center;
       justify-content:center;
-      background-color: purple;
+      background-color: var(--styleColor);
       display:flex;
       flex-direction:row;
   }
@@ -106,7 +106,7 @@ export default{
       padding-left:9px;
       position: absolute;
       right:70px;
-      color:purple;
+      color:var(--styleColor);
   }
   .content{
       display: flex;

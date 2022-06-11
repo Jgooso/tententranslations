@@ -52,7 +52,7 @@ export default{
       line-height:15px;
   }
   .nav:hover{
-      color:purple;
+      color:var(--styleColor);
       text-decoration: none;
       transition: all .3s ease;
   }

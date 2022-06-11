@@ -73,7 +73,7 @@ export default{
     
 }
 .chapterNumber:hover{
-    background-color:purple;
+    background-color:var(--styleColor);
     color:white;
     transition: all .3s ease;
     text-decoration:none;
@@ -85,7 +85,7 @@ export default{
     height:fit-content;
 }
 #title:hover{
-    color:purple;
+    color:var(--styleColor);
      transition: all .3s ease;
 }
 .date{

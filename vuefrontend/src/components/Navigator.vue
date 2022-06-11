@@ -22,6 +22,6 @@
       font-size: 12px;
   }
 *:hover{
-      color:purple
+      color:var(--styleColor)
 }
 </style>

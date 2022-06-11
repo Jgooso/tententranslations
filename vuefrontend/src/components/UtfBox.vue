@@ -16,10 +16,10 @@ h3{
     padding:0;
     margin:0;
     font-weight:bold;
-    color:purple;
+    color:var(--styleColor);
 }
 #star{
-    background-color:purple;
+    background-color:var(--styleColor);
     color:white;
     width:30px;
     padding-top:4px;

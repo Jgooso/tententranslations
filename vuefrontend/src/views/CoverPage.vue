@@ -210,7 +210,7 @@
       text-decoration:none;
   }
   a:hover{
-      color:purple
+      color:var(--styleColor)
   }
   #navigator{
       margin-bottom:30px;
@@ -234,7 +234,7 @@
     transition: all .2s ease;
 }
   #noveltitle{
-      color: purple;
+      color: var(--styleColor);
       font-size: 20px;
       margin-bottom: 25px;
       line-height:20px;
@@ -279,7 +279,7 @@
     color:black;
   }
   a:hover { 
-    color: purple;
+    color: var(--styleColor);
     transition: all .2s ease;
   }
   .comma-list {
@@ -289,7 +289,7 @@
   display: inline;
 }
 .selectable:hover {
-  color:purple;
+  color:var(--styleColor);
   text-decoration:none;
 }
 .comma-list li::after {
@@ -299,7 +299,7 @@
     content: "";
 }
 #editButton{
-    background-color:purple;
+    background-color:var(--styleColor);
     color:white;
 }
 .editor{
@@ -409,7 +409,7 @@
 }
 
 button:hover{
-    color:purple;
+    color:var(--styleColor);
 }
 ul{
     list-style: none;
@@ -448,7 +448,7 @@ ul{
 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 #group:hover #title{
-color:purple;
+color:var(--styleColor);
 font-weight:bold;
 }
 

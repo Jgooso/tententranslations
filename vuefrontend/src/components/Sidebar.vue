@@ -40,7 +40,7 @@ export default{
 #sidebar{
     width:50%;
     max-width:300px;
-    background-color:purple;
+    background-color:var(--styleColor);
     top:0;
     left:-300px;
     position:absolute;

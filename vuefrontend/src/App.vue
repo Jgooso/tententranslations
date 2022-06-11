@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <SignIn/>
      <sidebar ref='sidemenu'
      v-on:changesidebar='changesidebar()'
      />
@@ -20,6 +21,7 @@
 import Header from './components/Header'
 import Footer from './components/Footer'
 import sidebar from './components/Sidebar'
+import SignIn from './components/SignIn'
 import { getAPI } from './axios-api'
 export default {
   
@@ -27,11 +29,12 @@ export default {
   components:{
     Header,
     Footer,
-    sidebar
+    sidebar,
+    SignIn
   },
   data(){
     return{
-    tier: 5,
+    tier: 1,
     darkmore:false,
     testing:[],
     }
@@ -69,6 +72,9 @@ export default {
 </script>
 
 <style>
+:root{
+  --styleColor: #75147C
+}
 *{
   font:Arial, Helvetica;
   color:black;

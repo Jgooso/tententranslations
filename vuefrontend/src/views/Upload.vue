@@ -3,14 +3,18 @@
 <div id = 'managementnavigator'>
 <button>Upload</button>
 <button>Schedule</button>
+<button>Edit</button>
+<button>Manage Users</button>
 </div>
 <form>
 <label for="fname">URL:</label>
-<input type="text">
+<input type="text" id = 'urltextbox' maxlength="34" style='width:280px'>
 <div id = 'genres'>
 <label v-for='genre in genres' :key = 'genre'><input type='checkbox' :value='genre' class = 'genrecheckbox'>{{genre}}</label>
 </div>
+
 </form>
+<button @click='getGenres()'>Submit</button>
 </div>
 </template>
 
@@ -26,11 +30,18 @@ export default{
     },
     methods:{
         getGenres(){
-        const genres = document.getElementsByClassName('genrecheckbox')
-        for(var i=0; i<genres.length;i++){
-            console.log(i)
+        var selectedGenres = ''
+        const genreelements = document.getElementsByClassName('genrecheckbox')
+        const url = document.getElementById('urltextbox').value
+        for(var i=0; i<genreelements.length;i++){
+            if(genreelements[i].checked == true){
+                selectedGenres +=genreelements[i].value+","
+            }
         }
-        console.log(genres)
+        selectedGenres = selectedGenres.replace(/(^,)|(,$)/g, '')
+        console.log(selectedGenres)
+        console.log(url)
+
         }
     },
     created(){
@@ -42,7 +53,6 @@ export default{
           .catch(err => {
             console.log(err)
           })
-    this.getGenres()
     }
 }
 </script>
@@ -77,5 +87,10 @@ button{
 }
 input{
     margin-right:5px;
+}
+@media (max-width: 775px) {
+    #genres{
+        grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto;
+    }
 }
 </style>

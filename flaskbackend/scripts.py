@@ -57,7 +57,17 @@ def correct_grammer(text):#corrects grammers. Ignores spelling mistakes
      
     my_new_text = "".join(my_new_text)
     return my_new_text
-
+def scrub_HTML(text):
+    html_special_characters={
+        '<':'&#60;',
+        '>':'&#62;',
+        '&':'&#38;',
+        '"':'&#34;',
+        '\'':'&#39;',
+        '¥':'&#165;',
+    }
+    for key,value in html_special_characters.items():text = text.replace(key,value)
+    return text
 def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     #Retrieve elements from webpage
     novel_obj = get_HTML(URL)
@@ -78,8 +88,8 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
         en_title,#title
         jp_title,#alternativetitle
         URL,#url
-        translate(novel_obj.find(class_ = "novel_writername").text)[8:],#title
-        correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   '))),#description
+        scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:]),#title
+        scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   ')))),#description
         ",".join(genres),#genres
         ",".join(tags),#tags
         'Ongoing',#uploadstatus
@@ -140,7 +150,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             #translate and grammer check chapters
             for j in range(len(divide_index)-1):content += translate(text[divide_index[j]:divide_index[j+1]])
             content = correct_grammer(content)
-
+            content = scrub_HTML(content)
             
             val = (
                 ch_id,#id

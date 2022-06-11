@@ -92,7 +92,7 @@ overflow:hidden;
 }
 #editButton{
     width:170px;
-    background-color:purple;
+    background-color:var(--styleColor);
     color:white;
     float:right;
     border-radius:5px;
@@ -111,14 +111,14 @@ button.controlbuttons{
     vertical-align:middle;
     line-height:20px;
     margin-left:17px;
-    color:purple;
+    color:var(--styleColor);
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
 }
 button.controlbuttons:hover{
     color:white;
-    background-color:purple;
+    background-color:var(--styleColor);
     transition: all .2s ease;
 }
 </style>
