@@ -50,7 +50,17 @@
                         {{novelData.uploadstatus}}
                       </router-link></td>
                     </tr>
-                    <tr><td>Novel</td><td class="info">{{ novelData.completed}}</td></tr>
+                    <tr><td>Novel</td>
+                        <td class="info" v-if='!editable'>{{ novelData.completed}}</td>
+                        <td class="info" v-else>
+                            <select id = 'completedEdit'>
+                                <option>Ongoing</option>
+                                <option>Completed</option>
+                                <option>On Hold</option>
+                                <option>Dropped</option>
+                            </select>
+                        </td>
+                    </tr>
                 </table>
              </div>
              <br>
@@ -156,6 +166,7 @@
                this.editable=false
                this.novelData.genres = document.getElementById('genreEdit').innerHTML
                this.novelData.tags = document.getElementById('tagEdit').innerHTML
+               this.novelData.completed=document.getElementById('completedEdit').value
                document.getElementById('editButton').innerHTML='Edit'
                document.getElementById('description').contentEditable = "false"
                document.getElementById('noveltitle').contentEditable = "false"
@@ -451,6 +462,10 @@ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 color:var(--styleColor);
 font-weight:bold;
 }
-
+select{
+    background:none;
+    border:none;
+    -webkit-appearance: none;
+}
 </style>
 

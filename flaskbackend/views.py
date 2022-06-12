@@ -7,9 +7,10 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 config = {
-'user': 'root',
-'password': 'zogjad-wucnaj-7tuRhi',
+'user': 'jgooso',
+'password': '<{;}eX2"ZcqGTBtl',
 'host': '35.236.68.50',
+'port': '3306',
 'database': 'novels',
 'raise_on_warnings': True,}
 noveldb = mysql.connector.connect(**config)
@@ -21,8 +22,8 @@ genres = ['Action','Adult','Adventure','Comedy','Drame','Ecchi','Fantasy','Gende
 @app.route('/novels', methods = ['GET'])
 def multiplenovels():
     tier= request.args.get('tier')
-    novelsql = "SELECT * FROM novel"
-    chaptersql = "SELECT chapternumber,date FROM Chapters WHERE CONTENT IS NOT NULL AND active <= %s AND novelid = %s ORDER BY chapternumber+0 DESC"
+    novelsql = "SELECT * FROM novels"
+    chaptersql = "SELECT chapternumber,date FROM chapters WHERE CONTENT IS NOT NULL AND chapteractive <= %s AND novelid = %s ORDER BY chapternumber+0 DESC"
     novelObject = []
     novelcursor.execute(novelsql)
     novelresults = novelcursor.fetchall()
@@ -46,7 +47,7 @@ def multiplenovels():
 def singlenovel():
     novel = request.args.get('novel')
     tier = request.args.get('tier')
-    novel_sql = "SELECT DISTINCT * FROM Novel WHERE novelid = %s"
+    novel_sql = "SELECT DISTINCT * FROM novels WHERE novelid = %s"
     novel_val = (novel,)
     novelcursor.execute(novel_sql,novel_val)
     novel_results=novelcursor.fetchall()
@@ -55,7 +56,7 @@ def singlenovel():
     columnNames = [column[0] for column in novelcursor.description]
     for record in novel_results:
         novelData.append( dict( zip( columnNames , record ) ) )
-    chapter_list_sql = "SELECT title,date,chapternumber,section,novelid,chapterorder FROM Chapters WHERE novelid = %s AND active <= %s ORDER BY chapterorder+0"
+    chapter_list_sql = "SELECT title,date,chapternumber,section,novelid,chapterorder FROM chapters WHERE novelid = %s AND chapteractive <= %s ORDER BY chapterorder+0"
     chapter_list_val = (novel,tier)
     novelcursor.execute(chapter_list_sql,chapter_list_val)
     chapter_results = novelcursor.fetchall()
@@ -69,7 +70,7 @@ def singlenovel():
 def get_chapter():
     chapter = request.args.get('chapter')
     novel = request.args.get('novel')
-    chapter_sql = "SELECT DISTINCT content FROM Chapters WHERE chapternumber = %s AND novelid=%s;UPDATE Novel SET views = views +1 WHERE novelid = %s"
+    chapter_sql = "SELECT DISTINCT content FROM Chapters WHERE chapternumber = %s AND novelid=%s;UPDATE novels SET views = views +1 WHERE novelid = %s"
     chapter_val = (chapter,novel,novel)
     novelcursor.execute(chapter_sql,chapter_val,multi = True)
     for result in novelcursor.execute(chapter_sql,chapter_val,multi=True):

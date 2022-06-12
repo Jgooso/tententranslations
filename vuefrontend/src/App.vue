@@ -34,7 +34,7 @@ export default {
   },
   data(){
     return{
-    tier: 1,
+    tier: 5,
     darkmore:false,
     testing:[],
     }

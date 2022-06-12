@@ -17,8 +17,8 @@ from selenium import webdriver
 #Basic intialializations
 noveldb = mysql.connector.connect(
   host="35.236.68.50",
-  user="root",
-  password="zogjad-wucnaj-7tuRhi",
+  user="jgooso",
+  password='<{;}eX2"ZcqGTBtl',
   database="novels"
 )
 novelcursor = noveldb.cursor(buffered=True)
@@ -77,12 +77,12 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     release = int(novel_obj.find(class_='long_update').text.strip()[:4])
 
     #DElETE novel from database if it already exists
-    sql = "DELETE FROM Novel WHERE novelid = %s"
+    sql = "DELETE FROM novels WHERE novelid = %s"
     val = (novel_id,)
     novelcursor.execute(sql,val)
 
     #INSERT data into database
-    sql = "INSERT INTO Novel VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO novels VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     val = (
         novel_id,#novelid
         en_title,#title
@@ -111,7 +111,7 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
     removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'','</p>':'&#013;&#010;'}
-    sql = "INSERT INTO Chapters (id,novelid,title,content,chapternumber,section,active,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO chapters (id,novelid,title,content,chapternumber,section,active,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(chapter_list)-1):
         print(chapter_number)
         ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapter_number))
@@ -167,13 +167,13 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
     noveldb.commit()
 
 def update():#Search for new chapters and download them to database
-    novelcursor.execute("SELECT novelid,url FROM Novel WHERE completed = 'Ongoing' OR completed = 'On Hold'")
+    novelcursor.execute("SELECT novelid,url FROM novels WHERE completed = 'Ongoing' OR completed = 'On Hold'")
     novels = novelcursor.fetchall()
     for novel in novels:
         #SETUP: define sql, get online chapters and database chapters
         novel_obj = get_HTML(novel[1])
-        chapter_sql = "SELECT novelid,chapternumber,section FROM Chapters WHERE novelid = %s ORDER BY chapternumber"
-        novel_sql = "UPDATE Novel SET completed = 'completed' WHERE novelid=%s"
+        chapter_sql = "SELECT novelid,chapternumber,section FROM chapters WHERE novelid = %s ORDER BY chapternumber"
+        novel_sql = "UPDATE novels SET completed = 'completed' WHERE novelid=%s"
         novelid = (novel[0],)
         novelcursor.execute(chapter_sql,novelid)
         chapters = novelcursor.fetchall()
@@ -198,16 +198,16 @@ def upload():#change permissions for viewing of novels
     novel_sql = 'SELECT DISTINCT novel FROM Schedule WHERE day LIKE %s AND time = %s'
     novel_val = (now.strftime("%A"),now.strftime("%H"))
     chapter_sql =  '''
-                   UPDATE Chapters SET Chapters.active = Chapters.active-1, Chapters.date = %s
-                   WHERE Chapters.novelid = %s AND Chapters.active = %s ORDER BY chapterorder+0 LIMIT 1;
-                   SELECT ISNULL(content) FROM Chapters WHERE novelid = %s AND active = %s LIMIT 1
+                   UPDATE chapters SET chapteractive = chapteractive-1, date = %s
+                   WHERE novelid = %s AND chapteractive = %s ORDER BY chapterorder+0 LIMIT 1;
+                   SELECT ISNULL(content) FROM chapters WHERE novelid = %s AND chapteractive = %s LIMIT 1
                    '''
 
     new_novel_sql = """
-                    UPDATE Chapters SET active = 4 LIMIT 5;
-                    UPDATE Chapters SET active = 3 LIMIT 3;
-                    UPDATE Chapters SET active = 2 LIMIT 2;
-                    UPDATE Chapters SET active = 1 Limit 1;
+                    UPDATE chapters SET chapteractive = 4 LIMIT 5;
+                    UPDATE chapters SET chapteractive = 3 LIMIT 3;
+                    UPDATE chapters SET chapteractive = 2 LIMIT 2;
+                    UPDATE chapters SET chapteractive = 1 Limit 1;
                     """
     novelcursor.execute(novel_sql,novel_val)
     print(now)
