@@ -16,9 +16,9 @@ from selenium import webdriver
 
 #Basic intialializations
 noveldb = mysql.connector.connect(
-  host="127.0.0.1",
+  host="35.236.68.50",
   user="root",
-  password="jeg4Iphone",
+  password="zogjad-wucnaj-7tuRhi",
   database="novels"
 )
 novelcursor = noveldb.cursor(buffered=True)

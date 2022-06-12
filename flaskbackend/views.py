@@ -8,9 +8,8 @@ app.config.from_object(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 config = {
 'user': 'root',
-'password': 'jeg4Iphone',
-'host': '127.0.0.1',
-'port': '3306',
+'password': 'zogjad-wucnaj-7tuRhi',
+'host': '35.236.68.50',
 'database': 'novels',
 'raise_on_warnings': True,}
 noveldb = mysql.connector.connect(**config)
