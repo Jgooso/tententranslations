@@ -12,3 +12,4 @@ const options = {
 };
 
 createApp(App).use(router,StripePlugin, options).mount('#app')
+

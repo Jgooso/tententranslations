@@ -11,8 +11,13 @@
 <input type="text" id = 'urltextbox' maxlength="34" style='width:280px'>
 <div id = 'genres'>
 <label v-for='genre in genres' :key = 'genre'><input type='checkbox' :value='genre' class = 'genrecheckbox'>{{genre}}</label>
-</div>
 
+</div>
+<br><br>
+<label>Tags:<input type ='text' @focusin="showHideTagList(1)" @change ='showHideTagList(2)' id = 'tagtextbox'></label>
+<select id = 'tagSelect' @change='addTag()' size = '20'>
+    <option v-for='tag in tags' :key = 'tag'>{{tag}}</option>
+</select>
 </form>
 <button @click='getGenres()'>Submit</button>
 </div>
@@ -42,6 +47,21 @@ export default{
         console.log(selectedGenres)
         console.log(url)
 
+        },
+        showHideTagList(display){
+            const x = document.getElementById('tagSelect')
+            if(!x)return null
+            if (display==1) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+            
+        },
+        addTag(){
+            const x = document.getElementById('tagtextbox')
+            const tag = document.getElementById('tagSelect').value
+            x.value += tag+","
         }
     },
     created(){
@@ -49,6 +69,7 @@ export default{
           .then(response => {
             console.log('Chapter API has recieved data')
             this.genres = response.data['genres']
+            this.tags = response.data['tags']
           })
           .catch(err => {
             console.log(err)
@@ -87,6 +108,12 @@ button{
 }
 input{
     margin-right:5px;
+}
+#tagSelect{
+    display:none;
+    background:lightgray;
+    border:none;
+    -webkit-appearance: none;
 }
 @media (max-width: 775px) {
     #genres{

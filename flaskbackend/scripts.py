@@ -231,5 +231,8 @@ def upload():#change permissions for viewing of novels
         #botupload(new_chapter)
     except TypeError:
         print('no uploads now')
-upload()
+
 #download('https://ncode.syosetu.com/n9303hk/',['Action','Comedy'],['Calm Protagonist','Charming Protagonist'])
+
+novel_obj = get_HTML('https://www.novelupdates.com/series-finder/')
+print(novel_obj.find(class_='chzn_select'))
