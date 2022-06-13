@@ -16,12 +16,14 @@ from selenium import webdriver
 
 #Basic intialializations
 
-config = mysql.connector.connect(
-  host="35.236.68.50",
-  user="jgooso",
-  password='<{;}eX2"ZcqGTBtl',
-  database="novels"
-)
+config = {
+  'user':"jgooso",
+  'password':'<{;}eX2"ZcqGTBtl',
+  'host':"35.236.68.50",
+  'port': '3306',
+  'database':"novels",
+  'raise_on_warnings': True
+}
 '''
 config = {
 'user': 'root',
