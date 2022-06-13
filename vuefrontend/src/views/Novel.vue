@@ -27,7 +27,7 @@
       'tier'
     ],
     created () {
-    const url = '/singlenovel?novel='+this.$route.params.title+'&tier='+this.tier
+    const url = '/novel/single?novel='+this.$route.params.title+'&tier='+this.tier
             getAPI.get(url)
           .then(response => {
             console.log('Post Novel has recieved data')

@@ -12,8 +12,10 @@
         <div class='controlbuttonscontainer' selectable='false'>
             <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
             <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
+            <!--
             <button class = 'controlbuttons'>{</button>
             <button class = 'controlbuttons'>{</button>
+            -->
         </div>
         <br>
         <br>
@@ -59,8 +61,17 @@ import { getAPI } from '../axios-api'
             },
             triggerEdit(){
                 if(document.getElementById('content').contentEditable=='true'){
+                    const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber
                     document.getElementById('content').contentEditable='false'
                     document.getElementById('editButton').innerHTML='Edit'
+                    const content = document.getElementById('content').innerHTML
+                    getAPI.put(url,{content:content})
+                        .then(function (response) {
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
                 }else{
                 document.getElementById('content').contentEditable='true'
                 document.getElementById('editButton').innerHTML='Save'

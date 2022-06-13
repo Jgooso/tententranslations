@@ -15,12 +15,23 @@ import pytz
 from selenium import webdriver
 
 #Basic intialializations
+'''
 noveldb = mysql.connector.connect(
   host="35.236.68.50",
   user="jgooso",
   password='<{;}eX2"ZcqGTBtl',
   database="novels"
 )
+novelcursor = noveldb.cursor(buffered=True)
+'''
+config = {
+'user': 'root',
+'password': 'jeg4Iphone',
+'host': '127.0.0.1',
+'port': '3306',
+'database': 'novels',
+'raise_on_warnings': True,}
+noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
 translator = Translator()
 tool = language_tool_python.LanguageTool('en-US')
@@ -234,5 +245,3 @@ def upload():#change permissions for viewing of novels
 
 #download('https://ncode.syosetu.com/n9303hk/',['Action','Comedy'],['Calm Protagonist','Charming Protagonist'])
 
-novel_obj = get_HTML('https://www.novelupdates.com/series-finder/')
-print(novel_obj.find(class_='chzn_select'))

@@ -126,6 +126,7 @@
   import Navigator from '../components/Navigator'
   import UtfBox from '../components/UtfBox'
   import NavButton from '../components/Navbutton'
+  import {getAPI} from '../axios-api'
   export default {
     name: 'CoverPage',
     components: {
@@ -167,9 +168,24 @@
                this.novelData.genres = document.getElementById('genreEdit').innerHTML
                this.novelData.tags = document.getElementById('tagEdit').innerHTML
                this.novelData.completed=document.getElementById('completedEdit').value
+               this.novelData.description=document.getElementById('description').innerHTML
+               const url = '/novel/single?novel='+this.$route.params.title
                document.getElementById('editButton').innerHTML='Edit'
                document.getElementById('description').contentEditable = "false"
                document.getElementById('noveltitle').contentEditable = "false"
+               getAPI.put(url,{
+                   description:this.novelData.description,
+                   tags:this.novelData.tags,
+                   genres:this.novelData.genres,
+                   completed:this.novelData.completed
+               }).then(function (response) {
+                    console.log(response);
+            })
+                .catch(function (error) {
+                    console.log(error);
+            })
+               
+    
             }else{
                this.editable=true
                document.getElementById('editButton').innerHTML='Save'

@@ -11,15 +11,15 @@
 <input type="text" id = 'urltextbox' maxlength="34" style='width:280px'>
 <div id = 'genres'>
 <label v-for='genre in genres' :key = 'genre'><input type='checkbox' :value='genre' class = 'genrecheckbox'>{{genre}}</label>
-
 </div>
 <br><br>
-<label>Tags:<input type ='text' @focusin="showHideTagList(1)" @change ='showHideTagList(2)' id = 'tagtextbox'></label>
+<label id = 'tags'>Tags:<input type = 'text' @focusin="showHideTagList(1)" @change ='showHideTagList(2)' id = 'tagtextbox'></label>
 <select id = 'tagSelect' @change='addTag()' size = '20'>
-    <option v-for='tag in tags' :key = 'tag'>{{tag}}</option>
+    <option v-for='tag in tags' :key = 'tag' v-html = 'tag'></option>
 </select>
+
 </form>
-<button @click='getGenres()'>Submit</button>
+<button @click='postData()'>Submit</button>
 </div>
 </template>
 
@@ -35,18 +35,12 @@ export default{
     },
     methods:{
         getGenres(){
-        var selectedGenres = ''
-        const genreelements = document.getElementsByClassName('genrecheckbox')
-        const url = document.getElementById('urltextbox').value
-        for(var i=0; i<genreelements.length;i++){
-            if(genreelements[i].checked == true){
-                selectedGenres +=genreelements[i].value+","
-            }
-        }
-        selectedGenres = selectedGenres.replace(/(^,)|(,$)/g, '')
+        
         console.log(selectedGenres)
         console.log(url)
-
+        console.log(selectedtags)
+        
+        
         },
         showHideTagList(display){
             const x = document.getElementById('tagSelect')
@@ -62,6 +56,25 @@ export default{
             const x = document.getElementById('tagtextbox')
             const tag = document.getElementById('tagSelect').value
             x.value += tag+","
+        },
+        postData(){
+            var selectedGenres = ''
+            const genreelements = document.getElementsByClassName('genrecheckbox')
+            const url = document.getElementById('urltextbox').value
+            const selectedtags = document.getElementById('tagtextbox').value
+            for(var i=0; i<genreelements.length;i++){
+                if(genreelements[i].checked == true){
+                    selectedGenres +=genreelements[i].value+","
+                }
+            }
+            selectedGenres = selectedGenres.replace(/(^,)|(,$)/g, '')
+            getAPI.put('/uploaddata', {url:url,tags:selectedtags,genres:selectedGenres})
+                .then(function (response) {
+                    console.log(response);
+            })
+                .catch(function (error) {
+                    console.log(error);
+            }); 
         }
     },
     created(){
@@ -114,6 +127,14 @@ input{
     background:lightgray;
     border:none;
     -webkit-appearance: none;
+}
+#tags{
+    width:100%
+}
+#tagtextbox{
+    width:500px;
+    text-align:left;
+    overflow-wrap: break-word
 }
 @media (max-width: 775px) {
     #genres{
