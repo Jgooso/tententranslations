@@ -15,7 +15,7 @@ import pytz
 from selenium import webdriver
 
 #Basic intialializations
-'''
+
 noveldb = mysql.connector.connect(
   host="35.236.68.50",
   user="jgooso",
@@ -30,7 +30,7 @@ config = {
 'host': '127.0.0.1',
 'port': '3306',
 'database': 'novels',
-'raise_on_warnings': True,}
+'raise_on_warnings': True,}'''
 noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
 translator = Translator()
