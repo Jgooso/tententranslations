@@ -9,7 +9,7 @@ from scripts import download
 def create_app(config_objct=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_objct)
-    CORS(app, support_credentials=True)
+    CORS(app, resources={r'/*':{'origins':'*'}})
     return app
 
 
