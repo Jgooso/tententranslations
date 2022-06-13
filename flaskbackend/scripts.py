@@ -22,7 +22,6 @@ config = mysql.connector.connect(
   password='<{;}eX2"ZcqGTBtl',
   database="novels"
 )
-novelcursor = noveldb.cursor(buffered=True)
 '''
 config = {
 'user': 'root',
