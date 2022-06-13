@@ -16,7 +16,7 @@ from selenium import webdriver
 
 #Basic intialializations
 
-noveldb = mysql.connector.connect(
+config = mysql.connector.connect(
   host="35.236.68.50",
   user="jgooso",
   password='<{;}eX2"ZcqGTBtl',
