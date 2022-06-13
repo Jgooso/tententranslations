@@ -4,7 +4,7 @@ from flask_cors import CORS,cross_origin
 from views import multiplenovels,singlenovel,get_chapter,get_genres_and_tags
 app = create_app(ProdConfig)
 @app.route('/novel/multiple', methods = ['GET'])
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@cross_origin()
 def multinovel():
     return multiplenovels()
 @app.route('/novel/single', methods = ['GET','POST','PUT','DELETE'])
