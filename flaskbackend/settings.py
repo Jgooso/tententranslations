@@ -11,7 +11,8 @@ class Config(object):
     JWT_AUTH_HEADER_PREFIX = 'Token'
     CORS_ORIGIN_WHITELIST = [
         'http://localhost:8080',
-        'localhost:8080'
+        'localhost:8080',
+        'http://34.135.164.184'
     ],
     CORS_HEADERS = ['Access-Control-Allow-Origin: http://localhost:8080','Access-Control-Allow-Methods: POST, GET, PUT, DELETE','Access-Control-Allow-Headers: X-PINGOTHER, Content-Type']
     JWT_HEADER_TYPE = 'Token',
