@@ -14,7 +14,6 @@ class Config(object):
         'localhost:8080',
         'http://34.135.164.184'
     ],
-    CORS_HEADERS = ['Access-Control-Allow-Origin: http://localhost:8080','Access-Control-Allow-Methods: POST, GET, PUT, DELETE','Access-Control-Allow-Headers: X-PINGOTHER, Content-Type']
     JWT_HEADER_TYPE = 'Token',
     #Access-Control-Allow-Origin: 'http://localhost:3000'
 

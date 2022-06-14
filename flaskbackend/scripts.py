@@ -24,14 +24,8 @@ config = {
   'database':"novels",
   'raise_on_warnings': True
 }
-'''
-config = {
-'user': 'root',
-'password': 'jeg4Iphone',
-'host': '127.0.0.1',
-'port': '3306',
-'database': 'novels',
-'raise_on_warnings': True,}'''
+
+
 noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
 translator = Translator()
@@ -123,7 +117,7 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
     removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'','</p>':'&#013;&#010;'}
-    sql = "INSERT INTO chapters (id,novelid,title,content,chapternumber,section,active,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO chapters (chapterid,novelid,title,content,chapternumber,section,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(chapter_list)-1):
         print(chapter_number)
         ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapter_number))
@@ -171,7 +165,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 content,#content
                 chapter_number,#chapternumber
                 section,#section
-                5,#active
+                5,#chapteractive
                 chapter_number+section,#chapterorder
             )
             novelcursor.execute(sql,val)

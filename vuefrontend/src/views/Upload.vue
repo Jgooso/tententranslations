@@ -6,20 +6,19 @@
 <button>Edit</button>
 <button>Manage Users</button>
 </div>
-<form>
+<form id = 'download' >
 <label for="fname">URL:</label>
-<input type="text" id = 'urltextbox' maxlength="34" style='width:280px'>
+<input type = "text" id = 'urltextbox' name = 'url' maxlength="34" style='width:280px' >
 <div id = 'genres'>
-<label v-for='genre in genres' :key = 'genre'><input type='checkbox' :value='genre' class = 'genrecheckbox'>{{genre}}</label>
+<label v-for='genre in genres' :key = 'genre'><input type='checkbox' :value='genre' name = 'genres' class = 'genrecheckbox'>{{genre}}</label>
 </div>
 <br><br>
-<label id = 'tags'>Tags:<input type = 'text' @focusin="showHideTagList(1)" @change ='showHideTagList(2)' id = 'tagtextbox'></label>
+<label id = 'tags'>Tags:<input type = 'text' name = 'tags' @focusin="showHideTagList(1)" @change ='showHideTagList(2)' id = 'tagtextbox'></label>
 <select id = 'tagSelect' @change='addTag()' size = '20'>
     <option v-for='tag in tags' :key = 'tag' v-html = 'tag'></option>
 </select>
-
+<input type = 'submit' @click='postData()'>
 </form>
-<button @click='postData()'>Submit</button>
 </div>
 </template>
 
@@ -34,14 +33,6 @@ export default{
         }
     },
     methods:{
-        getGenres(){
-        
-        console.log(selectedGenres)
-        console.log(url)
-        console.log(selectedtags)
-        
-        
-        },
         showHideTagList(display){
             const x = document.getElementById('tagSelect')
             if(!x)return null
@@ -59,16 +50,12 @@ export default{
         },
         postData(){
             var selectedGenres = ''
-            const genreelements = document.getElementsByClassName('genrecheckbox')
-            const url = document.getElementById('urltextbox').value
-            const selectedtags = document.getElementById('tagtextbox').value
-            for(var i=0; i<genreelements.length;i++){
-                if(genreelements[i].checked == true){
-                    selectedGenres +=genreelements[i].value+","
-                }
-            }
-            selectedGenres = selectedGenres.replace(/(^,)|(,$)/g, '')
-            getAPI.put('/uploaddata', {url:url,tags:selectedtags,genres:selectedGenres})
+            const form = document.getElementById('download');
+            const genreelements = form['genres'].value
+            const url = form['url'].value
+            const selectedtags = form['tags'].value
+            console.log('selectedgenres')
+            getAPI.post('/novel/single', {url:url,tags:selectedtags,genres:selectedGenres})
                 .then(function (response) {
                     console.log(response);
             })

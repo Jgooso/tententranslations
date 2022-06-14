@@ -18,10 +18,9 @@ def upload():
     return get_genres_and_tags()
 @app.after_request
 def add_header(response):
-    response.access_control_allow_origin = "*"
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers.add('Access-Control-Allow-Origin', '')
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8080, http://34.135.164.184'
     response.headers['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, PUT, DELETE, UPDATE, POST'
     return response
 app.run()

@@ -57,7 +57,7 @@ import UtfBox from '../components/UtfBox'
                 if(this.$route.params.browsetype.includes('author')){
                     return novel.author==identifier;
                 }else if(this.$route.params.browsetype.includes('tag')){
-                    return novel.tags.includes(identifier+',') || novel.genres.includes(','+identifier);
+                    return novel.tags.includes(identifier+',') || novel.tags.includes(','+identifier);
                 }
                 else if(this.$route.params.browsetype.includes('genre')){
                     return novel.genres.includes(identifier+',') || novel.genres.includes(','+identifier);
