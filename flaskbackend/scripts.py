@@ -8,6 +8,7 @@ from slugify import slugify
 import language_tool_python
 from bs4 import BeautifulSoup
 from googletrans import Translator
+import json
 
 #uploading chapters to weboage
 import datetime
@@ -16,16 +17,22 @@ from selenium import webdriver
 
 #Basic intialializations
 
+'''
 config = {
-  'user':"jgooso",
-  'password':'<{;}eX2"ZcqGTBtl',
-  'host':"35.236.68.50",
-  'port': '3306',
-  'database':"novels",
-  'raise_on_warnings': True
-}
-
-
+'user': 'jgooso',
+'password': '<{;}eX2"ZcqGTBtl',
+'host': '35.236.68.50',
+'port': '3306',
+'database': 'novels',
+'raise_on_warnings': True,}
+'''
+config = {
+'user': 'root',
+'password': 'jeg4Iphone',
+'host': '127.0.0.1',
+'port': '3306',
+'database': 'tententranslations',
+'raise_on_warnings': True,}
 noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
 translator = Translator()
@@ -33,7 +40,7 @@ tool = language_tool_python.LanguageTool('en-US')
 
 #Commonly used Functions
 def translate(text):#Translate text
-    return translator.translate(text, dest = 'en').text
+    return translator.translate(text).text
 
 def get_HTML(URL):#retrieve HTML from webpage
     response = requests.get(URL,headers={"User-Agent":"Mozilla/5.0"}).text
@@ -65,15 +72,20 @@ def correct_grammer(text):#corrects grammers. Ignores spelling mistakes
     return my_new_text
 def scrub_HTML(text):
     html_special_characters={
+         '&':'&#38;',
         '<':'&#60;',
         '>':'&#62;',
-        '&':'&#38;',
         '"':'&#34;',
-        '\'':'&#39;',
+        "'":'&#39;',
         '¥':'&#165;',
+        '(・)':''
     }
     for key,value in html_special_characters.items():text = text.replace(key,value)
     return text
+def remove_html_tags(text):
+    text = text.replace('</p>','\n')
+    clean = re.compile('<.*?>')
+    return re.sub(clean,'',text)
 def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     #Retrieve elements from webpage
     novel_obj = get_HTML(URL)
@@ -94,18 +106,18 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
         en_title,#title
         jp_title,#alternativetitle
         URL,#url
-        scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:]),#title
-        scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   ')))),#description
-        ",".join(genres),#genres
-        ",".join(tags),#tags
-        'Ongoing',#uploadstatus
+        scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:]),#author
+        genres,#genres
+        tags,#tags
         release,#novelrelease
+        'Ongoing',#uploadstatus
         'Ongoing',#completed
-        None,#lastupload
-        None,#firstupload
-        0,#novelactive
         0,#views
         0,#ratings
+        scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   ')))),#description
+        0,#novelactive
+        None,#lastupload
+        None,#firstupload
         None#imageurl
     )
     novelcursor.execute(sql,val)
@@ -114,10 +126,8 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     #Upload Chapters
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
     processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_id)
-    
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
-    removals = {"<ruby>":'',"</ruby>":'',"<rb>":'',"</rb>":'',"<rp>":'',"</rp>":'',"<br>":'&#013;&#010;','<br/>':'','</p>':'&#013;&#010;'}
-    sql = "INSERT INTO chapters (chapterid,novelid,title,content,chapternumber,section,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO chapters (chapterid,novelid,title,section,chapternumber,content,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(chapter_list)-1):
         print(chapter_number)
         ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapter_number))
@@ -127,9 +137,9 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 ch_id,#id
                 novel_id,#novelid
                 translate(chapter_list[i].text),#title
-                None,#content
-                0,#chapternumber
                 section,#section
+                 0,#chapternumber
+                None,#content
                 5,#active
                 chapter_number+section,#chapterorder
             )
@@ -140,11 +150,11 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             content = ""
             text = '   '+'   '.join([str(p)[str(p).index(">")+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
             #process text content
-            for key,value in removals.items():text = text.replace(key,value)
+            text = remove_html_tags(text)
             while "</rt>" in text:text = text[:text.index("<rt>")-1] + text[text.index("</rt>")+6:]
 
             #find good points of division
-            new_lines=[_.start() for _ in re.finditer('&#013;&#010;', text)]
+            new_lines=[_.start() for _ in re.finditer('<br>', text)]
             new_lines.sort(key=distance_from_thousand)
             divide_index={0:0}
             for line in new_lines:
@@ -157,14 +167,13 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             for j in range(len(divide_index)-1):content += translate(text[divide_index[j]:divide_index[j+1]])
             content = correct_grammer(content)
             content = scrub_HTML(content)
-            
             val = (
                 ch_id,#id
                 novel_id,#novelid
                 chapter_title,#chaptertitle
-                content,#content
-                chapter_number,#chapternumber
                 section,#section
+                chapter_number,#chapternumber
+                content,#content
                 5,#chapteractive
                 chapter_number+section,#chapterorder
             )
@@ -239,4 +248,24 @@ def upload():#change permissions for viewing of novels
         print('no uploads now')
 
 #download('https://ncode.syosetu.com/n9303hk/',['Action','Comedy'],['Calm Protagonist','Charming Protagonist'])
+def processView(views):
+    if views > 1000000:
+        processed_views = views%1000000 + 'M'
+    elif views > 1000:
+        procsesed_views = views%1000 + 'K'
+    else:
+        processed_views = views
+    return processed_views
+def ranker(rank):
+    rank_digit = rank%10
+    if rank > 100:
+        return 'N/A'
+    elif rank_digit == 1 and rank != 11:
+        return str(rank)+'st'
+    elif rank_digit == 2 and rank !=12:
+        return str(rank)+'nd'
+    elif rank_digit == 3 and rank !=13:
+        return str(rank)+'rd'
+    else:
+        return str(rank)+'th'
 

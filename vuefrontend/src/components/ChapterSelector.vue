@@ -4,9 +4,10 @@
         <option 
             v-for="chapter in chapterList" 
             :key="chapter.chapternumber"
-            :value="chapter.chapternumber" 
+            :value="chapter.chapternumber"
+            :selected ='this.$route.params.chapter==chapter.chapternumber'
             >
-            {{chapter.chapternumber}} - {{chapter.title}}
+           {{chapter.chapternumber}} - {{chapter.title}}
         </option>
     </select>
     <NavButton 

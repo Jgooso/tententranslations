@@ -4,11 +4,13 @@
      <sidebar ref='sidemenu'
      v-on:changesidebar='changesidebar()'
      />
+    <SignIn ref = 'signin'/>
   <Header ref='header'
    v-on:changesidebar='changesidebar()'
+   v-on:signin='signin()'
+   v-on:signup='signup()'
    :tier='tier'
   />
-
     <router-view
       :tier = 'tier'
     />
@@ -52,6 +54,12 @@ export default {
             menuBtn.classList.add('open');
           }
           
+        },
+        signin(){
+          this.$refs.signin.$refs.signin.style.display='block'
+        },
+        signup(){
+           this.$refs.signin.$refs.signin.style.display='block'
         },
         darkmode(){
           if(darkmode){

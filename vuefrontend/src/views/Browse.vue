@@ -5,7 +5,7 @@
     <div id = 'top'>
         <div id = 'count'>
             <UtfBox shape = '&#9733;'/>
-            <p id = 'resultCount'>{{novelData.filter(contains).length}} RESULTS</p>
+            <p id = 'resultCount'>{{novelData.length}} RESULTS</p>
             <label class = 'category'> Order By</label>
         </div>
         <div id = 'sortButtons'>
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class = "novelList">
-        <div v-for='novel in novelData.filter(contains).sort(sort)' :key = 'novel.title' id = 'novels'>
+        <div v-for='novel in novelData' :key = 'novel.title' id = 'novels'>
             <NovelCard :novelData='novel'/>
         </div>
     </div>
@@ -42,29 +42,14 @@ import UtfBox from '../components/UtfBox'
             }
         },
         methods:{
+            /*
             slugify(text) {
             return text          
                 .normalize('NFKD')            
                 .replace(/[^a-zA-Z0-9 ]/g, "")//remove nonletter chars             
                 .trim()                                  
                 .replace(/\s+/g, '-')//replace - with space 
-            },
-            contains(novel){
-                if(!this.$route.params.browsetype){
-                    return true
-                }
-                const identifier = this.$route.params.identifier;
-                if(this.$route.params.browsetype.includes('author')){
-                    return novel.author==identifier;
-                }else if(this.$route.params.browsetype.includes('tag')){
-                    return novel.tags.includes(identifier+',') || novel.tags.includes(','+identifier);
-                }
-                else if(this.$route.params.browsetype.includes('genre')){
-                    return novel.genres.includes(identifier+',') || novel.genres.includes(','+identifier);
-            }else{
-                return true
-            }
-        },
+        },*/
         sort(a,b){
             switch (this.attributesort){
                 case 'latest':
@@ -95,11 +80,11 @@ import UtfBox from '../components/UtfBox'
     },
     created(){
         //document.title='Browse'
-       getAPI.get('/novel/multiple?tier=5')
+       getAPI.get('/novel/multiple?tier=5&category='+this.$route.params.browsetype+'&identifier='+this.$route.params.identifier)
           .then(response => {
             console.log('Post API has recieved data')
             this.novelData=response.data
-            console.log(this.novelData[0].firstChapter[0])
+            console.log(this.novelData[0])
           })
           .catch(err => {
             console.log(err)

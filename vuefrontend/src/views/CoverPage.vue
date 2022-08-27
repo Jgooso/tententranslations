@@ -14,31 +14,32 @@
             <div id = "tables">
              <div id = "data">
                 <table>
+                    <tr><td>Views</td><td v-text='novelData.views' class='info'/></tr>
                     <tr><td>Alternative</td><td v-text='novelData.alternativetitle' class="info"/></tr>
                     <tr><td>Raw</td><td class="info"><a :href="novelData.url">{{novelData.url}}</a></td></tr>
                     <tr><td>Author</td><td class="info">
-                        <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-author',identifier:novelData.author}}" class='selectable'>{{novelData.author}}</router-link>
+                        <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-authors',identifier:novelData.authors}}" class='selectable'>{{novelData.authors}}</router-link>
                     </td></tr>
                     <tr>
                         <td>Genres</td>
                         <td class="info">
                             <ul class='comma-list' v-if='!editable'>
-                                <li v-for='genre in novelData.genres.split(",")' :key='genre'>
+                                <li v-for='genre in novelData.genres' :key='genre'>
                                     <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:genre}}" class='selectable'>{{genre}}</router-link>
                                 </li>
                             </ul>
-                            <p v-else v-text='novelData.genres' contenteditable="true" id = 'genreEdit' class='editor'/>
+                            <p v-else v-text='novelData.genres.join()' contenteditable="true" id = 'genreEdit' class='editor'/>
                         </td>
                     </tr>
                     <tr>
                         <td>Tags</td>
                         <td class="info">
                             <ul class='comma-list' v-if='!editable'>
-                                <li v-for='tag in novelData.tags.split(",")' :key='tag'>
-                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable'>{{tag}}</router-link>
+                                <li v-for='tag in novelData.tags' :key='tag'>
+                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable' v-html='tag'/>
                                 </li>
                             </ul>
-                            <p v-else v-text='novelData.tags' contenteditable="true" id = 'tagEdit' class='editor'/>
+                            <p v-else v-html='novelData.tags.join()' contenteditable="true" id = 'tagEdit' class='editor'/>
                         </td>
                     </tr>
                 </table>
@@ -51,13 +52,14 @@
                       </router-link></td>
                     </tr>
                     <tr><td>Novel</td>
-                        <td class="info" v-if='!editable'>{{ novelData.completed}}</td>
+                        <td class="info" v-if='!editable'>{{ novelData.novelstatus}}</td>
                         <td class="info" v-else>
-                            <select id = 'completedEdit'>
-                                <option>Ongoing</option>
-                                <option>Completed</option>
-                                <option>On Hold</option>
-                                <option>Dropped</option>
+                            <select id = 'completedEdit' :selected='value==novelData.novelstatus'>
+                                <option value = 'Ongoing'>Ongoing</option>
+                                <option value = 'Completed'>Completed</option>
+                                <option value = 'On Hold'>On Hold</option>
+                                <option value = 'Dropped'>Dropped</option>
+                                <option value = 'Unreleased'>Unreleased</option>
                             </select>
                         </td>
                     </tr>
@@ -90,7 +92,7 @@
             <h3  id = "divider">Latest Chapters</h3>
             <button id = "switcher" @click ="sortToc">&#x21C5;</button>
         </div>
-        <ul  id = 'table'>
+        <ul  id = 'table' ref='tableofcontentlist'>
         <li v-for="section in sectionList" :key="section.section">
             <button v-if='section.title' @click="trigger(section.section)" class = 'section'>
                 <h3 v-text='section.title'/>
@@ -117,7 +119,7 @@
                 </router-link>
                 </li>
             </ul>
-        <button @click='showMore()' id = 'showMore'>Show More &#9662;</button>
+        <button @click='showMore()' id = 'showMore' v-if='chapterList.length+sectionList.length > 25'>Show More &#9662;</button>
     </div>
 </div>
 </template>
@@ -165,8 +167,8 @@
        changeEditMode(){
            if(this.editable){
                this.editable=false
-               this.novelData.genres = document.getElementById('genreEdit').innerHTML
-               this.novelData.tags = document.getElementById('tagEdit').innerHTML
+               this.novelData.genres = document.getElementById('genreEdit').innerHTML.split(',')
+               this.novelData.tags = document.getElementById('tagEdit').innerHTML.split(',')
                this.novelData.completed=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('description').innerHTML
                const url = '/novel/single?novel='+this.$route.params.title

@@ -2,7 +2,7 @@
 <div id = 'chapter' v-if='chapter'>
     <div class = "content">
      <br>
-        <h3 style = "font-size: 25px" v-html='novelData.title+" - "+chapter.chapternumber'/>
+        <h3 style = "font-size: 25px" v-html='novelData.title+" - "+chapter.chapternumber'/><!-- chapter number-->
         <Navigator
          :novel-id='novelData.novel'
          :novel='novelData.title'
@@ -20,14 +20,14 @@
         <br>
         <br>
         <ChapterSelector
-            :chapterList= 'chapterList'
+            :chapterList= 'selectorList'
             v-on:changeChapter="updateContent($event)"
         />
        
         <br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br>
           <pre v-html = 'chapterContent' id = 'content'/>
         <ChapterSelector
-            :chapterList='chapterList'
+            :chapterList='selectorList'
             v-on:changeChapter="updateContent($event)"
         />
         <br><br>
@@ -48,9 +48,11 @@ import { getAPI } from '../axios-api'
         'chapterList',
         'tier'
         ],data(){
+            this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? 1:-1))
             return{
                 chapter:this.chapterList[this.$route.params.chapter-1],
-                chapterContent:''
+                chapterContent:'',
+                selectorList:[]
             }
         },methods:{
             changeFontSize(change){
@@ -88,6 +90,10 @@ import { getAPI } from '../axios-api'
           .catch(err => {
             console.log(err)
           })
+            for(var i=0;i < this.chapterList.length; i++){
+                this.selectorList.push((({ title, chapternumber }) => ({ title, chapternumber }))(this.chapterList[i]))
+            }
+            this.selectorList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
             
         
         },
@@ -95,7 +101,7 @@ import { getAPI } from '../axios-api'
 </script>
 <style scoped>
 pre{
-font-family: Helvetica,sans-serif;
+font-family: Times;
 font-size:19px;
 white-space: pre-wrap;
 font-weight:lighter;

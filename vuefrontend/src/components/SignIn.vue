@@ -1,8 +1,10 @@
 <template>
-<div id = 'signin'>
+<div id = 'signin' ref = 'signin'>
+<div id = 'sign-in-card'>
+<p id = 'error-message'/>
 <form>
-    <label for='text'>Username:</label><br>
-    <input type='text'>
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username">
     <br>
     <label for='email'>Email:</label><br>
     <input type='email'>
@@ -10,8 +12,13 @@
     <label for='password'>Password:</label><br>
     <input type='password'>
     <br><br>
-    <input type = 'submit' value='Register'>
+    <div>
+    <input type = 'submit' value='Log In'>
+    <input type='checkbox' name = 'remember'>
+    <label for='checkbox'>Remember Me</label>
+    </div>
 </form>
+</div>
 </div>
 </template>
 <script>
@@ -29,7 +36,7 @@ export default{
     background-color:rgba(0,0,0,0.95);
     display:none;
 }
-form{
+#sign-in-card{
     position:fixed;
     background-color:lightgray;
     width:500px;
@@ -39,4 +46,26 @@ form{
     margin-top:-250px;
     margin-left:-250px;
 }
+form{
+    position:absolute;
+    top:50px;
+    left:100px;
+}
+input{
+    width:300px;
+    margin-bottom:20px;
+    height:50px;
+    border-radius:5px;
+    border:none;
+}
+input[type=submit]{
+    background-color:var(--styleColor);
+    width:100px;
+    border-radius:20px;
+    height:40px;
+    color:white;
+    font-size:14px;
+    font-weight:400px;
+}
+
 </style>

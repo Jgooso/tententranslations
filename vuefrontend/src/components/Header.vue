@@ -14,11 +14,12 @@
             </div>
         </div>  
     </div>
-<!--
+<!-- Log In
+  **TO-DO**
     <div id = "login">
         <div class = "content">
-         <button> Sign-in </button>
-         <button> Sign-up </button>
+         <button @click='$emit("signin")'> Sign-in </button>
+         <button @click='$emit("signup")'> Sign-up </button>
          </div>
     </div>
 -->
