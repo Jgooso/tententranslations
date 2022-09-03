@@ -1,12 +1,5 @@
 <template>
-<div class = 'content'>
-<div id = 'managementnavigator'>
-<button>Upload</button>
-<button>Schedule</button>
-<button>Edit</button>
-<button>Manage Users</button>
-</div>
-<!--
+
 <form id = 'download' >
 <div id = 'loadingscreen'><div class="loader"></div></div>
 <label for="fname">URL:</label>
@@ -28,19 +21,12 @@
     <button v-for='tag in tags' :key='tag' class = 'tagbutton unselected' :id = 'tag' v-html='tag' @click='addTag(tag)'/>
 
 </div>
--->
-<NovelInformation/>
-</div>
-</template>
 
+</template>
 <script>
 import { getAPI } from '../axios-api'
 import tagBox from '../components/TagBox'
-import schedular from '../components/Schedular'
-import ScheduleCreator from '../components/ScheduleCreator'
-import NovelInformation from './NovelInformation'
 export default{
-    name:'Upload',
     data(){
         return{
             genres:[],
@@ -51,11 +37,8 @@ export default{
     },
     components:{
         tagBox,
-        schedular,
-        ScheduleCreator,
-        NovelInformation
     },
-    methods:{
+methods:{
         addTag(tag){
             const tagbutton = document.getElementById(tag)
             tagbutton.classList.remove('unselected')
@@ -101,7 +84,7 @@ export default{
         }
     },
     created(){
-        /*
+        
         getAPI.get('/uploaddata')
           .then(response => {
             console.log('Chapter API has recieved data')
@@ -111,11 +94,10 @@ export default{
           .catch(err => {
             console.log(err)
           })
-          */
+          
     }
 }
 </script>
-
 <style scoped>
 #tagList{
 border: 2px rgb(244,244,244) solid;
@@ -124,12 +106,7 @@ height:fit-content;
 min-height:50px;
 
 }
-.content{
-    display:flex;
-    flex-direction:row;
-    height:1000px;
-    margin-top:100px;
-}
+
 .selectedtaglist{
     display:inline;
     list-style: none;
@@ -140,13 +117,7 @@ min-height:50px;
     float:left;
     margin-left:10px;
 }
-#managementnavigator{
-    height:100%;
-    background-color:lightgray;
-    width:30%;
-    display:flex;
-    flex-direction:column;
-}
+
 #tagselector{
     display:flex;
     flex-direction:column;

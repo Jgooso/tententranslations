@@ -7,12 +7,12 @@
 <input type='time' id="appt" name="appt"
        min="8:00" max="20:00" required>
 </div>
-<label><input type = 'checkbox' value = 'Sunday'>Sunday</label>
-<label><input type = 'checkbox' value = 'Sunday'>Monday</label>
-<label><input type = 'checkbox' value = 'Sunday'>Tuesday</label>
-<label><input type = 'checkbox' value = 'Sunday'>Thursday</label>
-<label><input type = 'checkbox' value = 'Sunday'>Friday</label>
-<label><input type = 'checkbox' value = 'Sunday'>Saturday</label>
+<label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Sunday</label>
+<label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Monday</label>
+<label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Tuesday</label>
+<label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Thursday</label>
+<label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Friday</label>
+<label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Saturday</label>
 <input type = 'submit' @click='submit()'>
 </div>
 </template>
@@ -26,6 +26,19 @@ export default{
             const novel = document.getElementById('novel-selector').value
             console.log(time)
             console.log(novel)
+            const dates = document.getElementsByClassName('date-selector')
+            console.log(dates[0].value)
+            /*
+            getAPI.post('/schedule', {novel:novel,time:time,dates:dates})
+                .then(function (response) {
+                    console.log(response);
+                    loadingscreen.style.display = 'none'
+            })
+                .catch(function (error) {
+                    console.log(error);
+                    loadingscreen.style.display = 'none'
+            }); 
+            */
         }
     },
     data(){
