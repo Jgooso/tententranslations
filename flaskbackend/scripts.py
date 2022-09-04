@@ -8,6 +8,7 @@ from slugify import slugify
 import language_tool_python
 from bs4 import BeautifulSoup
 from googletrans import Translator
+from deep_translator import GoogleTranslator
 import json
 
 #uploading chapters to weboage
@@ -41,7 +42,8 @@ tool = language_tool_python.LanguageTool('en-US')
 #Commonly used Functions
 def translate(text):#Translate text
     return translator.translate(text).text
-
+def deeptranslate(text):
+    return GoogleTranslator(source='auto', target='en').translate(text)
 def get_HTML(URL):#retrieve HTML from webpage
     response = requests.get(URL,headers={"User-Agent":"Mozilla/5.0"}).text
     return BeautifulSoup(response, "html.parser")
@@ -158,8 +160,8 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             new_lines.sort(key=distance_from_thousand)
             divide_index={0:0}
             for line in new_lines:
-                if line//1000 !=0 and line//1000 not in divide_index:
-                    divide_index[line//1000]=line
+                if line//200 !=0 and line//200 not in divide_index:
+                    divide_index[line//200]=line
             divide_index[len(divide_index)]=len(text)
             divide_index=dict(sorted(divide_index.items(), key=lambda item: item[1]))
 

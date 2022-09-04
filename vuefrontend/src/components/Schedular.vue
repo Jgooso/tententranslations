@@ -13,17 +13,22 @@
     </ul>
 </li>
 </ul>
+<ScheduleCreator/>
 </div>
 </template>
 
 <script>
 import {getAPI} from '../axios-api'
+import ScheduleCreator from './ScheduleCreator'
 export default{
     name:'Schedular',
     data(){
         return{
             scheduleList:[],
         }
+    },
+    components:{
+        ScheduleCreator
     },
     methods:{
         timeConverter(time){

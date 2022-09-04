@@ -135,6 +135,7 @@ def get_genres_and_tags():
             elif descriptor[1] == 'genre':
                 genres.append(descriptor[0])
         return jsonify({'genres':genres, 'tags':tags})
+    
 def get_schedules():
     if request.method == 'GET':
         novelcursor.execute('SELECT schedule.*,novels.title FROM schedule INNER JOIN novels ON novels.novelid=schedule.novel')
@@ -150,6 +151,20 @@ def get_schedules():
             schedule_bucket[schedule['day']].append(schedule)
 
         return jsonify(schedule_bucket)
+    if request.method == 'POST':
+        data = request.get_json()
+        input_novel = data['novel']
+        input_time = data['time'][:2]
+        input_dates = data['dates']
+        print(input_novel,input_time,input_dates)
+        for date in input_dates:
+            schedule_creator_sql = 'INSERT INTO schedule (novel,time,day) SELECT novelid, %s,%s FROM novels WHERE title = %s'
+            schedule_creator_val = (input_time,date,input_novel)
+            novelcursor.execute(schedule_creator_sql,schedule_creator_val)
+            print(date)
+        noveldb.commit()
+        return data
+
 def get_noveltitles():
     if request.method == 'GET':
         novelcursor.execute('SELECT title,novelid FROM novels')
