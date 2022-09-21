@@ -2,6 +2,7 @@
 <div id = 'signin' ref = 'signin'>
 <div id = 'sign-in-card'>
 <p id = 'error-message'/>
+<button @click='$emit("closesignin")'>X</button>
 <form>
     <label for="username">Username:</label><br>
     <input type="text" id="username" name="username">
@@ -22,8 +23,14 @@
 </div>
 </template>
 <script>
+import {getAPI} from '../axios-api'
 export default{
-    name:'SignIn'
+    name:'SignIn',
+    methods:{
+        submit(){
+
+        }
+    }
 }
 </script>
 

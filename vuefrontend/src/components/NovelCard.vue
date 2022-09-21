@@ -80,7 +80,7 @@ export default{
 }
 #title{
     font-weight:bold;
-    color:black;
+    color:var(--textColor);
     text-decoration:none;
     height:fit-content;
 }

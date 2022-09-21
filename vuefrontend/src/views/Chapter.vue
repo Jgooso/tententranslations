@@ -9,13 +9,12 @@
          :chapter='chapter'
         />
         <br>
-        <div class='controlbuttonscontainer' selectable='false'>
+        <div id = 'control-bar'>
+        <div class='control-buttons-container' selectable='false'>
             <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
             <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
-            <!--
-            <button class = 'controlbuttons'>{</button>
-            <button class = 'controlbuttons'>{</button>
-            -->
+            <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
+            <button class = 'controlbuttons'>&#xF288;</button>
         </div>
         <br>
         <br>
@@ -23,13 +22,9 @@
             :chapterList= 'selectorList'
             v-on:changeChapter="updateContent($event)"
         />
-       
+       </div>
         <br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br>
           <pre v-html = 'chapterContent' id = 'content'/>
-        <ChapterSelector
-            :chapterList='selectorList'
-            v-on:changeChapter="updateContent($event)"
-        />
         <br><br>
     </div>
 </div>
@@ -107,6 +102,14 @@ white-space: pre-wrap;
 font-weight:lighter;
 overflow:hidden;
 }
+#control-bar{
+    position: -webkit-sticky;
+    position:sticky;
+    top: 0;
+    background-color: var(--backgroundColor);
+    padding-top:10px;
+    padding-bottom:10px;
+}
 #editButton{
     width:170px;
     background-color:var(--styleColor);
@@ -114,7 +117,7 @@ overflow:hidden;
     float:right;
     border-radius:5px;
 }
-.controlbuttonscontainer{
+.control-buttons-container{
     float:right;
     
 }

@@ -1,21 +1,27 @@
 <template>
   <div id="app">
+  
     <SignIn/>
      <sidebar ref='sidemenu'
      v-on:changesidebar='changesidebar()'
+     v-on:closesignin='close_signin()'
      />
     <SignIn ref = 'signin'/>
+
   <Header ref='header'
    v-on:changesidebar='changesidebar()'
-   v-on:signin='signin()'
+   v-on:signin='open_signin()'
    v-on:signup='signup()'
    :tier='tier'
+   class = 'view-header'
   />
+  <div class = 'view-border-one border'></div>
     <router-view
       :tier = 'tier'
+      class = 'view-content'
     />
- 
-  <Footer/>
+  <div class = 'view-border-two border'></div>
+  <Footer class = 'view-footer'/>
   </div>
 </template>
 
@@ -37,7 +43,7 @@ export default {
   data(){
     return{
     tier: 5,
-    darkmore:false,
+    darkmode:false,
     testing:[],
     }
   },
@@ -55,17 +61,29 @@ export default {
           }
           
         },
-        signin(){
-          this.$refs.signin.$refs.signin.style.display='block'
+        open_signin(){
+          //this.$refs.signin.$refs.signin.style.display='block'
+          this.switchdarkmode()
+          console.log('open')
+        },
+        close_signin(){
+          this.$refs.signin.$refs.signin.style.display='none'
         },
         signup(){
            this.$refs.signin.$refs.signin.style.display='block'
         },
-        darkmode(){
-          if(darkmode){
-            document.style.color='white'
-            document.body.style.backgroundColor='black'
+        switchdarkmode(){
+          var r = document.querySelector(':root');
+         
+          if(this.darkmode){
+           r.style.setProperty('--backgroundColor', 'white')
+           r.style.setProperty('--textColor', 'black')
+          }else{
+            r.style.setProperty('--backgroundColor', '#262626')
+            r.style.setProperty('--textColor', '#848484')
           }
+          this.darkmode = !this.darkmode;
+
         }
             
         },
@@ -74,6 +92,9 @@ export default {
       
     },
     created(){
+      const width = document.getElementById('app').style;
+      console.log(width)
+
     }
   
 }
@@ -81,41 +102,84 @@ export default {
 
 <style>
 :root{
-  --styleColor: #75147C
+  --styleColor: #75147C;
+  --backgroundColor: #FFFFFF;
+  --textColor: #000000;
 }
 *{
   font:Arial, Helvetica;
-  color:black;
+  color:var(--textColor);
+}
+#app{
+  display:grid;
+  padding:0px;
+  gap:0;
 }
   body {
     margin: 0;
     padding: 0;
-    background-color:white!important;
+    background-color:var(--backgroundColor)!important;
     
   }
+  /*
   .content{
-      width: 1110px;
-      margin:auto;
       position:relative;
       height: 100%;
-      background-color:rgba(0,0,0,0)
+      width:100%;
+      
   }
-  
+  */
+  .view-header{
+    grid-row:1;
+    grid-column: 1 / span 3;
+    height:fit-content;
+    width:100%;
+  }
+  .view-border-one{
+   grid-row:2;
+   grid-column:1;
+  }
+  .view-content{
+      grid-row:2;
+      grid-column:2;
+      margin:auto;
+      max-width:1300px;
+      padding:0px;
+  }
+  .view-border-two{
+    grid-row:2;
+    grid-column:3;
+  }
+  .view-footer:{
+    grid-row: 3;
+    grid-column: 1 / span 3;
+  }
+  .border{
+    height:100%;
+    margin:0px;
+    width:100%;
+
+  }
 
   @media (max-width: 1200px){
-     .content{
-         width: 92.5%;
+     .view-content{
+        width:92.5%;
          transition: all .3s ease;
      }
   }
 
 @media (max-width: 775px) {
-    .content{
+    .view-content{
         display: flex;
         flex-direction: column;
         margin-top: 30px;
-        margin: auto;
+        /*margin: auto;*/
         transition: all .3s ease;
+        width:100%;
+        grid-column: 1 / span 3;
+    }
+    .border{
+      display:none;
     }
 }
 </style>

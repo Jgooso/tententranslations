@@ -1,8 +1,6 @@
 <template>
     <header>
-    <div id="header">
-
-        <div class = "content">
+    <div id="header-top">
             <img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'>
             <div id = "navigation">
                 <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
@@ -12,22 +10,27 @@
                 <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
-        </div>  
     </div>
-<!-- Log In
-  **TO-DO**
-    <div id = "login">
-        <div class = "content">
-         <button @click='$emit("signin")'> Sign-in </button>
-         <button @click='$emit("signup")'> Sign-up </button>
-         </div>
+        <div id = "user-bar">
+            <button @click='$emit("signin")' class = 'sign-btn'> Sign-in </button>
+            <button @click='$emit("signup")' class = 'sign-btn'> Sign-up </button>
+        </div>
+        <div id = "user-controls">
+            <p>Hi {{user}}</p>
+            <p id = 'user-dropdown'>Text</p>
+            <div class = 'user-dropdown-box'>
+                <button class = 'user-dropdown-box-button'>User Settings</button>
+                <button class = 'user-dropdown-box-button'>Log out</button>
+            </div>
     </div>
--->
+
     </header>
 </template>
 
 <script>
+
 export default{
+  
     name: 'Header',
     props:[
       'tier'
@@ -40,22 +43,21 @@ export default{
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
 }
-  #header{
+  #header-top{
       height: 130px;
-      width: 100%;
       align-items: center;
       justify-content:center;
       background-color: var(--styleColor);
       display:flex;
       flex-direction:row;
   }
-  #login{
-      width:100%;
+  #user-bar{
       padding: 12px;
-      background-color:white;
-      z-index: 10;  
+      background-color:var(--backgroundColor);
+      z-index: 10; 
+
   }
-  button{
+  .sign-btn{
           height: 35px;
           width: 85px;
           border-radius: 40px;
@@ -128,9 +130,7 @@ export default{
 }
 
 .menu-btn {
-  position: absolute;
-  right:-800px;
-  display: flex;
+  display:none;
   justify-content: center;
   align-items: center;
   width: 50px;
@@ -177,6 +177,9 @@ export default{
 .menu-btn.open .menu-btn__burger::after {
   transform: rotate(-45deg) translate(35px, 35px);
 }
+.user-dropdown-box{
+  display:none;
+}
 @media (max-width: 950px) {
     .content{
         display: flex;
@@ -190,8 +193,9 @@ export default{
        
     }
     .menu-btn{
-        right:0px;
+      right:20px;
         transition: all .2s ease-in-out;
+        display: flex;
     }
 }
 </style>

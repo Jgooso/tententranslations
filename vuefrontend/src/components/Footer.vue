@@ -1,6 +1,5 @@
 <template>
-    <header>
-    <div id="footer">
+    <footer class = "footer">
         <div class = "content">
             <div id = "navigation">
                 <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
@@ -9,8 +8,7 @@
             </div>
             <br>
         </div>  
-    </div>
-    </header>
+    </footer>
 </template>
 
 <script>
@@ -19,15 +17,17 @@ export default{
 }
 </script>
 <style scoped>
-  #footer{
-      height: fit-content;
-      width: 100%;
+  .footer{
+      height: 75px;
       align-items: center;
       justify-content:center;
       display:flex;
       flex-direction:row;
       margin-top:50px;
       margin-bottom:50px;
+      grid-row: 3;
+      grid-column: 1 / span 3;
+ 
   }
     #navigation{
         height:15px;;
@@ -39,7 +39,7 @@ export default{
     
     }
   .nav{
-      color: black;
+      color: var(--textColor);
       margin-left: 15px;
       margin-right:15px;
       font-size: 15px;

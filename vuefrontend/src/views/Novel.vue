@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class = 'novel'>
     <router-view v-if='isMounted'
       :novelData="novelData"
       :chapterList="chapterList"
@@ -47,6 +47,7 @@
 </script>
 
 <style>
+
 button{
   border:none;
 }
@@ -54,7 +55,6 @@ button{
      display: flex;
      flex-direction:column;
 }
-
 #divider{
     font-size:18px;
     font-weight:bold;
@@ -72,6 +72,8 @@ button{
     margin-top:0;
     padding-bottom:35px;
     min-height:500px;
+    padding-left:20px;
+    padding-right:20px;
   }
 
 </style>

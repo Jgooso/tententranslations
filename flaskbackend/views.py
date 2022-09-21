@@ -3,7 +3,7 @@ from operator import indexOf
 import mysql.connector
 import json
 from scripts import download, processView, ranker
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 '''
 config = {
 'user': 'jgooso',
@@ -174,4 +174,20 @@ def get_noveltitles():
         for record in novels:
             novel_list.append( dict( zip( chapter_column_names , record ) ) )
         return jsonify(novel_list)
+def login():
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        novelcursor.execute('SELECT * FROM users WHERE username = %s AND password = %s',(username,password))
+        account = novelcursor.fetchone()
+        if account:
+            # Create session data, we can access this data in other routes
+            session['loggedin'] = True
+            session['id'] = account['id']
+            session['username'] = account['username']
+            # Redirect to home page
+            return 'Logged in successfully!'
+        else:
+            # Account doesnt exist or username/password incorrect
+            msg = 'Incorrect username/password!'
 

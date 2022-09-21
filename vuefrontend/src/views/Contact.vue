@@ -14,13 +14,6 @@
 <script>
 
 export default{
-    name:'Contact',
-    created(){
-        //document.title='Contact'
-    }
+    name:'Contact'
 }
 </script>
-
-<style scoped>
-
-</style>
