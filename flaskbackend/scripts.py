@@ -88,6 +88,9 @@ def remove_html_tags(text):
     text = text.replace('</p>','\n')
     clean = re.compile('<.*?>')
     return re.sub(clean,'',text)
+
+
+
 def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     #Retrieve elements from webpage
     novel_obj = get_HTML(URL)
@@ -97,13 +100,13 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     release = int(novel_obj.find(class_='long_update').text.strip()[:4])
 
     #DElETE novel from database if it already exists
-    sql = "DELETE FROM novels WHERE novelid = %s"
-    val = (novel_id,)
-    novelcursor.execute(sql,val)
+    delete_sql = "DELETE FROM novels WHERE novelid = %s"
+    delete_val = (novel_id,)
+    novelcursor.execute(delete_sql,delete_val)
 
     #INSERT data into database
-    sql = "INSERT INTO novels VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    val = (
+    novel_insert_sql = "INSERT INTO novels VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    novel_insert_val = (
         novel_id,#novelid
         en_title,#title
         jp_title,#alternativetitle
@@ -122,12 +125,18 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
         None,#firstupload
         None#imageurl
     )
-    novelcursor.execute(sql,val)
-    noveldb.commit()
-
+    novelcursor.execute(novel_insert_sql,novel_insert_val)
+    descriptors = genres = genres.split(',') + tags.split(',')
+    for d in descriptors:
+        print(d)
+        descriptor_insert_sql = 'INSERT INTO noveldescriptors (novelid,descriptor) VALUES (%s,%s)'
+        descriptor_insert_val = (novel_id,d.strip())
+        novelcursor.execute(descriptor_insert_sql,descriptor_insert_val)
     #Upload Chapters
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
     processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_id)
+    noveldb.commit()
+
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
     sql = "INSERT INTO chapters (chapterid,novelid,title,section,chapternumber,content,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(chapter_list)-1):
@@ -181,7 +190,6 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             )
             novelcursor.execute(sql,val)
             chapter_number += 1
-    noveldb.commit()
 
 def update():#Search for new chapters and download them to database
     novelcursor.execute("SELECT novelid,url FROM novels WHERE completed = 'Ongoing' OR completed = 'On Hold'")

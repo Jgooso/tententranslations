@@ -1,12 +1,10 @@
 <template>
 <div class = 'schedule-creator'>
 <div id = 'schedule-creator-selector'>
-<select id = 'novel-selector'>
-<option v-for='novel in novels'>{{novel.title}}</option>
-</select>
 <input type='time' id="appt" name="appt"
        min="8:00" max="20:00" required>
 </div>
+{{novel}}
 <label><input type = 'checkbox' value = 'Sunday' class = 'date-selector'>Sunday</label>
 <label><input type = 'checkbox' value = 'Monday' class = 'date-selector'>Monday</label>
 <label><input type = 'checkbox' value = 'Tuesday' class = 'date-selector'>Tuesday</label>
@@ -25,9 +23,8 @@ export default{
     methods:{
         submit(){
             const time = document.getElementById('appt').value
-            const novel = document.getElementById('novel-selector').value
             console.log(time)
-            console.log(novel)
+            console.log(this.novel)
             const dates = document.getElementsByClassName('date-selector')
             var selecteddates = []
             console.log(dates.length)
@@ -37,7 +34,7 @@ export default{
                 }
             }
             console.log(selecteddates)
-            getAPI.post('/schedule', {novel:novel,time:time,dates:selecteddates})
+            getAPI.post('/schedule', {novel:this.novel,time:time,dates:selecteddates})
                 .then(function (response) {
                     console.log(response);
             })
@@ -48,24 +45,11 @@ export default{
             
             
             
-        }
+        },
+        props:[
+            'novel'
+        ]
     },
-    data(){
-        return{
-            novels:[]
-        }
-    },
-    created(){
-        getAPI.get('/noveltitles')
-          .then(response => {
-            console.log('Chapter API has recieved data')
-            this.novels = response.data
-            console.log(response.data)
-          })
-          .catch(err => {
-            console.log(err)
-          })
-    }
 }
 </script>
 <style scoped>
@@ -80,11 +64,6 @@ position:fixed;
     margin-left:-250px;
     display:flex;
     flex-direction:column;
-}
-#novel-selector{
-    background-color:white;
-    border:none;
-    margin-top:5px;
 }
 #appt{
     background:none;

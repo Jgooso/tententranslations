@@ -80,6 +80,7 @@ import UtfBox from '../components/UtfBox'
     },
     created(){
         //document.title='Browse'
+        console.log(this.$route.params.identifier)
        getAPI.get('/novel/multiple?tier=5&category='+this.$route.params.browsetype+'&identifier='+this.$route.params.identifier)
           .then(response => {
             console.log('Post API has recieved data')

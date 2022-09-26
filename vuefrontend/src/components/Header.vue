@@ -2,7 +2,7 @@
     <header>
     <div id="header-top">
             <img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'>
-            <div id = "navigation">
+            <div id = "header-navigation">
                 <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
                 <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
                 <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
@@ -69,9 +69,13 @@ export default{
           margin-left: 5px;
           
       }
-    #navigation{
+    #header-navigation{
         height:100%;
         display:flex;
+        align-items:center;
+        margin-left: 35px;
+        width:800px;
+        height:100%;
         align-items:center;
     }
     button:hover{
@@ -89,14 +93,6 @@ export default{
       position: relative;
       transition: all .3s ease-in-out;
       overflow:hidden;
-  }
-  
-  #navigation{
-    margin-left: 35px;
-    width:800px;
-    height:100%;
-    align-items:center;
-    
   }
   
   #search{
@@ -189,13 +185,13 @@ export default{
         width:0px;  
          transition: all .3s ease-in-out;
     }
-    #search{
-       
-    }
     .menu-btn{
-      right:20px;
+        right:100;
         transition: all .2s ease-in-out;
         display: flex;
+    }
+    #header-navigation{
+      width:0px;
     }
 }
 </style>

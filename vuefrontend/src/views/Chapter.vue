@@ -7,25 +7,23 @@
          :novel-id='novelData.novel'
          :novel='novelData.title'
          :chapter='chapter'
+         id = 'chapter-navigator'
         />
-        <br>
         <div id = 'control-bar'>
-        <div class='control-buttons-container' selectable='false'>
-            <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
-            <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
-            <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
-            <button class = 'controlbuttons'>&#xF288;</button>
-        </div>
-        <br>
-        <br>
+            <div class='control-buttons-container' selectable='false'>
+                <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
+                <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
+                <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
+                <button class = 'controlbuttons'>&#xF288;</button>
+            </div>
+        <br><br>
         <ChapterSelector
             :chapterList= 'selectorList'
             v-on:changeChapter="updateContent($event)"
         />
        </div>
-        <br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br>
-          <pre v-html = 'chapterContent' id = 'content'/>
-        <br><br>
+        <!--<br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br><br>-->
+          <pre v-html = 'chapterContent' id = 'chapter-content'/>
     </div>
 </div>
 </template>
@@ -51,13 +49,13 @@ import { getAPI } from '../axios-api'
             }
         },methods:{
             changeFontSize(change){
-                const txt = document.getElementById('content');
+                const txt = document.getElementById('chapter-content');
                 const style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
                 const currentSize = parseFloat(style);
                 txt.style.fontSize = (currentSize + change) + 'px';
             },
             triggerEdit(){
-                if(document.getElementById('content').contentEditable=='true'){
+                if(document.getElementById('chapter-content').contentEditable=='true'){
                     const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber
                     document.getElementById('content').contentEditable='false'
                     document.getElementById('editButton').innerHTML='Edit'
@@ -70,7 +68,7 @@ import { getAPI } from '../axios-api'
                             console.log(error);
                         })
                 }else{
-                document.getElementById('content').contentEditable='true'
+                document.getElementById('chapter-content').contentEditable='true'
                 document.getElementById('editButton').innerHTML='Save'
                 }
             }    
@@ -95,12 +93,15 @@ import { getAPI } from '../axios-api'
     }
 </script>
 <style scoped>
-pre{
+#chapter-content{
 font-family: Times;
 font-size:19px;
 white-space: pre-wrap;
 font-weight:lighter;
 overflow:hidden;
+margin:auto;
+margin-top:25px;
+margin-bottom:40px;
 }
 #control-bar{
     position: -webkit-sticky;
@@ -120,6 +121,9 @@ overflow:hidden;
 .control-buttons-container{
     float:right;
     
+}
+#chapter-navigator{
+    margin-bottom:20px;
 }
 button.controlbuttons{
     border-radius:15px;

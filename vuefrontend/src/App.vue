@@ -92,8 +92,6 @@ export default {
       
     },
     created(){
-      const width = document.getElementById('app').style;
-      console.log(width)
 
     }
   
@@ -175,11 +173,8 @@ export default {
         margin-top: 30px;
         /*margin: auto;*/
         transition: all .3s ease;
-        width:100%;
+        width:92.5%;
         grid-column: 1 / span 3;
-    }
-    .border{
-      display:none;
     }
 }
 </style>

@@ -171,6 +171,7 @@
                this.novelData.tags = document.getElementById('tagEdit').innerHTML.split(',')
                this.novelData.completed=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('description').innerHTML
+               this.novelData.title=document.getElementById('noveltitle').innerHTML
                const url = '/novel/single?novel='+this.$route.params.title
                document.getElementById('editButton').innerHTML='Edit'
                document.getElementById('description').contentEditable = "false"
@@ -179,7 +180,8 @@
                    description:this.novelData.description,
                    tags:this.novelData.tags,
                    genres:this.novelData.genres,
-                   completed:this.novelData.completed
+                   completed:this.novelData.completed,
+                   title:this.novelData.title
                }).then(function (response) {
                     console.log(response);
             })
@@ -255,7 +257,7 @@
   
   #image-border{
     max-height:313px;
-    background-color: white;
+    background-color: var(--backgroundColor));
     float:left;
     padding-left: 15px;
     padding-right:15px;

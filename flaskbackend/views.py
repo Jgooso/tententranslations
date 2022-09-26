@@ -24,21 +24,32 @@ noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
 
 def multiplenovels():
-    category = request.args.get('category')[6:]
-    identifier = request.args.get('identifier').strip()
+    try:
+        category = request.args.get('category')[request.args.get('category').index('-')+1:]
+    except ValueError:
+        category = request.args.get('category')
+    identifier = request.args.get('identifier')
+
     tier= request.args.get('tier')
-    print(category,identifier,tier)
-    novelsql = 'SELECT * FROM novels'
-    novelcursor.execute(novelsql)
-    chaptersql = "SELECT chapternumber,uploaddate FROM chapters WHERE CONTENT IS NOT NULL AND chapteractive <= %s AND novelid = %s ORDER BY chapternumber+0 DESC"
+    print(category,request.args.get('identifier'),tier)
+    if category == 'tags' or category == 'genres':
+        pass
+    elif category == 'author':
+        pass
+    elif category == 'status':
+        pass
+    multiple_novel_sql = 'SELECT novelid,title,genres,tags,views,rating,lastupload,firstupload,imageurl FROM novels'
+    multiple_novel_chapter_sql = "SELECT chapternumber,uploaddate FROM chapters WHERE CONTENT IS NOT NULL AND chapteractive <= %s AND novelid = %s ORDER BY chapternumber+0 DESC"
+    novelcursor.execute(multiple_novel_sql)
     novelObject = []
     novelresults = novelcursor.fetchall()
     columnNames = [column[0] for column in novelcursor.description]
     for record in novelresults:
         novelObject.append( dict( zip( columnNames , record ) ) )
+    
     for novel in novelObject:
         val = (tier,novel['novelid'])
-        novelcursor.execute(chaptersql,val)
+        novelcursor.execute(multiple_novel_chapter_sql,val)
         chapterResults = novelcursor.fetchall()
         try:
             novel['firstChapter'] = chapterResults[0]
@@ -50,10 +61,11 @@ def multiplenovels():
                 novel['fristChapter'] = chapterResults[0]
             except IndexError:
                 pass
+    print('&nbsp;')
     if category == 'tags' or category == 'genres':
         novelObject = [novel for novel in novelObject if identifier in novel[category]]
-        print(novel[category])
-    elif category == 'ned':
+        
+    elif category == 'undefined':
         print('browse')
         return jsonify(novelObject)
     else:
@@ -64,16 +76,17 @@ def singlenovel():
     novel = request.args.get('novel')
     tier = request.args.get('tier')
     if request.method == 'GET':
+        #Retrieve Novel Data
         novel_sql = "SELECT DISTINCT * FROM novels WHERE novelid = %s"
         novel_val = (novel,)
         novelcursor.execute(novel_sql,novel_val)
         novel_results=novelcursor.fetchall()
-        chapter_list = []
         columnNames = [column[0] for column in novelcursor.description]
         for record in novel_results:
             novelData =  dict( zip( columnNames , record ) ) 
-        novelData['tags'] = novelData['tags'].split(',')
-        novelData['genres'] = novelData['genres'].split(',')
+        novelData['views'] = processView(novelData['views'])
+
+        #Retrieve Chapters
         chapter_list_sql = "SELECT title,uploaddate,chapternumber,section,novelid,chapterorder FROM chapters WHERE novelid = %s AND chapteractive <= %s ORDER BY chapterorder+0"
         chapter_list_val = (novel,tier)
         novelcursor.execute(chapter_list_sql,chapter_list_val)
@@ -82,9 +95,24 @@ def singlenovel():
         chapter_list=[]
         for record in chapter_results:
             chapter_list.append( dict( zip( chapter_column_names , record ) ) )
-        novelData['views'] = processView(novelData['views'])
+       
+        #Retrieve Novel Descriptors
+        descriptor_sql = "SELECT noveldescriptors.descriptor,descriptors.type FROM noveldescriptors INNER JOIN descriptors ON descriptors.descriptor = noveldescriptors.descriptor WHERE noveldescriptors.novelid = %s"
+        novelcursor.execute(descriptor_sql,novel_val)
+        descriptors = novelcursor.fetchall()
+        genres = []
+        tags = []
+        for descriptor in descriptors:
+            if descriptor[1] == 'genre':
+                genres.append(descriptor[0])
+            elif descriptor[1] == 'tag':
+                tags.append(descriptor[0])
+        novelData['tags'] = genres
+        novelData['genres'] = tags
+
+        #Return Data
         return jsonify({'Novel':novelData,'Chapters':chapter_list})
-    if request.method == 'POST':
+    if request.method == 'POST':#Create Novel
         data = request.get_json()
         input_tags = ','.join(data['tags'])
         input_genres = data['genres']
@@ -92,18 +120,19 @@ def singlenovel():
         print(input_url)
         download(URL=input_url,tags=input_tags,genres=input_genres)
         return data
-    if request.method == 'PUT':
+    if request.method == 'PUT':#Edit Novel
         data = request.get_json()
-        sql = 'UPDATE novels SET description = %s, genres = %s, tags = %s, novelstatus = %s WHERE novelid = %s'
-        val = (data['description'],','.join(data['genres']),','.join(data['tags']),data['completed'],novel)
+        sql = 'UPDATE novels SET description = %s, genres = %s, tags = %s, novelstatus = %s, title = %sWHERE novelid = %s'
+        val = (data['description'],','.join(data['genres']),','.join(data['tags']),data['completed'],data['title'],novel)
         novelcursor.execute(sql,val)
         noveldb.commit()
         return data
-    if request.method == 'DELETE':
+    if request.method == 'DELETE':#Delete Novel
         sql = 'DELETE FROM novels WHERE novelid=%s'
         val = (novel,)
         novelcursor.execute(sql,val)
         noveldb.commit()
+
 def get_chapter():
     chapter = request.args.get('chapter')
     novel = request.args.get('novel')
@@ -123,9 +152,10 @@ def get_chapter():
         novelcursor.execute(sql,val)
         print(data)
         return data
+
 def get_genres_and_tags():
     if request.method == 'GET':
-        novelcursor.execute('SELECT * FROM noveldescriptors')
+        novelcursor.execute('SELECT * FROM descriptors')
         descriptors = novelcursor.fetchall()
         genres = []
         tags = []
@@ -138,7 +168,10 @@ def get_genres_and_tags():
     
 def get_schedules():
     if request.method == 'GET':
-        novelcursor.execute('SELECT schedule.*,novels.title FROM schedule INNER JOIN novels ON novels.novelid=schedule.novel')
+        novel = request.args.get('novel')
+        schedule_select_sql = ('SELECT * FROM schedule WHERE novel = %s')
+        schedule_select_val = (novel,)
+        novelcursor.execute(schedule_select_sql,schedule_select_val)
         schedules = novelcursor.fetchall()
         chapter_column_names = [column[0] for column in novelcursor.description]
         schedule_list=[]
@@ -158,8 +191,8 @@ def get_schedules():
         input_dates = data['dates']
         print(input_novel,input_time,input_dates)
         for date in input_dates:
-            schedule_creator_sql = 'INSERT INTO schedule (novel,time,day) SELECT novelid, %s,%s FROM novels WHERE title = %s'
-            schedule_creator_val = (input_time,date,input_novel)
+            schedule_creator_sql = 'INSERT INTO schedule (novel,time,day) VALUES (%s,%s,%s)'
+            schedule_creator_val = (input_novel,input_time,date)
             novelcursor.execute(schedule_creator_sql,schedule_creator_val)
             print(date)
         noveldb.commit()
@@ -167,13 +200,14 @@ def get_schedules():
 
 def get_noveltitles():
     if request.method == 'GET':
-        novelcursor.execute('SELECT title,novelid FROM novels')
+        novelcursor.execute('SELECT title,novelid FROM novels WHERE uploadstatus<>"Completed"')
         novels = novelcursor.fetchall()
         chapter_column_names = [column[0] for column in novelcursor.description]
         novel_list=[]
         for record in novels:
             novel_list.append( dict( zip( chapter_column_names , record ) ) )
         return jsonify(novel_list)
+
 def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
