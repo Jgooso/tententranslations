@@ -1,5 +1,13 @@
 <template>
-<div  id = "navigation">
+<div id = 'control-bar'>
+            <div class='control-buttons-container' selectable='false'>
+                <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
+                <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
+                <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
+                <button class = 'controlbuttons'>&#xF288;</button>
+            </div>
+        <br><br>
+        <div  id = "navigation">
     <select id = "myselect" @change="selectChapter()">
         <option 
             v-for="chapter in chapterList" 
@@ -17,6 +25,9 @@
             />
        
 </div>
+       </div>
+        <!--<br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br><br>-->
+
 </template>
 <script>
 import NavButton from './Navbutton'
@@ -43,7 +54,7 @@ import NavButton from './Navbutton'
     flex-direction:row;
     position: relative;
 }
-select{
+#myselect{
     padding-left:10px;
     padding-right:10px;
     font-size:15px;
@@ -53,5 +64,45 @@ select{
     border:none;
     border-radius:5px;
     font-weight:300;
+}
+#control-bar{
+    position: -webkit-sticky;
+    position:sticky;
+    top: 0;
+    background-color: var(--backgroundColor);
+    padding-top:10px;
+    padding-bottom:20px;
+    border-bottom:2px black solid
+}
+#editButton{
+    width:170px;
+    background-color:var(--styleColor);
+    color:white;
+    float:right;
+    border-radius:5px;
+}
+.control-buttons-container{
+    float:right;
+    
+}
+button.controlbuttons{
+    border-radius:15px;
+    background-color:lightgray;
+    height:30px;
+    width:30px;
+    font-size:20px;
+    text-align:center;
+    vertical-align:middle;
+    line-height:20px;
+    margin-left:17px;
+    color:var(--styleColor);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none; 
+}
+button.controlbuttons:hover{
+    color:white;
+    background-color:var(--styleColor);
+    transition: all .2s ease;
 }
 </style>

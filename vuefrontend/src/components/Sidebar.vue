@@ -5,14 +5,19 @@
         <router-link :to = "{name: 'Browse'}" class='nav'  @click.native='swap()' >Browse</router-link>
         <router-link :to = "{name: 'aboutPage'}" class='nav' @click.native='swap()'>About</router-link>
         <router-link :to = "{name: 'contactPage'}" class='nav' @click.native='swap()'>Contact</router-link>
+        <KoFiButton class = 'nav' id = 'KoFi'/>
     </div>
     <div id ='shade' @click='swap()' ref='shade'/>
     </div>
 </template>
 
 <script>
+import KoFiButton from '../components/KoFiButton'
 export default{
     name:'sidebar',
+    components:{
+        KoFiButton
+    },
     methods:{
         swap(){
             this.$emit("changesidebar")
@@ -83,5 +88,8 @@ h3:hover{
       font-weight:300;
       vertical-align: middle;
       line-height:75px;
+  }
+  #KoFi{
+      margin-top:20px;
   }
 </style>

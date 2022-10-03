@@ -14,7 +14,8 @@ const routes = [
         {path:'/manage',
         children:[
           {path:'upload',name:'uploadPage',component: ()=> import('@/views/Upload')},
-          {path:'schedule',name:'schedulePage',component: ()=> import('@/components/Schedular')}
+          {path:'schedule',name:'schedulePage',component: ()=> import('@/components/Schedular')},
+          {path:'edit',name:'editPage',component: ()=> import('@/views/EditPage')}
         ]
         ,name: 'managePage',component: ()=> import('@/views/Manage.vue')},
         {path:'/404',name:'errorPage',component: ()=>import('@/views/Error.vue')}

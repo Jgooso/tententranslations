@@ -38,8 +38,8 @@ export default{
 </script>
 <style scoped>
 .NovelCard{
-    width:160px;
-    height:515px;
+    width:170px;
+    max-height:515px;
     margin-left:50px;
     margin-bottom:50px;
     display:flex;

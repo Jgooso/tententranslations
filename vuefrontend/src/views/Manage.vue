@@ -1,14 +1,21 @@
 <template>
-<div class = 'content'>
+<div class = 'manager'>
 <div id = 'managementnavigator'>
 <router-link :to = "{name: 'uploadPage'}" class='nav'>Upload</router-link>
 <router-link :to = "{name: 'schedulePage'}" class='nav'>Schedule</router-link>
-<button>Edit</button>
-<button>Manage Users</button>
+<router-link :to = "{name: 'editPage'}" class='nav'>Edit</router-link>
 </div>
-<router-view/>
-
-<ScheduleCreator/>
+<router-view
+:editable='true'
+id = 'editView'
+v-if='verified'
+/>
+<div v-else id ='password-protection'>
+    <label for='password'>Password:
+        <input type = 'password' id = 'password'>
+    </label>
+    <input type = 'submit' @click='submit()'>
+</div>
 </div>
 </template>
 
@@ -16,28 +23,73 @@
 import { getAPI } from '../axios-api'
 export default{
     name:'Manage',
+    data(){
+        return{
+            verified:$cookies.get('verified')
+        }
+    },
+    methods:{
+        submit(){
+            const pass = document.getElementById('password').value
+            if(pass == 'jeg4Novel'){
+                this.verified = true;
+                $cookies.set('verified',true)
+            }
+            
+        }
+    }
 }
 </script>
 
 <style scoped>
-.content{
+.manager{
     display:flex;
     flex-direction:row;
-    height:1000px;
-    margin-top:100px;
+    height:100%;
+    min-height:1000px;
+    margin-top:50px;
+    margin-left:0px;
 }
 #managementnavigator{
-    height:100%;
+    height:500px;
     background-color:lightgray;
-    width:30%;
+    width:13%;
     display:flex;
     flex-direction:column;
+    min-width:200px;
+    margin-right:10px;
+    position:fixed;
 }
 .nav{
     color:black;
-    margin:1px;
-    text-align:center;
-    width:100%;
+    justify-content:center;
+    width:200px;
+    font-size:15px;
+    padding-top:10px;
+    padding-bottom:10px;
+    border-bottom: 1px solid black;
+    text-decoration:none;
+
     
+}
+#password-protection{
+    width:87%;
+position:relative;
+align:right;
+margin-left:200px;
+display:flex;
+flex-direction:column;
+}
+input[type='password']{
+    width:300px;
+    margin:auto;
+    position:relative;
+    float:right;
+}
+#editView{
+width:87%;
+position:relative;
+align:right;
+margin-left:200px;
 }
 </style>

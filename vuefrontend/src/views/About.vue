@@ -11,8 +11,6 @@
         <br>
         Support really helps and gives more motivation to increase output.
         <br>
-        The goal of this website is to be completly independent, so integration with other services, like Ko-fi, Patreon and Disqus will not be used.
-        <br>
         We make no claims to the ownership of these novel. All rights go to original author and publisher
         <br>
         Thanks for coming to my website and I hope you enjoy reading.

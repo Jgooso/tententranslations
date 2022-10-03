@@ -1,31 +1,27 @@
 <template>
-
-<form id = 'download' >
-<div id = 'loadingscreen'><div class="loader"></div></div>
-<label for="fname">URL:</label>
-<input type = "text" id = 'urltextbox' name = 'url' maxlength="34" style='width:280px' >
-<div id = 'genres'>
-<label v-for='genre in genres' :key = 'genre'><input type='checkbox' :value='genre' :name = 'genre' class = 'genrecheckbox'>{{genre}}</label>
-</div>
-<br><br>
-<input type = 'submit' @click='postData()'>
-
-</form>
-<div  id = 'tagList'>
-<ul class = 'selectedtaglist' >
-    <li v-for='tag in selectedtags' :key = 'tag'><tagBox :tag='tag' @remove='removeTag'/></li>
-</ul>
-<input id = 'tagfilter' v-on:keyup='filterTag()'>
-</div>
-<div id = 'tagselector'>
-    <button v-for='tag in tags' :key='tag' class = 'tagbutton unselected' :id = 'tag' v-html='tag' @click='addTag(tag)'/>
-
+<div id = 'download'>
+    <div id = 'loadingscreen'><div class="loader"></div></div>
+    <label for="fname">URL:
+        <input type = "text" id = 'urltextbox' name = 'url' maxlength="34" style='width:280px' >
+    </label>
+    <GenreSelector
+    :genres='genres'
+    :selectedgenres='selectedgenres'
+    />
+    <br><br>
+    <input type = 'submit' @click='postData()'>
+    <TagSelector
+    :tags='tags'
+    :selectedtags='selectedtags'
+    />
 </div>
 
 </template>
 <script>
 import { getAPI } from '../axios-api'
 import tagBox from '../components/TagBox'
+import GenreSelector from '../components/GenreSelector'
+import TagSelector from '../components/TagSelector'
 export default{
     data(){
         return{
@@ -37,40 +33,21 @@ export default{
     },
     components:{
         tagBox,
+        GenreSelector,
+        TagSelector
     },
 methods:{
-        addTag(tag){
-            const tagbutton = document.getElementById(tag)
-            tagbutton.classList.remove('unselected')
-            if(!this.selectedtags.includes(tag)){
-                this.selectedtags.push(tag)
-            }
-           
-        },
-        removeTag(removetag){
-            const index = this.selectedtags.indexOf(removetag)
-            this.selectedtags.splice(index,1)
-            document.getElementById(removetag).classList.add('unselected')
-        },
-        filterTag(){
-            var input, tagbuttons, txtValue
-            input = document.getElementById('tagfilter').value.toUpperCase()
-            tagbuttons = document.getElementsByClassName('tagbutton')
-            for(var i = 0; i < tagbuttons.length; i++){
-                txtValue = tagbuttons[i].value || tagbuttons[i].innerText;
-                if (txtValue.toUpperCase().indexOf(input) > -1) {
-                    tagbuttons[i].style.display = "";
-                } else {
-                    tagbuttons[i].style.display = "none";
-                }
-            }
-        },
         postData(){
             const loadingscreen = document.getElementById('loadingscreen')
             loadingscreen.style.display = 'block'
-            const form = document.getElementById('download');
-            const selectedGenres = 'Fantasy, Comedy'//form['genres'].value
-            const url = form['url'].value
+            const url = document.getElementById('urltextbox').value;
+            const genres = document.getElementsByClassName('genrecheckbox')
+            var selectedGenres = []
+            for(var i=0; i < genres.length; i++){
+                if(genres[i].checked==true){
+                    selectedGenres.push(genres[i].value)
+                }
+            }
             console.log('posted')
             getAPI.post('/novel/single', {url:url,tags:this.selectedtags,genres:selectedGenres})
                 .then(function (response) {
@@ -84,10 +61,9 @@ methods:{
         }
     },
     created(){
-        
         getAPI.get('/uploaddata')
           .then(response => {
-            console.log('Chapter API has recieved data')
+            console.log('Descriptor API has recieved data')
             this.genres = response.data['genres']
             this.tags = response.data['tags']
           })
@@ -99,75 +75,16 @@ methods:{
 }
 </script>
 <style scoped>
-#tagList{
-border: 2px rgb(244,244,244) solid;
-width:800px;
-height:fit-content;
-min-height:50px;
-
-}
-
-.selectedtaglist{
-    display:inline;
-    list-style: none;
-    padding:0px;
-}
-.selectedtaglist li{
-    display:inline;
-    float:left;
-    margin-left:10px;
-}
-
-#tagselector{
-    display:flex;
-    flex-direction:column;
-    overflow:scroll;
-    height:500px;
-    width:500px;
-}
-.tagbutton{
-    border:none;
-    color:lightgray;
-}
-.unselected{
-    color:black;
-}
-.unselected:hover{
-    background-color:blue;
-    color:white;
-}
 button{
     background:none;
     border-right:none
 }
-#genres{
-    position:relative;
-    display:grid;
-    grid-template-rows: auto auto auto auto auto auto auto auto auto;
-    grid-auto-flow: column;
-    column-gap: 30px;
-    row-gap:10px;
-    margin:auto;
-    width:100%
-}
+
 input{
     margin-right:5px;
 }
-#tagSelect{
-    background:lightgray;
-    border:none;
-    -webkit-appearance: none;
-}
-#tags{
-    width:100%
-}
-#tagtextbox{
-    width:500px;
-    text-align:left;
-    overflow-wrap: break-word
-}
 #download{
-    width:1000px;
+    width:100%;
     height:fit-content;
 }
 .loader {
@@ -185,8 +102,9 @@ input{
     display:none;
     position:absolute;
     z-index:5;
-    width:1000px;
-    height:500px;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.5)
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -194,7 +112,15 @@ input{
 }
 @media (max-width: 775px) {
     #genres{
-        grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+        width:300px;
+        margin-left:20px;
+    }
+    #tagList{
+        width:350px;
+    }
+    #tagselector{
+        width:350px;
     }
 }
 </style>

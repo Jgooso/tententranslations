@@ -3,14 +3,16 @@
     <div id="header-top">
             <img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'>
             <div id = "header-navigation">
-                <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
+                <router-link :to = "{name: 'Browse'}" class='nav' @click='location.reload()'>Browse</router-link>
                 <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
                 <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
-                <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='tier==5'>Manage</router-link>
+                <!--<router-link :to = "{name: 'uploadPage'}" class='nav' v-if='tier==5'>Manage</router-link>-->
+                <KoFiButton class = 'nav' id = 'KoFi'/>
                 <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
     </div>
+    <!--
         <div id = "user-bar">
             <button @click='$emit("signin")' class = 'sign-btn'> Sign-in </button>
             <button @click='$emit("signup")' class = 'sign-btn'> Sign-up </button>
@@ -23,18 +25,21 @@
                 <button class = 'user-dropdown-box-button'>Log out</button>
             </div>
     </div>
-
+-->
     </header>
 </template>
 
 <script>
-
+import KoFiButton from '../components/KoFiButton'
 export default{
   
     name: 'Header',
     props:[
       'tier'
-    ]
+    ],
+    components:{
+      KoFiButton
+    }
 }
 </script>
 <style scoped>
@@ -50,6 +55,7 @@ export default{
       background-color: var(--styleColor);
       display:flex;
       flex-direction:row;
+      margin-bottom:20px;
   }
   #user-bar{
       padding: 12px;
@@ -94,7 +100,9 @@ export default{
       transition: all .3s ease-in-out;
       overflow:hidden;
   }
-  
+  #KoFi{
+    width:200px;
+  }
   #search{
       margin-left:25px;
       width:35px;
@@ -134,6 +142,7 @@ export default{
   cursor: pointer;
   transition: all .3s ease-in-out;
   /* border: 3px solid #fff; */
+  
 }
 .menu-btn__burger {
   width: 30px;
@@ -153,6 +162,7 @@ export default{
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(255,101,47,.2);
   transition: all .3s ease-in-out;
+  
 }
 .menu-btn__burger::before {
   transform: translateY(-16px);
@@ -186,7 +196,8 @@ export default{
          transition: all .3s ease-in-out;
     }
     .menu-btn{
-        right:100;
+        right:10px;
+        position:absolute;
         transition: all .2s ease-in-out;
         display: flex;
     }

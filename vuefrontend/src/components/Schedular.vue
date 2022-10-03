@@ -40,7 +40,6 @@
 
 <script>
 import {getAPI} from '../axios-api'
-import ScheduleCreator from './ScheduleCreator'
 export default{
     name:'Schedular',
     data(){
@@ -49,9 +48,6 @@ export default{
             novels:[],
             novel:[]
         }
-    },
-    components:{
-        ScheduleCreator
     },
     methods:{
         timeConverter(time){
@@ -121,8 +117,10 @@ export default{
 </script>
 
 <style scoped>
+.schedular{
+    width:100%
+}
 #schedule-creator{
-
 position:fixed;
     background-color:lightgray;
     width:500px;
@@ -140,5 +138,10 @@ position:fixed;
     float:right;
     margin-right:50px;
     height:30px;
+}
+@media (max-width: 775px) {
+    #novel-selector{
+        width:350px;
+    }
 }
 </style>

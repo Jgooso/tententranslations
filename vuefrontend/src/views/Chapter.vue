@@ -1,6 +1,6 @@
 <template>
 <div id = 'chapter' v-if='chapter'>
-    <div class = "content">
+    <div>
      <br>
         <h3 style = "font-size: 25px" v-html='novelData.title+" - "+chapter.chapternumber'/><!-- chapter number-->
         <Navigator
@@ -9,20 +9,10 @@
          :chapter='chapter'
          id = 'chapter-navigator'
         />
-        <div id = 'control-bar'>
-            <div class='control-buttons-container' selectable='false'>
-                <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
-                <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
-                <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
-                <button class = 'controlbuttons'>&#xF288;</button>
-            </div>
-        <br><br>
         <ChapterSelector
             :chapterList= 'selectorList'
             v-on:changeChapter="updateContent($event)"
         />
-       </div>
-        <!--<br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br><br>-->
           <pre v-html = 'chapterContent' id = 'chapter-content'/>
     </div>
 </div>
@@ -103,46 +93,10 @@ margin:auto;
 margin-top:25px;
 margin-bottom:40px;
 }
-#control-bar{
-    position: -webkit-sticky;
-    position:sticky;
-    top: 0;
-    background-color: var(--backgroundColor);
-    padding-top:10px;
-    padding-bottom:10px;
-}
-#editButton{
-    width:170px;
-    background-color:var(--styleColor);
-    color:white;
-    float:right;
-    border-radius:5px;
-}
-.control-buttons-container{
-    float:right;
-    
-}
 #chapter-navigator{
     margin-bottom:20px;
-}
-button.controlbuttons{
-    border-radius:15px;
-    background-color:lightgray;
-    height:30px;
-    width:30px;
-    font-size:20px;
-    text-align:center;
-    vertical-align:middle;
-    line-height:20px;
-    margin-left:17px;
-    color:var(--styleColor);
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none; 
-}
-button.controlbuttons:hover{
-    color:white;
-    background-color:var(--styleColor);
-    transition: all .2s ease;
+    position:relative;
+    left:50;
+    z-index:2;
 }
 </style>

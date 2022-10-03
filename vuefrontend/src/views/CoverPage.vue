@@ -3,65 +3,70 @@
 
  <!--COVER-->
   <div id="cover" ref = 'cover'>
-    <div class = "content"  v-if='novelData.title'>
+    <div v-if='novelData.title'>
+    <!--
         <Navigator
          :novelid='novelData.id'
          :novel='novelData.title'
         />
+        -->
         <p id = "noveltitle" v-text='novelData.title'/>
         <div id = "inner">
             <img id = "image-border" :src="novelData.imageurl" v-if='novelData.imageurl'>
             <div id = "tables">
              <div id = "data">
                 <table>
-                    <tr><td>Views</td><td v-text='novelData.views' class='info'/></tr>
-                    <tr><td>Alternative</td><td v-text='novelData.alternativetitle' class="info"/></tr>
-                    <tr><td>Raw</td><td class="info"><a :href="novelData.url">{{novelData.url}}</a></td></tr>
-                    <tr><td>Author</td><td class="info">
-                        <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-authors',identifier:novelData.authors}}" class='selectable'>{{novelData.authors}}</router-link>
-                    </td></tr>
+                    <tr>
+                        <td>Views</td>
+                        <td v-text='novelData.views' class='info'/>
+                    </tr>
+                    <tr>
+                        <td>Alternative</td>
+                        <td v-text='novelData.alternativetitle' class="info"/>
+                    </tr>
+                    <tr>
+                        <td>Raw</td>
+                        <td class="info"><a :href="novelData.url">{{novelData.url}}</a></td>
+                    </tr>
+                    <tr>
+                        <td>Author</td>
+                        <td class="info"><router-link :to = "{name: 'explorePage', params:{browsetype:'novel-authors',identifier:novelData.authors}}" class='selectable' v-text='novelData.authors'/></td>
+                    </tr>
                     <tr>
                         <td>Genres</td>
                         <td class="info">
-                            <ul class='comma-list' v-if='!editable'>
+                            <ul class='comma-list'>
                                 <li v-for='genre in novelData.genres' :key='genre'>
-                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:genre}}" class='selectable'>{{genre}}</router-link>
+                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:genre}}" class='selectable' v-text='genre'/>
                                 </li>
                             </ul>
-                            <p v-else v-text='novelData.genres.join()' contenteditable="true" id = 'genreEdit' class='editor'/>
                         </td>
                     </tr>
                     <tr>
                         <td>Tags</td>
                         <td class="info">
-                            <ul class='comma-list' v-if='!editable'>
+                            <ul class='comma-list'>
                                 <li v-for='tag in novelData.tags' :key='tag'>
-                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable' v-html='tag'/>
+                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable info' v-html='tag'/>
                                 </li>
                             </ul>
-                            <p v-else v-html='novelData.tags.join()' contenteditable="true" id = 'tagEdit' class='editor'/>
                         </td>
                     </tr>
                 </table>
                 <table>
-                    <tr><td>Release</td><td class="info" v-text='novelData.novelrelease'/></tr>
-                    <tr><td>Status</td>
-                      <td class="info">
-                      <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:novelData.uploadstatus}}" class='selectable'>
-                        {{novelData.uploadstatus}}
-                      </router-link></td>
+                    <tr>
+                        <td>Release</td>
+                        <td class="info" v-text='novelData.novelrelease'/>
                     </tr>
-                    <tr><td>Novel</td>
-                        <td class="info" v-if='!editable'>{{ novelData.novelstatus}}</td>
-                        <td class="info" v-else>
-                            <select id = 'completedEdit' :selected='value==novelData.novelstatus'>
-                                <option value = 'Ongoing'>Ongoing</option>
-                                <option value = 'Completed'>Completed</option>
-                                <option value = 'On Hold'>On Hold</option>
-                                <option value = 'Dropped'>Dropped</option>
-                                <option value = 'Unreleased'>Unreleased</option>
-                            </select>
+                    <tr>
+                        <td>Status</td>
+                        <td class="info">
+                            <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:novelData.uploadstatus}}" class='selectable info' v-text='novelData.uploadstatus'/>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>Novel</td>
+                        <td class="info" v-if='!editable' v-text='novelData.novelstatus'/>
                     </tr>
                 </table>
              </div>
@@ -72,7 +77,6 @@
                 :last='chapterList.length'
              />
              <br>
-             <button v-if='tier==5' id = 'editButton' @click='changeEditMode()'>Edit</button>
             </div>   
         </div>     
     </div>
@@ -80,7 +84,7 @@
   <br>
   <!--SUMMARY-->
   <div id = "summary">
-        <div class = "content"  v-if='novelData.title'>
+        <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
             <p id="description" v-html = 'novelData.description'/>
         </div>
@@ -102,9 +106,9 @@
             <ul v-bind:id = "section.section">
                 <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterNumber'>
                 <router-link 
-                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" id="group">
-                    <p id = "title">{{chapter.title}}</p>
-                    <p id = "date">{{new Date(chapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
+                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
+                    <p class = 'title'>{{chapter.title}}</p>
+                    <p class = 'date'>{{new Date(chapter.uploaddate).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
                 </router-link>
                 </li>
             </ul>
@@ -113,9 +117,9 @@
         <ul v-if='sectionList.length==0'>
                 <li v-for="chapter in chapterList" :key='chapter.chapterNumber'>
                 <router-link 
-                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" id="group">
-                    <p id = "title">{{chapter.title}}</p>
-                    <p id = "date">{{new Date(chapter.date).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
+                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
+                    <p class = 'title'>{{chapter.title}}</p>
+                    <p class = "date">{{new Date(chapter.uploaddate).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
                 </router-link>
                 </li>
             </ul>
@@ -128,13 +132,15 @@
   import Navigator from '../components/Navigator'
   import UtfBox from '../components/UtfBox'
   import NavButton from '../components/Navbutton'
+  import KoFiButton from '../components/KoFiButton'
   import {getAPI} from '../axios-api'
   export default {
     name: 'CoverPage',
     components: {
       UtfBox,
       Navigator,
-      NavButton
+      NavButton,
+      KoFiButton
     },
     props:[
         'novelData',
@@ -164,40 +170,7 @@
            document.getElementById('table').style.maxHeight="none";
            document.getElementById('showMore').style.display='none'
        },
-       changeEditMode(){
-           if(this.editable){
-               this.editable=false
-               this.novelData.genres = document.getElementById('genreEdit').innerHTML.split(',')
-               this.novelData.tags = document.getElementById('tagEdit').innerHTML.split(',')
-               this.novelData.completed=document.getElementById('completedEdit').value
-               this.novelData.description=document.getElementById('description').innerHTML
-               this.novelData.title=document.getElementById('noveltitle').innerHTML
-               const url = '/novel/single?novel='+this.$route.params.title
-               document.getElementById('editButton').innerHTML='Edit'
-               document.getElementById('description').contentEditable = "false"
-               document.getElementById('noveltitle').contentEditable = "false"
-               getAPI.put(url,{
-                   description:this.novelData.description,
-                   tags:this.novelData.tags,
-                   genres:this.novelData.genres,
-                   completed:this.novelData.completed,
-                   title:this.novelData.title
-               }).then(function (response) {
-                    console.log(response);
-            })
-                .catch(function (error) {
-                    console.log(error);
-            })
-               
-    
-            }else{
-               this.editable=true
-               document.getElementById('editButton').innerHTML='Save'
-               document.getElementById('description').contentEditable = "true"
-               document.getElementById('noveltitle').contentEditable = "true"
-            }
-          
-       }
+       
        
     },
     created(){
@@ -270,6 +243,7 @@
       margin-bottom: 25px;
       line-height:20px;
       height:fit-content;
+      margin-top:30px;
   }
  
   #tables{
@@ -299,14 +273,14 @@
       vertical-align: top;
       
   }
-  td.info{
+  .info{
       font-weight:normal;
       width: 85%;
       line-height: 20px;
       vertical-align: bottom;
       color:rgb(136,136,136);
   }
-  td.info a{
+  .info a{
     color:black;
   }
   a:hover { 
@@ -329,66 +303,7 @@
 .comma-list li:last-child::after {
     content: "";
 }
-#editButton{
-    background-color:var(--styleColor);
-    color:white;
-}
-.editor{
-    font-size:12px;
-    height:12px;
-}
-  @media (max-width: 1200px){
-      #buttons{
-        margin: auto;
-     }
-     #TableOfContents{
-         width:92.5%; 
-      }
-  }
-  @media (max-width:1000px) {
-    #image-border{
-        padding: 0px;
-        height:fit-content;
-    }
-    #data{
-      flex-direction:column;
-    }
-  }
-  @media (max-width: 775px) {
-    /* CSS that should be displayed if width is equal to or less than 800px goes here */
-    #image-border{
-        margin:auto;
-        margin-bottom: 20px;
-    }
-    #inner{
-        flex-direction:column;
-    }
-    #noveltitle{
-        margin-bottom: 0px;
-    }
-    #tables{
-        margin: auto;
-        min-width: 500px;
-        
-    }
-    td.info{
-        max-width: 100%; 
-    }
-    #TableOfContents{
-    width:545;
-    transition: all .3s ease;
-
-}
-  }
-  @media (max-width:675px) {
-    #image-border{
-        padding: 15px;
-        width: 220px;
-        height: 305px;
-        
-        
-    }
-  }
+  
   
 #table{
     height:fit-content;
@@ -446,8 +361,8 @@ ul{
     list-style: none;
     padding: 0px;
 }
-#date{
-    font-size:11px;
+.date{
+    font-size:12px;
     position:absolute;
     right:0;
     font-style:italic;
@@ -455,20 +370,21 @@ ul{
     color:gray;
     margin-right:10px;
 }
-#title{
+.title{
     padding-left:10px;
     position:absolute;
-    line-height:15px;
+    line-height:17px;
     left:5;
     font-size:17px;
 }
-#group{
+.group{
     width:100%;
     display:flex;
     flex-direction:row;
-    border:none;
+    border-bottom:1px solid lightgray;
     background:none;
-    height:45px;
+    min-height:45px;
+    height:fit-content;
     position: relative;
     padding-top:15px;
     font-weight:300;
@@ -487,5 +403,67 @@ select{
     border:none;
     -webkit-appearance: none;
 }
+@media (max-width: 1200px){
+      #buttons{
+        margin: auto;
+     }
+     #TableOfContents{
+         width:92.5%; 
+      }
+  }
+  @media (max-width:1000px) {
+    #image-border{
+        padding: 0px;
+        height:fit-content;
+    }
+    #data{
+      flex-direction:column;
+    }
+  }
+  @media (max-width: 775px) {
+    /* CSS that should be displayed if width is equal to or less than 800px goes here */
+    #image-border{
+        margin:auto;
+        margin-bottom: 20px;
+    }
+    #inner{
+        flex-direction:column;
+    }
+    #noveltitle{
+        margin-bottom: 0px;
+    }
+    #tables{
+        margin: auto;
+        min-width: 500px;
+        
+    }
+    td.info{
+        max-width: 100%; 
+    }
+    #TableOfContents{
+    width:545;
+    transition: all .3s ease;
+
+}
+.group{
+    flex-direction:column;
+}
+.date{
+   position:relative;
+}
+.title{
+    position:relative;
+    margin-bottom:10px;
+}
+  }
+  @media (max-width:675px) {
+    #image-border{
+        padding: 15px;
+        width: 220px;
+        height: 305px;
+        
+        
+    }
+  }
 </style>
 

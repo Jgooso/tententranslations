@@ -23,7 +23,6 @@ export default{
       justify-content:center;
       display:flex;
       flex-direction:row;
-      margin-top:50px;
       margin-bottom:50px;
       grid-row: 3;
       grid-column: 1 / span 3;

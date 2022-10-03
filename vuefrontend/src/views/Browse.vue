@@ -1,7 +1,7 @@
 <template>
 <div class = 'content' >
     <br>
-    <p id = 'sortCategory'>{{ this.$route.params.identifier ? this.$route.params.identifier : 'All Novels' }}</p>
+    <p id = 'sortCategory' v-html='this.$route.params.identifier ? this.$route.params.identifier : "All Novels"'/>
     <div id = 'top'>
         <div id = 'count'>
             <UtfBox shape = '&#9733;'/>
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class = "novelList">
-        <div v-for='novel in novelData' :key = 'novel.title' id = 'novels'>
+        <div v-for='novel in novelData.sort(sort)' :key = 'novel.title' id = 'novels'>
             <NovelCard :novelData='novel'/>
         </div>
     </div>
@@ -80,8 +80,12 @@ import UtfBox from '../components/UtfBox'
     },
     created(){
         //document.title='Browse'
-        console.log(this.$route.params.identifier)
-       getAPI.get('/novel/multiple?tier=5&category='+this.$route.params.browsetype+'&identifier='+this.$route.params.identifier)
+        var identifier = this.$route.params.identifier
+        console.log(identifier)
+        if(identifier != undefined){
+            identifier = identifier.replace(/&nbsp;/g,'-')
+        }
+       getAPI.get('/novel/multiple?tier=5&category='+this.$route.params.browsetype+'&identifier='+identifier)
           .then(response => {
             console.log('Post API has recieved data')
             this.novelData=response.data

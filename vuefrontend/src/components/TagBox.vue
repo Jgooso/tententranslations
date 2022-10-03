@@ -39,8 +39,10 @@ button{
     margin-left:5px;
     margin:auto;
     font-weight:bold;
+    margin-top:0px;
+    margin-bottom:6px;
 }
 p{
-    margin:auto;
+    margin-top:15px;
 }
 </style>

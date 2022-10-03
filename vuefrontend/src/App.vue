@@ -141,8 +141,10 @@ export default {
       grid-row:2;
       grid-column:2;
       margin:auto;
-      max-width:1300px;
+      max-width:1000px;
       padding:0px;
+      height:fit-content;
+      height:100%;
   }
   .view-border-two{
     grid-row:2;
@@ -156,6 +158,7 @@ export default {
     height:100%;
     margin:0px;
     width:100%;
+    border:none;
 
   }
 
