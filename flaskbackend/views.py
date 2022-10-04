@@ -34,9 +34,24 @@ def multiplenovels():
     multiple_novel_val = (identifier,)
     #multiple_novel_sql
     if category == 'tags' or category == 'genres' or category == 'status':
-        multiple_novel_sql = 'SELECT novels.novelid,title,views,rating,lastupload,firstupload,imageurl FROM novels INNER JOIN noveldescriptors ON novels.novelid = noveldescriptors.novelid WHERE descriptor = %s'
+        multiple_novel_sql = '''SELECT novels.novelid,title,rating,lastupload,firstupload,imageurl,SUM(chapters.views) as views
+                                FROM novels 
+                                    INNER JOIN noveldescriptors 
+                                        ON novels.novelid = noveldescriptors.novelid 
+                                    INNER JOIN Chapters
+                                        ON novels.novelid = chapters.novelid
+                                WHERE descriptor = %s
+                                        '''
+
     elif category == 'authors':
-        multiple_novel_sql = 'SELECT novelid,title,views,rating,lastupload,firstupload,imageurl FROM novels WHERE authors = %s'
+        multiple_novel_sql = '''SELECT novels.novelid,title,rating,lastupload,firstupload,imageurl,SUM(chapters.views) as views
+                                FROM novels 
+                                    INNER JOIN noveldescriptors 
+                                        ON novels.novelid = noveldescriptors.novelid 
+                                    INNER JOIN Chapters
+                                        ON novels.novelid = chapters.novelid
+                                WHERE authors = %s
+                                        '''
     else:
         multiple_novel_sql = 'SELECT novelid,title,views,rating,lastupload,firstupload,imageurl FROM novels'
     
@@ -150,8 +165,8 @@ def get_chapter():
     novel = request.args.get('novel')
     update_chapter = request.args.get('chapterupdate')
     if request.method == 'GET':
-        chapter_sql = "SELECT DISTINCT content FROM chapters WHERE chapternumber = %s AND novelid=%s;UPDATE novels SET views = views +1 WHERE novelid = %s"
-        chapter_val = (chapter,novel,novel)
+        chapter_sql = "SELECT DISTINCT content FROM chapters WHERE chapternumber = %s AND novelid=%s;UPDATE chapters SET views = views +1 WHERE chapternumber = %s AND novelid = %s"
+        chapter_val = (chapter,novel,chapter,novel)
         chapter_results = []
         for result in novelcursor.execute(chapter_sql,chapter_val,multi=True):
             if result.with_rows:

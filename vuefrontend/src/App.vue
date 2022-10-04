@@ -45,6 +45,7 @@ export default {
     tier: 5,
     darkmode:false,
     testing:[],
+    user: $cookies.get('userID')
     }
   },
   methods:{
@@ -92,7 +93,12 @@ export default {
       
     },
     created(){
-
+      if(this.user==undefined){
+        const id = parseInt(Math.random()*1000000)
+        $cookies.set('user',id)
+      }
+      console.log(this.user)
+     
     }
   
 }

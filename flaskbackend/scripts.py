@@ -12,7 +12,7 @@ from deep_translator import GoogleTranslator,MicrosoftTranslator
 import json
 
 #uploading chapters to weboage
-import datetime
+from datetime import datetime,date,timedelta
 import pytz
 from selenium import webdriver
 
@@ -136,7 +136,7 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     noveldb.commit()
 
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
-    sql = "INSERT INTO chapters (chapterid,novelid,title,section,chapternumber,content,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql = "INSERT INTO chapters (chapterid,novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     for i in range(len(chapter_list)-1):
         print(chapter_number)
         ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapter_number))
@@ -149,7 +149,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 section,#section
                  0,#chapternumber
                 None,#content
-                5,#active
+                1,#active
                 chapter_number+section,#chapterorder
             )
             novelcursor.execute(sql,val)
@@ -182,41 +182,57 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 section,#section
                 chapter_number,#chapternumber
                 content,#content
-                0,#chapteractive
+                1,#chapteractive
                 chapter_number+section,#chapterorder
+                0,#views
+
             )
             novelcursor.execute(sql,val)
             chapter_number += 1
 
 def update():#Search for new chapters and download them to database
-    novelcursor.execute("SELECT novelid,url FROM novels WHERE novelstatus = 'Ongoing' OR novelstatus = 'On Hold'")
+    today = date.today()
+    yesterday = today  - timedelta(days = 1)
+    novelcursor.execute("SELECT novelid,url,novelstatus FROM novels")
     novels = novelcursor.fetchall()
     for novel in novels:
         #SETUP: define sql, get online chapters and database chapters
         novel_obj = get_HTML(novel[1])
-        chapter_sql = "SELECT novelid,chapternumber,section FROM chapters WHERE novelid = %s ORDER BY chapternumber"
+        chapter_sql = "SELECT novelid,chapterid,chapternumber,section,views,chapteractive FROM chapters WHERE novelid = %s ORDER BY chapternumber"
         novel_sql = "UPDATE novels SET novelstatus = 'completed' WHERE novelid=%s"
+        data_sql = 'INSERT INTO data (novelid,chapterid,views,date) VALUES (%s,%s,%s,%s)'
         novelid = (novel[0],)
         novelcursor.execute(chapter_sql,novelid)
         chapters = novelcursor.fetchall()
         chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
         #check if there are more chapters on NCODE than database; if so, get newest chapter in database than call processChapters
-        if len(chapter_list) > len(chapters):
+        if len(chapter_list) > len(chapters) and (novel[-1] == 'Ongoing' or novel[-1] == 'On Hold'):
             chapter_list = chapter_list[len(chapters):]
             last_chapter = chapters[-1]
-            chapter_number = last_chapter[1]+1
-            section = last_chapter[2]
+            chapter_number = last_chapter[2]+1
+            section = last_chapter[3]
             processChapters(chapter_number=chapter_number,section=section,novel_id=novelid[0],chapter_list=chapter_list)
-
+        for chapter in chapters:
+            if chapter[2] != 0 and chapter[-1] == 0:
+                try:
+                    novelcursor.execute('SELECT views from data WHERE chapterid = %s AND novelid = %s AND date = %s',(chapter[1],novel[0],yesterday  - timedelta(days = 1)))
+                    yesterday_views = novelcursor.fetchone()
+                    views = chapter[-2]-yesterday_views
+                except TypeError:
+                    views = chapter[-2]
+                data_val = (novel[0],chapter[1],views,yesterday)
+                novelcursor.execute(data_sql,data_val)
         #if completed element found on info page set novel to completed
         o = get_HTML(novel[1][:25]+'/novelview/infotop/ncode'+novel[1][25:])
         if o.find(id='noveltype'):
+            
             novelcursor.execute(novel_sql,novelid)
         noveldb.commit()
-    
+        if today.strftime('%d') == '01':
+            novelcursor.execute('UPDATE chapters SET views = 0')
 def upload():#change permissions for viewing of novels
     now = pytz.timezone('America/Chicago')
-    now = datetime.datetime.now(now).replace(microsecond=0)
+    now = datetime.now(now).replace(microsecond=0)
     novel_sql = 'SELECT DISTINCT schedule.novelid FROM Schedule INNER JOIN novels ON schedule.novelid = novels.novelid WHERE day LIKE %s AND time = %s AND novels.novelactive = 1'
     novel_val = (now.strftime("%A"),now.strftime("%H"))
     chapter_sql =  '''
@@ -263,4 +279,4 @@ def ranker(rank):
     else:
         return str(rank)+'th'
 
-upload()
+update()

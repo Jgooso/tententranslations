@@ -7,4 +7,4 @@ import { VueCookies } from 'vue-cookies';
 
 createApp(App).use(router,VueCookies).mount('#app')
 
-$cookies.config('7d'['/path'])
+$cookies.config('1m'['/path'])
