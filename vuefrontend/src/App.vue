@@ -1,23 +1,21 @@
 <template>
-  <div id="app">
-  
-    <SignIn/>
+  <div id="app" v-if='user.status'>
      <sidebar ref='sidemenu'
      v-on:changesidebar='changesidebar()'
      v-on:closesignin='close_signin()'
      />
     <SignIn ref = 'signin'/>
-
   <Header ref='header'
    v-on:changesidebar='changesidebar()'
    v-on:signin='open_signin()'
    v-on:signup='signup()'
-   :tier='tier'
+   :status='user.status'
    class = 'view-header'
   />
   <div class = 'view-border-one border'></div>
     <router-view
-      :tier = 'tier'
+      :tier = 'user.tier'
+      :font-size = 'user.fontsize'
       class = 'view-content'
     />
   <div class = 'view-border-two border'></div>
@@ -42,10 +40,9 @@ export default {
   },
   data(){
     return{
-    tier: 5,
     darkmode:false,
     testing:[],
-    user: $cookies.get('userID')
+    user: []
     }
   },
   methods:{
@@ -93,12 +90,31 @@ export default {
       
     },
     created(){
-      if(this.user==undefined){
+      const userID = $cookies.get('user')
+      console.log(userID)
+      if(userID==null){
         const id = parseInt(Math.random()*1000000)
         $cookies.set('user',id)
-      }
-      console.log(this.user)
+        getAPI.post('/user',{userID:id})
+            .then(response => {
+            console.log(response)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }else{
+            getAPI.get('/user?userID='+userID)
+            .then(response => {
+            
+            console.log(response['data'])
+            this.user = response['data']
+            console.log(this.user)
+          })
+          .catch(err => {
+            console.log(err)
+          })
      
+    }
     }
   
 }
@@ -125,14 +141,6 @@ export default {
     background-color:var(--backgroundColor)!important;
     
   }
-  /*
-  .content{
-      position:relative;
-      height: 100%;
-      width:100%;
-      
-  }
-  */
   .view-header{
     grid-row:1;
     grid-column: 1 / span 3;
@@ -142,6 +150,7 @@ export default {
   .view-border-one{
    grid-row:2;
    grid-column:1;
+   border:none;
   }
   .view-content{
       grid-row:2;
@@ -151,10 +160,12 @@ export default {
       padding:0px;
       height:fit-content;
       height:100%;
+      border:none;
   }
   .view-border-two{
     grid-row:2;
     grid-column:3;
+    border:none;
   }
   .view-footer:{
     grid-row: 3;

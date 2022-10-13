@@ -1,21 +1,21 @@
 <template>
 <div class = 'manager'>
-<div id = 'managementnavigator'>
-<router-link :to = "{name: 'uploadPage'}" class='nav'>Upload</router-link>
-<router-link :to = "{name: 'schedulePage'}" class='nav'>Schedule</router-link>
-<router-link :to = "{name: 'editPage'}" class='nav'>Edit</router-link>
-</div>
-<router-view
-:editable='true'
-id = 'editView'
-v-if='verified'
-/>
-<div v-else id ='password-protection'>
-    <label for='password'>Password:
-        <input type = 'password' id = 'password'>
-    </label>
-    <input type = 'submit' @click='submit()'>
-</div>
+    <div id = 'management-navigator'>
+        <router-link :to = "{name: 'uploadPage'}" class='manage-nav'>Upload</router-link>
+        <router-link :to = "{name: 'schedulePage'}" class='manage-nav'>Schedule</router-link>
+        <router-link :to = "{name: 'editPage'}" class='manage-nav'>Edit</router-link>
+    </div>
+    <router-view
+        :editable='true'
+        id = 'editView'
+        v-if='verified'
+    />
+    <div v-else id ='password-protection'>
+        <label for='password'>Password:
+            <input type = 'password' id = 'manage-password-input'>
+        </label>
+        <input type = 'submit' @click='submit()'>
+    </div>
 </div>
 </template>
 
@@ -30,7 +30,7 @@ export default{
     },
     methods:{
         submit(){
-            const pass = document.getElementById('password').value
+            const pass = document.getElementById('manage-password-input').value
             if(pass == 'jeg4Novel'){
                 this.verified = true;
                 $cookies.set('verified',true)
@@ -50,7 +50,7 @@ export default{
     margin-top:50px;
     margin-left:0px;
 }
-#managementnavigator{
+#management-navigator{
     height:500px;
     background-color:lightgray;
     width:13%;
@@ -60,9 +60,9 @@ export default{
     margin-right:10px;
     position:fixed;
 }
-.nav{
+.manage-nav{
     color:black;
-    justify-content:center;
+    text-align:center;
     width:200px;
     font-size:15px;
     padding-top:10px;

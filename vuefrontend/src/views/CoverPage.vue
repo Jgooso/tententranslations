@@ -4,12 +4,11 @@
  <!--COVER-->
   <div id="cover" ref = 'cover'>
     <div v-if='novelData.title'>
-    <!--
+
         <Navigator
          :novelid='novelData.id'
          :novel='novelData.title'
         />
-        -->
         <p id = "noveltitle" v-text='novelData.title'/>
         <div id = "inner">
             <img id = "image-border" :src="novelData.imageurl" v-if='novelData.imageurl'>
@@ -26,7 +25,7 @@
                     </tr>
                     <tr>
                         <td>Raw</td>
-                        <td class="info"><a :href="novelData.url">{{novelData.url}}</a></td>
+                        <td class="info"><a :href="novelData.url" class = 'selectable'>{{novelData.url}}</a></td>
                     </tr>
                     <tr>
                         <td>Author</td>
@@ -47,7 +46,7 @@
                         <td class="info">
                             <ul class='comma-list'>
                                 <li v-for='tag in novelData.tags' :key='tag'>
-                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable info' v-html='tag'/>
+                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable' v-html='tag'/>
                                 </li>
                             </ul>
                         </td>
@@ -61,7 +60,7 @@
                     <tr>
                         <td>Status</td>
                         <td class="info">
-                            <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:novelData.uploadstatus}}" class='selectable info' v-text='novelData.uploadstatus'/>
+                            <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:novelData.uploadstatus}}" class='selectable' v-text='novelData.uploadstatus'/>
                         </td>
                     </tr>
                     <tr>
@@ -104,7 +103,7 @@
             </button>
             <br>
             <ul v-bind:id = "section.section">
-                <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterNumber'>
+                <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterorder'>
                 <router-link 
                     :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
                     <p class = 'title'>{{chapter.title}}</p>
@@ -114,15 +113,6 @@
             </ul>
         </li>
         </ul>
-        <ul v-if='sectionList.length==0'>
-                <li v-for="chapter in chapterList" :key='chapter.chapterNumber'>
-                <router-link 
-                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
-                    <p class = 'title'>{{chapter.title}}</p>
-                    <p class = "date">{{new Date(chapter.uploaddate).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
-                </router-link>
-                </li>
-            </ul>
         <button @click='showMore()' id = 'showMore' v-if='chapterList.length+sectionList.length > 25'>Show More &#9662;</button>
     </div>
 </div>
@@ -279,9 +269,11 @@
       line-height: 20px;
       vertical-align: bottom;
       color:rgb(136,136,136);
+      font-size:14px;
   }
-  .info a{
-    color:black;
+  .selectable{
+      font-size:14px;
+      color:#3c3c3c
   }
   a:hover { 
     color: var(--styleColor);

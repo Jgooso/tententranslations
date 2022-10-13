@@ -7,16 +7,16 @@ app = create_app(ProdConfig)
 
 @app.route('/novel/multiple', methods = ['GET'])
 @cross_origin()
-def multinovel():
-    return multiplenovels()
+def multiplenovels():
+    return get_multiplenovels()
 @app.route('/novel/single', methods = ['GET','POST','PUT','DELETE'])
-def onenovel():
-    return singlenovel()
+def singlenovel():
+    return get_singlenovel()
 @app.route('/chapter', methods = ['GET','PUT'])
 def chapter():
     return get_chapter()
 @app.route('/uploaddata',methods=['GET'])
-def upload():
+def genres_and_tags():
     return get_genres_and_tags()
 @app.route('/schedule',methods=['GET','POST','PUT','DELETE'])
 def schedules():
@@ -24,6 +24,12 @@ def schedules():
 @app.route('/noveltitles',methods=['GET'])
 def noveltitles():
     return get_noveltitles()
+@app.route('/user',methods=['GET','POST'])
+def user():
+    return get_user()
+@app.route('/home',methods=['GET'])
+def home():
+    return get_home_page_novels()
 @app.after_request
 def add_header(response):
     response.headers.add('Access-Control-Allow-Origin', '')

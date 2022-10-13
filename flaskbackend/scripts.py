@@ -8,7 +8,6 @@ from slugify import slugify
 import language_tool_python
 from bs4 import BeautifulSoup
 from googletrans import Translator
-from deep_translator import GoogleTranslator,MicrosoftTranslator
 import json
 
 #uploading chapters to weboage
@@ -34,6 +33,7 @@ config = {
 'port': '3306',
 'database': 'tententranslations',
 'raise_on_warnings': True,}
+
 noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
 translator = Translator()
@@ -43,10 +43,10 @@ tool = language_tool_python.LanguageTool('en-US')
 def translate(text):#Translate text
     return translator.translate(text).text
 def deeptranslate(text):
-    return GoogleTranslator(source='auto', target='en').translate(text)
+    return translate(source='auto', target='en').translate(text)
 def get_HTML(URL):#retrieve HTML from webpage
-    response = requests.get(URL,headers={"User-Agent":"Mozilla/5.0"}).text
-    return BeautifulSoup(response, "html.parser")
+    response = requests.get(URL,headers={'User-Agent':'Mozilla/5.0'}).text
+    return BeautifulSoup(response, 'html.parser')
 
 def distance_from_thousand(elem):#sort function for translations
     return elem%1000
@@ -68,7 +68,7 @@ def correct_grammer(text):#corrects grammers. Ignores spelling mistakes
         for i in range(len(text)):
             my_new_text[start_positions[m]] = my_corrections[m]
             if (i>start_positions[m] and i<end_positions[m]):
-                my_new_text[i]=""
+                my_new_text[i]=''
      
     my_new_text = "".join(my_new_text)
     return my_new_text
@@ -99,96 +99,95 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     jp_title = novel_obj.title.text
     en_title = translate(jp_title)
     novel_id = slugify(en_title)
-    release = int(novel_obj.find(class_='long_update').text.strip()[:4])
-
-    #DElETE novel from database if it already exists
-    delete_sql = "DELETE FROM novels WHERE novelid = %s"
-    delete_val = (novel_id,)
-    novelcursor.execute(delete_sql,delete_val)
+    release = novel_obj.find(class_='long_update').text.strip()[:4]
+    author = scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:])
+    description = scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   '))))
 
     #INSERT data into database
-    novel_insert_sql = "INSERT INTO novels VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    novel_insert_sql = "REPLACE INTO novels(novelid,title,alternativetitle,url,description,novelactive) VALUES(%s,%s,%s,%s,%s,%s);SELECT id FROM novels WHERE novelid = %s"
     novel_insert_val = (
         novel_id,#novelid
         en_title,#title
         jp_title,#alternativetitle
         URL,#url
-        scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:]),#author
-        release,#novelrelease
-        'Ongoing',#novelstatus
-        0,#views
-        0,#ratings
-        scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   ')))),#description
+        description,#description
         0,#novelactive
-        None,#lastupload
-        None,#firstupload
-        None#imageurl
+        novel_id,
     )
-    novelcursor.execute(novel_insert_sql,novel_insert_val)
-    descriptors = genres + tags.split(',') + ['Ongoing']
+    
+    for result in novelcursor.execute(novel_insert_sql,novel_insert_val,multi=True):
+            if result.with_rows:
+                novel_identifier = novelcursor.fetchone()[0]
+    descriptors = genres + tags.split(',') + [author,release]
     for d in descriptors:
-        descriptor_insert_sql = 'INSERT INTO noveldescriptors (novelid,descriptor) VALUES (%s,%s)'
-        descriptor_insert_val = (novel_id,d.strip())
+        if(d == author):
+            novelcursor.execute("REPLACE INTO descriptors (descriptor,type) VALUES (%s,%s)",(author,'authors'))
+        descriptor_insert_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM descriptors WHERE descriptor = %s"
+        descriptor_insert_val = (novel_identifier,d.strip())
+        print(d.strip())
         novelcursor.execute(descriptor_insert_sql,descriptor_insert_val)
+    novelcursor.execute("INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM descriptors WHERE descriptor = 'Ongoing'",(novel_identifier,))
+
     #Upload Chapters
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
-    processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_id)
+    processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_identifier)
     noveldb.commit()
 
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
-    sql = "INSERT INTO chapters (chapterid,novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-    for i in range(len(chapter_list)-1):
+    sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    chapter_order = chapter_number+section
+    for i in range(len(chapter_list)):
         print(chapter_number)
-        ch_id = slugify(novel_id+"s"+str(section)+"c"+str(chapter_number))
         if 'class' in str(chapter_list[i]):
             section+=1
             val = (
-                ch_id,#id
                 novel_id,#novelid
                 translate(chapter_list[i].text),#title
                 section,#section
                  0,#chapternumber
                 None,#content
                 1,#active
-                chapter_number+section,#chapterorder
+                chapter_order,#chapterorder
+                0,#views
             )
             novelcursor.execute(sql,val)
         else:
-            chapter_obj = get_HTML("https://ncode.syosetu.com" + str(chapter_list[i]['href']))
+            chapter_obj = get_HTML('https://ncode.syosetu.com' + str(chapter_list[i]['href']))
             chapter_title = translate(str(chapter_obj.find(class_ = 'novel_subtitle').text))
-            content = ""
-            text = '   '+'   '.join([str(p)[str(p).index(">")+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
+            content = ''
+            text = '   '+'   '.join([str(p)[str(p).index('>')+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
             #process text content
             text = remove_html_tags(text)
-            while "</rt>" in text:text = text[:text.index("<rt>")-1] + text[text.index("</rt>")+6:]
+            while '</rt>' in text:text = text[:text.index('<rt>')-1] + text[text.index('</rt>')+6:]
             #find good points of division
             new_lines=[_.start() for _ in re.finditer('\n', text)]
             new_lines.sort(key=distance_from_thousand)
             divide_index={0:0}
             for line in new_lines:
-                if line//200 !=0 and line//200 not in divide_index:
-                    divide_index[line//200]=line
+                if line//1000 !=0 and line//1000 not in divide_index:
+                    divide_index[line//1000]=line
             divide_index[len(divide_index)]=len(text)
             divide_index=dict(sorted(divide_index.items(), key=lambda item: item[1]))
-
+            divider = [v for (k,v) in divide_index.items()]
             #translate and grammer check chapters
-            for j in range(len(divide_index)-1):content += translate(text[divide_index[j]:divide_index[j+1]])
+            for j in range(len(divider)-1):
+                content += translate(text[divider[j]:divider[j+1]])
             content = correct_grammer(content)
             content = scrub_HTML(content)
             val = (
-                ch_id,#id
                 novel_id,#novelid
                 chapter_title,#chaptertitle
                 section,#section
                 chapter_number,#chapternumber
                 content,#content
                 1,#chapteractive
-                chapter_number+section,#chapterorder
+                chapter_order,#chapterorder
                 0,#views
 
             )
             novelcursor.execute(sql,val)
             chapter_number += 1
+        chapter_order += 1
 
 def update():#Search for new chapters and download them to database
     today = date.today()
@@ -199,8 +198,8 @@ def update():#Search for new chapters and download them to database
         #SETUP: define sql, get online chapters and database chapters
         novel_obj = get_HTML(novel[1])
         chapter_sql = "SELECT novelid,chapterid,chapternumber,section,views,chapteractive FROM chapters WHERE novelid = %s ORDER BY chapternumber"
-        novel_sql = "UPDATE novels SET novelstatus = 'completed' WHERE novelid=%s"
-        data_sql = 'INSERT INTO data (novelid,chapterid,views,date) VALUES (%s,%s,%s,%s)'
+        novel_sql = "UPDATE noveldescriptors SET descriptor = 'completed' WHERE novelid=%s AND descriptor in ('Ongoing','On Hold','Dropped')"
+        data_sql = "INSERT INTO data (novelid,chapterid,views,date) VALUES (%s,%s,%s,%s)"
         novelid = (novel[0],)
         novelcursor.execute(chapter_sql,novelid)
         chapters = novelcursor.fetchall()
@@ -215,7 +214,7 @@ def update():#Search for new chapters and download them to database
         for chapter in chapters:
             if chapter[2] != 0 and chapter[-1] == 0:
                 try:
-                    novelcursor.execute('SELECT views from data WHERE chapterid = %s AND novelid = %s AND date = %s',(chapter[1],novel[0],yesterday  - timedelta(days = 1)))
+                    novelcursor.execute("SELECT views from data WHERE chapterid = %s AND novelid = %s AND date = %s",(chapter[1],novel[0],yesterday  - timedelta(days = 1)))
                     yesterday_views = novelcursor.fetchone()
                     views = chapter[-2]-yesterday_views
                 except TypeError:
@@ -233,17 +232,23 @@ def update():#Search for new chapters and download them to database
 def upload():#change permissions for viewing of novels
     now = pytz.timezone('America/Chicago')
     now = datetime.now(now).replace(microsecond=0)
-    novel_sql = 'SELECT DISTINCT schedule.novelid FROM Schedule INNER JOIN novels ON schedule.novelid = novels.novelid WHERE day LIKE %s AND time = %s AND novels.novelactive = 1'
+    novel_sql = """
+                    SELECT DISTINCT schedule.novelid 
+                        FROM Schedule 
+                            INNER JOIN novels 
+                                ON schedule.novelid = novels.novelid 
+                    WHERE day LIKE %s AND time = %s AND novels.novelactive = 1
+                """
     novel_val = (now.strftime("%A"),now.strftime("%H"))
-    chapter_sql =  '''
+    chapter_sql =  """
                    UPDATE chapters SET chapteractive = 1, uploaddate = %s
                    WHERE novelid = %s AND chapteractive = 0 ORDER BY chapterorder+0 LIMIT 1;
                    UPDATE novels SET lastupload = %s WHERE novelid = %s;
-                   '''
+                   """
     #SQL NOT EXECUTING FIX
     novelcursor.execute(novel_sql,novel_val)
     print(novel_val)
-    check_chapter_sql='SELECT ISNULL(content) FROM chapters WHERE novelid = %s AND chapteractive = 0 LIMIT 1'
+    check_chapter_sql="SELECT ISNULL(content) FROM chapters WHERE novelid = %s AND chapteractive = 0 LIMIT 1"
     try:
         i=1
         novel = novelcursor.fetchone()[0]
@@ -278,5 +283,3 @@ def ranker(rank):
         return str(rank)+'rd'
     else:
         return str(rank)+'th'
-
-update()

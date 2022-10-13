@@ -41,15 +41,10 @@ import UtfBox from '../components/UtfBox'
             attributesort:'latest'
             }
         },
+        props:[
+            'tier'
+        ],
         methods:{
-            /*
-            slugify(text) {
-            return text          
-                .normalize('NFKD')            
-                .replace(/[^a-zA-Z0-9 ]/g, "")//remove nonletter chars             
-                .trim()                                  
-                .replace(/\s+/g, '-')//replace - with space 
-        },*/
         sort(a,b){
             switch (this.attributesort){
                 case 'latest':
@@ -75,17 +70,14 @@ import UtfBox from '../components/UtfBox'
 
             }
 
-        }
-        
-    },
-    created(){
-        //document.title='Browse'
-        var identifier = this.$route.params.identifier
+        },
+        getNovels(){
+            var identifier = this.$route.params.identifier
         console.log(identifier)
         if(identifier != undefined){
-            identifier = identifier.replace(/&nbsp;/g,'-')
+            identifier = identifier.replace(/&nbsp;/g,'|')
         }
-       getAPI.get('/novel/multiple?tier=5&category='+this.$route.params.browsetype+'&identifier='+identifier)
+       getAPI.get('/novel/multiple?tier='+this.tier+'&category='+this.$route.params.browsetype+'&identifier='+identifier)
           .then(response => {
             console.log('Post API has recieved data')
             this.novelData=response.data
@@ -94,7 +86,21 @@ import UtfBox from '../components/UtfBox'
           .catch(err => {
             console.log(err)
           })
-         
+        }
+        
+    },
+    created(){
+        this.getNovels()  
+        this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        // react to route changes...
+        console.log(toParams)
+        if(Object.keys(toParams).includes('browsetype')){
+            this.getNovels()
+        }
+      }
+    )     
     }
     
     }

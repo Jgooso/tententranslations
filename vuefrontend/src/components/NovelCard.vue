@@ -7,18 +7,18 @@
     <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
     <div class = 'chapter'> 
         <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter[0]}}" 
-         v-text='novelData.firstChapter[0]' 
+         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" 
+         v-text='novelData.firstChapter["chapternumber"]' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = "new Date(novelData.firstChapter[1]).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        <p class = 'date' v-text = "new Date(novelData.firstChapter['uploaddate']).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
         
     </div>
     <div class = 'chapter'>
         <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter[0]}}" 
-         v-text='novelData.secondChapter[0]' 
+         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" 
+         v-text='novelData.secondChapter["chapternumber"]' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = "new Date(novelData.secondChapter[1]).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        <p class = 'date' v-text = "new Date(novelData.secondChapter['uploaddate']).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
     </div>
 </div>
 </template>
@@ -39,7 +39,6 @@ export default{
 <style scoped>
 .NovelCard{
     width:170px;
-    max-height:515px;
     margin-left:50px;
     margin-bottom:50px;
     display:flex;

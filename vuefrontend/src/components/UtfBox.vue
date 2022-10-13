@@ -25,7 +25,8 @@ h3{
     padding-top:4px;
     padding-left:6px;
     margin:0px;
-    height:30px
+    height:30px;
+    z-index:2;
 }
 #point{
     margin:0px;

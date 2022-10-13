@@ -1,13 +1,11 @@
 <template>
-    <footer class = "footer">
-        <div class = "content">
+    <footer id = "footer">
             <div id = "navigation">
-                <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
+                <router-link :to = "{name: 'aboutPage'}" class='footer-nav'>About</router-link>
                 <p style="font-size:15px;">|</p>
-                <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
+                <router-link :to = "{name: 'contactPage'}" class='footer-nav'>Contact</router-link>
             </div>
             <br>
-        </div>  
     </footer>
 </template>
 
@@ -17,7 +15,7 @@ export default{
 }
 </script>
 <style scoped>
-  .footer{
+  #footer{
       height: 75px;
       align-items: center;
       justify-content:center;
@@ -37,7 +35,7 @@ export default{
         
     
     }
-  .nav{
+  .footer-nav{
       color: var(--textColor);
       margin-left: 15px;
       margin-right:15px;

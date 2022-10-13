@@ -1,5 +1,5 @@
 <template>
-<div class = 'content'>
+<div>
 <br>
         <h2>About</h2>
         <hr>
@@ -16,19 +16,5 @@
         Thanks for coming to my website and I hope you enjoy reading.
         </p>
         <hr>
-        
     </div>
 </template>
-
-<script>
-export default{
-    name:'About',
-    created(){
-        //document.title='About'
-    }
-}
-</script>
-
-<style scoped>
-
-</style>

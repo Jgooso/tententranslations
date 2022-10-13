@@ -7,13 +7,5 @@
         <p>For any general feedback please fill out this google form</p>
         <a href ='https://forms.gle/XB7UCMCaHKD8HVUm7'>Feedback</a>
         <hr>
-        
     </div>
 </template>
-
-<script>
-
-export default{
-    name:'Contact'
-}
-</script>

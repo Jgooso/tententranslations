@@ -1,10 +1,12 @@
 <template>
 <div id = 'control-bar'>
             <div class='control-buttons-container' selectable='false'>
+             <!--
                 <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
                 <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
                 <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
                 <button class = 'controlbuttons'>&#xF288;</button>
+                -->
             </div>
         <br><br>
         <div  id = "navigation">
@@ -26,7 +28,6 @@
        
 </div>
        </div>
-        <!--<br> <button id = 'editButton' @click='triggerEdit' v-if='tier==5'>Edit</button><br><br>-->
 
 </template>
 <script>

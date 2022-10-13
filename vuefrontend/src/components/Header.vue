@@ -3,15 +3,16 @@
     <div id="header-top">
             <img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'>
             <div id = "header-navigation">
-                <router-link :to = "{name: 'Browse'}" class='nav' @click='location.reload()'>Browse</router-link>
+                <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
                 <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
                 <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
-                <!--<router-link :to = "{name: 'uploadPage'}" class='nav' v-if='tier==5'>Manage</router-link>-->
+                <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='status.includes("Moderator")'>Manage</router-link>
                 <KoFiButton class = 'nav' id = 'KoFi'/>
                 <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
     </div>
+ 
     <!--
         <div id = "user-bar">
             <button @click='$emit("signin")' class = 'sign-btn'> Sign-in </button>
@@ -34,9 +35,9 @@ import KoFiButton from '../components/KoFiButton'
 export default{
   
     name: 'Header',
-    props:[
-      'tier'
-    ],
+    props:{
+      'status': String
+    },
     components:{
       KoFiButton
     }
