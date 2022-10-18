@@ -1,24 +1,31 @@
 <template>
-<div class = 'content' >
+<div id = 'Browse' >
     <br>
-    <p id = 'sortCategory' v-html='this.$route.params.identifier ? this.$route.params.identifier : "All Novels"'/>
-    <div id = 'top'>
+
+    <h1 id = 'sortCategory' v-html='this.$route.params.identifier ? this.$route.params.identifier : "All Novels"'/>
+
+    <header id = 'top'>
         <div id = 'count'>
             <UtfBox shape = '&#9733;'/>
             <p id = 'resultCount'>{{novelData.length}} RESULTS</p>
             <label class = 'category'> Order By</label>
         </div>
+
         <div id = 'sortButtons'>
-            <button class = 'category' @click='attributesort="latest"'>Latest</button>
-            <button class = 'category' @click='attributesort="alphabetical"'>A-Z</button>
-            <button class = 'category' @click='attributesort="length"'>Length</button>
-            <button class = 'category' @click='attributesort="views"'>Most Views</button>
-            <button class = 'category' @click='attributesort="new"'>New</button>
+            <input type='button' class = 'category' @click='print("lastupload")' value = 'Latest' id = 'sort-lastupload'>
+            <input type ='button' class = 'category' @click='print("title")' value = 'A-Z' id = 'sort-title'>
+            <input type ='button' class = 'category' @click='print("length")' value = 'Length' id = 'sort-length'>
+            <input type ='button' class = 'category' @click='print("views")' value = 'Views' id = 'sort-views'>
+            <input type ='button' class = 'category' @click='print("firstupload")' value = 'New' id = 'sort-firstupload'>
         </div>
-    </div>
+    </header>
+
     <div class = "novelList">
         <div v-for='novel in novelData.sort(sort)' :key = 'novel.title' id = 'novels'>
-            <NovelCard :novelData='novel'/>
+            <NovelCard 
+                :novelData='novel'
+                type="browse"
+                />
         </div>
     </div>
 </div>
@@ -38,7 +45,7 @@ import UtfBox from '../components/UtfBox'
             return{
             novelData:[],
             chapterList:[],
-            attributesort:'latest'
+            attributesort:'new'
             }
         },
         props:[
@@ -47,25 +54,27 @@ import UtfBox from '../components/UtfBox'
         methods:{
         sort(a,b){
             switch (this.attributesort){
-                case 'latest':
-                    if(Date.parse(a.last_updated) < Date.parse(b.last_updated)) { return 1; }
-                    if(Date.parse(a.last_updated) > Date.parse(b.last_updated)) { return -1; }
+                case 'Latest':
+                    if(Date.parse(a.lastupload) < Date.parse(b.lastupload)) { return 1; }
+                    if(Date.parse(a.lastupload) > Date.parse(b.lastupload)) { return -1; }
                     return 0;
                 case 'alphabetical':
                     if(a.title < b.title) { return -1; }
                     if(a.title > b.title) { return 1; }
                     return 0;
                 case 'length':
-                    if(a.firstChapter[0] < b.firstChapter[0]) { return 1; }
-                    if(a.firstChapter[0] > b.firstChapter[0]) { return -1; }
+                    if(a.firstChapter['chapternumber'] < b.firstChapter['chapternumber']) { return 1; }
+                    if(a.firstChapter['chapternumber'] > b.firstChapter['chapternumber']) { return -1; }
                     return 0;
                 case 'views':
-                    if(a.views < b.views) { return 1; }
-                    if(a.views > b.views) { return -1; }
+                    const view_a = parseInt(a.views)
+                    const view_b = parseInt(b.views)
+                    if(view_a < view_b) { return 1; }
+                    if(view_a > view_b) { return -1; }
                     return 0;
                 case 'new':
-                    if(a.first_release < b.first_release) { return 1; }
-                    if(a.first_release > b.first_release) { return -1; }
+                    if(Date.parse(a.firstupload) < Date.parse(b.firstupload)) { return 1; }
+                    if(Date.parse(a.firstupload) > Date.parse(b.firstupload)) { return -1; }
                     return 0;
 
             }
@@ -86,6 +95,14 @@ import UtfBox from '../components/UtfBox'
           .catch(err => {
             console.log(err)
           })
+        },
+        print(p){
+            const selected = document.getElementsByClassName('selected')
+            for(var i=0; i < selected.length; i++){
+                selected[i].classList.remove('selected')
+            }
+            document.getElementById('sort-'+p).classList.add('selected')
+            console.log(p)
         }
         
     },
@@ -95,10 +112,9 @@ import UtfBox from '../components/UtfBox'
       () => this.$route.params,
       (toParams, previousParams) => {
         // react to route changes...
-        console.log(toParams)
-        if(Object.keys(toParams).includes('browsetype')){
-            this.getNovels()
-        }
+            if(Object.keys(previousParams).includes('browsetype') && Object.keys(toParams).length == 0){
+                this.getNovels()
+            }
       }
     )     
     }
@@ -107,6 +123,9 @@ import UtfBox from '../components/UtfBox'
 </script>
 
 <style scoped>
+#Browse{
+    width:100%;
+}
 #novels{
     display:flex;
     flex-direction:row;
@@ -124,6 +143,7 @@ import UtfBox from '../components/UtfBox'
    grid-template-columns: auto auto auto auto;
    margin:auto;
    height:fit-content;
+    transition: all .3s ease;
  
 }
 #count{
@@ -146,16 +166,11 @@ import UtfBox from '../components/UtfBox'
     font-size:15px;
     min-width:75px;
 }
-button.category:hover{
+input[type='button'].category:hover{
     color:var(--styleColor);
     border-bottom:4px solid var(--styleColor);
 }
 
-.category:focus{
-    color:var(--styleColor);
-    border-bottom:4px solid var(--styleColor);
-   outline: none;
-    }
 #sortCategory{
     font-size:18px;
     font-weight:bold;
@@ -168,7 +183,10 @@ button.category:hover{
     font-weight:600;
     width:200px;
 }
-
+.selected{
+    color:var(--styleColor);
+    border-bottom:4px solid var(--styleColor);
+}
 @media (max-width: 1200px){
      .novelList{
          grid-template-columns: auto auto auto;
@@ -176,6 +194,7 @@ button.category:hover{
     #top{
         flex-direction:column;
         height: 79px;
+        
     }
   }
 @media (max-width: 775px) {

@@ -42,8 +42,7 @@ tool = language_tool_python.LanguageTool('en-US')
 #Commonly used Functions
 def translate(text):#Translate text
     return translator.translate(text).text
-def deeptranslate(text):
-    return translate(source='auto', target='en').translate(text)
+
 def get_HTML(URL):#retrieve HTML from webpage
     response = requests.get(URL,headers={'User-Agent':'Mozilla/5.0'}).text
     return BeautifulSoup(response, 'html.parser')
@@ -84,6 +83,35 @@ def scrub_HTML(text):
     }
     for key,value in html_special_characters.items():text = text.replace(key,value)
     return text
+def time_difference(date):
+    current_time = datetime.now().replace(microsecond=0)
+    try:
+        seconds = (current_time-date.replace(microsecond=0)).total_seconds()
+    except:
+        return 'unreleased'
+    minutes = int(seconds / 60)
+    hours = int(minutes / 60)
+    days = int(hours / 24)
+    if seconds < 60:
+        return str(int(seconds))+' seconds ago'
+    elif minutes < 60:
+        if minutes == 1:
+            return str(minutes)+' minute ago'
+        else:
+            return str(minutes)+' minutes ago'
+    elif hours < 24:
+        if hours == 1:
+            return str(hours)+' hour ago'
+        else:
+            return str(hours)+' hours ago'
+        
+    elif days < 7:
+        if days == 1:
+            return str(days)+' day ago'
+        else:
+            return str(days)+' days ago'
+    else:
+        return date.date().strftime("%d %B, %Y")
 def remove_html_tags(text):
     text = text.replace('</p>','\n')
     text = text.replace('</br>','\n')
@@ -98,13 +126,16 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     novel_obj = get_HTML(URL)
     jp_title = novel_obj.title.text
     en_title = translate(jp_title)
-    novel_id = slugify(en_title)
+    novel_id = slugify(en_title.replace("'",""))
     release = novel_obj.find(class_='long_update').text.strip()[:4]
     author = scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:])
     description = scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   '))))
 
     #INSERT data into database
-    novel_insert_sql = "REPLACE INTO novels(novelid,title,alternativetitle,url,description,novelactive) VALUES(%s,%s,%s,%s,%s,%s);SELECT id FROM novels WHERE novelid = %s"
+    novel_insert_sql =  """INSERT INTO novels(novelid,title,alternativetitle,url,description,novelactive) 
+                                       VALUES(%s,%s,%s,%s,%s,%s);
+                          SELECT id FROM novels WHERE novelid = %s
+                        """
     novel_insert_val = (
         novel_id,#novelid
         en_title,#title
@@ -112,12 +143,14 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
         URL,#url
         description,#description
         0,#novelactive
-        novel_id,
+        novel_id#select id,
     )
-    
+    #execute sql and retriece id
     for result in novelcursor.execute(novel_insert_sql,novel_insert_val,multi=True):
             if result.with_rows:
                 novel_identifier = novelcursor.fetchone()[0]
+    
+    #Get list of all descriptors
     descriptors = genres + tags.split(',') + [author,release]
     for d in descriptors:
         if(d == author):
@@ -136,13 +169,15 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
     sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     chapter_order = chapter_number+section
+
     for i in range(len(chapter_list)):
         print(chapter_number)
-        if 'class' in str(chapter_list[i]):
+        current_chapter = chapter_list[i]
+        if 'class' in str(current_chapter):
             section+=1
             val = (
                 novel_id,#novelid
-                translate(chapter_list[i].text),#title
+                translate(current_chapter.text),#title
                 section,#section
                  0,#chapternumber
                 None,#content
@@ -152,13 +187,15 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             )
             novelcursor.execute(sql,val)
         else:
-            chapter_obj = get_HTML('https://ncode.syosetu.com' + str(chapter_list[i]['href']))
+            chapter_obj = get_HTML('https://ncode.syosetu.com' + str(current_chapter['href']))
             chapter_title = translate(str(chapter_obj.find(class_ = 'novel_subtitle').text))
             content = ''
             text = '   '+'   '.join([str(p)[str(p).index('>')+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
             #process text content
             text = remove_html_tags(text)
-            while '</rt>' in text:text = text[:text.index('<rt>')-1] + text[text.index('</rt>')+6:]
+            while '</rt>' in text:
+                text = text[:text.index('<rt>')-1] + text[text.index('</rt>')+6:]
+
             #find good points of division
             new_lines=[_.start() for _ in re.finditer('\n', text)]
             new_lines.sort(key=distance_from_thousand)
@@ -169,11 +206,12 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             divide_index[len(divide_index)]=len(text)
             divide_index=dict(sorted(divide_index.items(), key=lambda item: item[1]))
             divider = [v for (k,v) in divide_index.items()]
+
             #translate and grammer check chapters
             for j in range(len(divider)-1):
                 content += translate(text[divider[j]:divider[j+1]])
-            content = correct_grammer(content)
             content = scrub_HTML(content)
+            content = correct_grammer(content)
             val = (
                 novel_id,#novelid
                 chapter_title,#chaptertitle
@@ -231,7 +269,8 @@ def update():#Search for new chapters and download them to database
             novelcursor.execute('UPDATE chapters SET views = 0')
 def upload():#change permissions for viewing of novels
     now = pytz.timezone('America/Chicago')
-    now = datetime.now(now).replace(microsecond=0)
+    check_date = datetime.now(now).replace(microsecond=0)
+    current_time = datetime.now().replace(microsecond=0)
     novel_sql = """
                     SELECT DISTINCT schedule.novelid 
                         FROM Schedule 
@@ -239,7 +278,7 @@ def upload():#change permissions for viewing of novels
                                 ON schedule.novelid = novels.novelid 
                     WHERE day LIKE %s AND time = %s AND novels.novelactive = 1
                 """
-    novel_val = (now.strftime("%A"),now.strftime("%H"))
+    novel_val = (check_date.strftime("%A"),check_date.strftime("%H"))
     chapter_sql =  """
                    UPDATE chapters SET chapteractive = 1, uploaddate = %s
                    WHERE novelid = %s AND chapteractive = 0 ORDER BY chapterorder+0 LIMIT 1;
@@ -254,7 +293,7 @@ def upload():#change permissions for viewing of novels
         novel = novelcursor.fetchone()[0]
         print(novel)
         check_chapter_val = (novel,)
-        chapter_val = (now,novel,now,novel)
+        chapter_val = (current_time,novel,current_time,novel)
         novelcursor.execute(check_chapter_sql,check_chapter_val)
         if novelcursor.fetchone()[0] == 0: i = 2
         for x in range(i):
@@ -264,13 +303,14 @@ def upload():#change permissions for viewing of novels
         pass
         
 def processView(views):
-    if views > 1000000:
-        processed_views = views%1000000 + 'M'
-    elif views > 1000:
-        procsesed_views = views%1000 + 'K'
+    if views >= 1000000:
+        processed_views = str(views//1000000) + 'M'
+    elif views >= 1000:
+        processed_views = str(views//1000) + 'K'
     else:
         processed_views = views
     return processed_views
+
 def ranker(rank):
     rank_digit = rank%10
     if rank > 100:

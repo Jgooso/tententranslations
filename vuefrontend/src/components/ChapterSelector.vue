@@ -1,12 +1,13 @@
 <template>
 <div id = 'control-bar'>
             <div class='control-buttons-container' selectable='false'>
-             <!--
+             
                 <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
                 <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
+                  <!--
                 <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
-                <button class = 'controlbuttons'>&#xF288;</button>
-                -->
+                <button class = 'controlbuttons'>&#xF288;</button> -->
+             
             </div>
         <br><br>
         <div  id = "navigation">
@@ -44,6 +45,14 @@ import NavButton from './Navbutton'
                 const x = document.getElementById("myselect").value
                 this.$router.push({name: 'chapterPage', params:{title:this.$route.params.title,chapter:x}})
             },
+            changeFontSize(change){
+            var r = document.querySelector(':root');
+            const new_font_size =parseInt(r.style.getPropertyValue('--fontsize').slice(0,2))+change
+            if(new_font_size > 5){
+            r.style.setProperty('--fontsize',  new_font_size+ 'px')
+            }
+            console.log(r.style.getPropertyValue('--fontsize'))
+            }
             
             
         },

@@ -12,7 +12,7 @@
         <p id = "noveltitle" v-text='novelData.title'/>
         <div id = "inner">
             <img id = "image-border" :src="novelData.imageurl" v-if='novelData.imageurl'>
-            <div id = "tables">
+            <div id = "novel-information">
              <div id = "data">
                 <table>
                     <tr>
@@ -190,7 +190,7 @@
     height:fit-content;
 }
 #TableOfContents{
-    width: 1110px;
+    width: 100%;
     margin:auto;
     vertical-align:center;
     user-select: none;
@@ -236,7 +236,7 @@
       margin-top:30px;
   }
  
-  #tables{
+  #novel-information{
       background-color: rgba(250, 250, 250, 0.8);
       padding:20px;
       width: 100%;
@@ -368,6 +368,10 @@ ul{
     line-height:17px;
     left:5;
     font-size:17px;
+}
+.group:hover .title{
+    color:var(--styleColor);
+    font-weight:bold;
 }
 .group{
     width:100%;

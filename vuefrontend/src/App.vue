@@ -12,13 +12,13 @@
    :status='user.status'
    class = 'view-header'
   />
-  <div class = 'view-border-one border'></div>
+  <div class = 'view-border-one bord'></div>
     <router-view
       :tier = 'user.tier'
       :font-size = 'user.fontsize'
       class = 'view-content'
     />
-  <div class = 'view-border-two border'></div>
+  <div class = 'view-border-two bord'></div>
   <Footer class = 'view-footer'/>
   </div>
 </template>
@@ -109,6 +109,8 @@ export default {
             console.log(response['data'])
             this.user = response['data']
             console.log(this.user)
+            var r = document.querySelector(':root');
+            r.style.setProperty('--fontsize', this.user.fontsize+'px')
           })
           .catch(err => {
             console.log(err)
@@ -125,6 +127,7 @@ export default {
   --styleColor: #75147C;
   --backgroundColor: #FFFFFF;
   --textColor: #000000;
+  --fontsize: 19px;
 }
 *{
   font:Arial, Helvetica;
@@ -156,7 +159,8 @@ export default {
       grid-row:2;
       grid-column:2;
       margin:auto;
-      max-width:1000px;
+      max-width:1200px;
+      min-width:1000px;
       padding:0px;
       height:fit-content;
       height:100%;
@@ -171,7 +175,7 @@ export default {
     grid-row: 3;
     grid-column: 1 / span 3;
   }
-  .border{
+  .bord{
     height:100%;
     margin:0px;
     width:100%;
@@ -183,6 +187,10 @@ export default {
      .view-content{
         width:92.5%;
          transition: all .3s ease;
+         min-width:0px;
+     }
+     .border{
+       display:none;
      }
   }
 
@@ -195,6 +203,8 @@ export default {
         transition: all .3s ease;
         width:92.5%;
         grid-column: 1 / span 3;
+        
+        padding:20px;
     }
 }
 </style>

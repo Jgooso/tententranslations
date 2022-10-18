@@ -7,9 +7,9 @@ const routes = [
             {path:':chapter',name: 'chapterPage',component: ()=> import('@/views/Chapter.vue')},     
         ],
         component: ()=> import('@/views/Novel.vue')},
-        {path:'',name:'HomePage',component: ()=> import ('@/views/HomePage.vue')},
-        {path:'/search',name: 'Browse',component: ()=> import('@/views/Browse.vue')},
-        {path:'/search/:browsetype/:identifier/',name: 'explorePage',component: ()=> import('@/views/Browse.vue')},
+        {path:'',name:'homePage',component: ()=> import ('@/views/HomePage.vue')},
+        {path:'/novel/',name: 'Browse',component: ()=> import('@/views/Browse.vue')},
+        {path:'/:browsetype/:identifier/',name: 'explorePage',component: ()=> import('@/views/Browse.vue')},
         {path:'/about',name: 'aboutPage',component: ()=> import('@/views/About.vue')},
         {path:'/contact',name: 'contactPage',component: ()=> import('@/views/Contact.vue')},
         {path:'/manage',
@@ -19,7 +19,7 @@ const routes = [
           {path:'edit',name:'editPage',component: ()=> import('@/views/Editor')}
         ]
         ,name: 'managePage',component: ()=> import('@/views/Manage.vue')},
-        {path:'/404',name:'errorPage',component: ()=>import('@/views/Error.vue')}
+        {path:'/:pathmatch(.*)*',name:'not-found',component: ()=>import('@/views/Error.vue')}
 ]
 
 const router = createRouter({
@@ -27,5 +27,9 @@ const router = createRouter({
   routes:routes,
   mode:'history'
 })
+router.resolve({
+  name: 'not-found',
+  params: { pathMatch: ['not', 'found'] },
+}).href
 export default router
 

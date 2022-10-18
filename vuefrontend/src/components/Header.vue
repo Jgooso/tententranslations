@@ -1,13 +1,13 @@
 <template>
     <header>
     <div id="header-top">
-            <img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'>
+            <router-link :to = "{name: 'homePage'}" id = 'home-button'><img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'></router-link>
             <div id = "header-navigation">
-                <router-link :to = "{name: 'Browse'}" class='nav'>Browse</router-link>
-                <router-link :to = "{name: 'aboutPage'}" class='nav'>About</router-link>
-                <router-link :to = "{name: 'contactPage'}" class='nav'>Contact</router-link>
+                <router-link :to = "{name: 'Browse'}" class='nav' style="text-decoration:none;">Browse</router-link>
+                <router-link :to = "{name: 'aboutPage'}" class='nav' style="text-decoration:none;">About</router-link>
+                <router-link :to = "{name: 'contactPage'}" class='nav' style="text-decoration:none;">Contact</router-link>
                 <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='status.includes("Moderator")'>Manage</router-link>
-                <KoFiButton class = 'nav' id = 'KoFi'/>
+                <KoFiButton id = 'KoFi'/>
                 <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
@@ -50,13 +50,14 @@ export default{
     -webkit-touch-callout: none; 
 }
   #header-top{
-      height: 130px;
+      height: 60px;
       align-items: center;
       justify-content:center;
-      background-color: var(--styleColor);
+     
       display:flex;
       flex-direction:row;
       margin-bottom:20px;
+      border-bottom:2px solid black;
   }
   #user-bar{
       padding: 12px;
@@ -85,24 +86,43 @@ export default{
         height:100%;
         align-items:center;
     }
+    /*
     button:hover{
         background-color:black;
         color:white;
         transition: all .2s ease;
         -webkit-transition: all .22s ease;
     }
+    */
+    #home-button{
+      background:none;
+      width:fit-content;
+      height:fit-content;
+      margin-top:auto;
+      margin-bottom:auto;
+    }
   .nav{
-      color: white;
+      color: black;
       font-weight:bold;
-      width: 100px;
       margin-left: 35px;
       font-size: 15px;
       position: relative;
       transition: all .3s ease-in-out;
       overflow:hidden;
+      text-align: center;
+      width:100px;
+      padding-left:10px;
+      padding-right:35px;
+      padding-top:15px;
+      height:90%;
+  }
+  .nav:hover{
+    background-color:rgba(50,50,50,0.2)
+
   }
   #KoFi{
     width:200px;
+    margin-left:35px;
   }
   #search{
       margin-left:25px;
@@ -129,9 +149,14 @@ export default{
   }
 #logo{
      min-width:200px;
-     height:110px;
+     height:60px;
      margin-top:auto;
      margin-bottom:auto;
+     
+}
+img{
+  height:60px;
+   overflow:hidden;
 }
 
 .menu-btn {
@@ -193,7 +218,7 @@ export default{
         flex-direction: row;
     }
     .nav{
-        width:0px;  
+        width:0;  
          transition: all .3s ease-in-out;
     }
     .menu-btn{
@@ -205,5 +230,13 @@ export default{
     #header-navigation{
       width:0px;
     }
+    #home-button{
+      position:absolute;
+      left:50px;
+      transition: all .2s ease-in-out;
+    }
+    #KoFi{
+    width:0px;
+  }
 }
 </style>

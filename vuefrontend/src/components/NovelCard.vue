@@ -1,16 +1,20 @@
 <template>
-<div class = 'NovelCard'>
+<router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" style="text-decoration:none">
+<div class = 'NovelCard' >
+    <!--
     <div  class = "cover_image"  @click='goTo(novelData.id)'>
-        <img :src="novelData.image" v-if='novelData.image'/>
+        <img :src="novelData.imageurl" v-if='novelData.imageurl'/>
         <span class='overlay'></span>
     </div>
-    <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
+    -->
+    <p v-text='novelData.title' id = 'title' />
+    <p id = "recent-chapters">Recent Chapters</p>
     <div class = 'chapter'> 
         <router-link 
          :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" 
          v-text='novelData.firstChapter["chapternumber"]' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = "new Date(novelData.firstChapter['uploaddate']).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
         
     </div>
     <div class = 'chapter'>
@@ -18,9 +22,10 @@
          :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" 
          v-text='novelData.secondChapter["chapternumber"]' 
          class = 'chapterNumber'/>
-        <p class = 'date' v-text = "new Date(novelData.secondChapter['uploaddate']).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })"/>
+        <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
     </div>
 </div>
+</router-link>
 </template>
 
 <script>
@@ -38,25 +43,46 @@ export default{
 </script>
 <style scoped>
 .NovelCard{
-    width:170px;
+    width:250px;
+    min-height:250px;
+    max-height:515px;
     margin-left:50px;
     margin-bottom:50px;
     display:flex;
     flex-direction:column;
-    padding:0;
+    padding:10px;
+    border:black 1px solid;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius:10px;
+    text-decoration:none;
 
+}
+.NovelCard:hover{
+    text-decoration:none;
+    transition: all .2s ease;
+    box-shadow: 0 8px 16px 0 purple, 0 12px 40px 0 purple;
 }
 .cover_image{
     overflow:hidden;
     width:100%;
    
 }
+#recent-chapters{
+    font-size:14px;
+    color:gray;
+    font-weight:300;
+    text-decoration:underline;
+    margin-bottom:5px;
+}
 .chapter{
     width:100%;
     height:fit-content;
     display:flex;
     flex-direction:row;
-    margin-top:10px;
+    border-radius:20px;
+}
+.chapter:hover{
+    background-color:var(--styleColor)
 }
 .chapterNumber{
     background-color:rgb(221,221,221);
@@ -69,6 +95,8 @@ export default{
     height:24px;
     font-weight:bold;
     padding-top:6px;
+    margin-top:7px;
+    margin-bottom:auto;
     
 }
 .chapterNumber:hover{
@@ -81,12 +109,14 @@ export default{
     font-weight:bold;
     color:var(--textColor);
     text-decoration:none;
-    height:fit-content;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height:100px;
+    margin-bottom:10px;
 }
-#title:hover{
-    color:var(--styleColor);
-     transition: all .3s ease;
-}
+
 .date{
     color:rgb(146,146,146);
     font-size: 12px;
