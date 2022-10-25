@@ -6,7 +6,7 @@
         <span class='overlay'></span>
     </div>
     -->
-    <div id = 'rank'>1</div>
+    <div id = 'rank'>{{novelData.row_num}}</div>
     <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
     <div v-if='type=="main"'>
     <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:novelData.genre}}" v-text='novelData.genre' id = 'main-genre'/>
@@ -41,10 +41,9 @@ export default{
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:black 1px solid;
-    border-radius:5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border:var(--borderColor) 1px solid;
     border-radius:10px;
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     position:relative;
 
 }
@@ -56,9 +55,9 @@ export default{
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:black 1px solid;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+   border:var(--borderColor) 1px solid;
     border-radius:5px;
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     position:relative;
 
 }
@@ -114,6 +113,10 @@ export default{
     text-decoration:none;
     height:fit-content;
     margin-top:0px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow:hidden;
 }
 #title:hover{
     color:var(--styleColor);

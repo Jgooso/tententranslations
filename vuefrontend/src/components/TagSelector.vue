@@ -1,7 +1,7 @@
 <template>
 <div>
 <label for='tagfilter'>Filter
-        <input id = 'tagfilter' @keyup='filterTag()' @focus='showtags()'>
+        <input type='text' id = 'tagfilter' @keyup='filterTag()' @focusin='showtags()' @focusout='hidetags()'>
     </label>
     <div  id = 'tagList'>
         <ul class = 'selectedtaglist' >
@@ -56,7 +56,7 @@ import tagBox from '../components/TagBox'
             }
         },
         showtags(){
-            document.getElementById('tagselector').style.display = 'flex'
+           document.getElementById('tagselector').style.display = 'flex'
         },
         hidetags(){
             document.getElementById('tagselector').style.display = 'none'
@@ -67,21 +67,25 @@ import tagBox from '../components/TagBox'
 
 <style scoped>
 #tagList{
-border: 2px rgb(244,244,244) solid;
+border: 2px black solid;
 width:500px;
 height:fit-content;
 min-height:50px;
 float:left;
-
+padding:20px;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;
 }
 #tagfilter{
     height:30px;
+    border:none;
 }
 .selectedtaglist{
     display:inline;
     list-style: none;
     padding:0px;
+   
 }
+
 .selectedtaglist li{
     display:inline;
     float:left;
@@ -95,10 +99,13 @@ float:left;
     width:100%;
     max-height:500px;
     height:100%;
+    background-color:white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;
 }
 .tagbutton{
     border:none;
     color:lightgray;
+    background:none;
 }
 .unselected{
     color:black;

@@ -8,6 +8,7 @@
          :novel='novelData.title'
          :chapter='chapter'
          id = 'chapter-navigator'
+
         />
         <ChapterSelector
             :chapterList= 'selectorList'

@@ -2,9 +2,9 @@
 <div id = 'sidemenu'>
     <div id = 'sidebar' ref='sidebar'>
         <h3 @click='swap()'>&#9587;</h3>
-        <router-link :to = "{name: 'Browse'}" class='nav'  @click.native='swap()' >Browse</router-link>
-        <router-link :to = "{name: 'aboutPage'}" class='nav' @click.native='swap()'>About</router-link>
-        <router-link :to = "{name: 'contactPage'}" class='nav' @click.native='swap()'>Contact</router-link>
+        <router-link :to = "{name: 'Browse'}" class='nav'  @click.native='swap()' style="text-decoration:none;">Browse</router-link>
+        <router-link :to = "{name: 'aboutPage'}" class='nav' @click.native='swap()' style="text-decoration:none;">About</router-link>
+        <router-link :to = "{name: 'contactPage'}" class='nav' @click.native='swap()' style="text-decoration:none;">Contact</router-link>
         <KoFiButton class = 'nav' id = 'KoFi'/>
     </div>
     <div id ='shade' @click='swap()' ref='shade'/>

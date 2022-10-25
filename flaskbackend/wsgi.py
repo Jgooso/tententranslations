@@ -30,6 +30,12 @@ def user():
 @app.route('/home',methods=['GET'])
 def home():
     return get_home_page_novels()
+@app.route('/feedback',methods=['GET','POST','DELETE'])
+def feedback():
+    return get_feedback()
+@app.route('/novels-page-count',methods=['GET'])
+def novel_page_count():
+    return get_novels_page_count()
 @app.after_request
 def add_header(response):
     response.headers.add('Access-Control-Allow-Origin', '')

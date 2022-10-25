@@ -60,13 +60,19 @@
                     <tr>
                         <td>Status</td>
                         <td class="info">
-                            <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:novelData.uploadstatus}}" class='selectable' v-text='novelData.uploadstatus'/>
+                            <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:'u'+novelData.uploadstatus}}" class='selectable' v-text='novelData.uploadstatus'/>
                         </td>
                     </tr>
                     <tr>
                         <td>Novel</td>
                         <td class="info" v-if='!editable' v-text='novelData.novelstatus'/>
                     </tr>
+                    <!--
+                    <tr>
+                        <td>Pages<span id = 'pageSuper'>(Approx.)</span><p id = 'disclaimer'>~1800 characters/360 words per Page</p></td>
+                        <td class="info"><p>{{novelData.pages}}</p></td>
+                    </tr>
+                    -->
                 </table>
              </div>
              <br>
@@ -102,8 +108,8 @@
                 <p class = "expand">-</p>
             </button>
             <br>
-            <ul v-bind:id = "section.section">
-                <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterorder'>
+            <ul v-bind:id = "section.section" >
+                <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterorder' >
                 <router-link 
                     :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
                     <p class = 'title'>{{chapter.title}}</p>
@@ -216,8 +222,13 @@
       flex-direction:row;
       width:100%;
       transition: all .2s ease;
+      box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+      margin-top:20px;
+      
   }
-  
+  #cover{
+      background-color:var(--backgroundColor);
+  }
   #image-border{
     max-height:313px;
     background-color: var(--backgroundColor));
@@ -234,8 +245,23 @@
       line-height:20px;
       height:fit-content;
       margin-top:30px;
+      font-weight:bold;
+      font-family: 'Times New Roman', serif;
+      
   }
- 
+ #pageSuper{
+     font-size:11px;
+     vertical-align: sub;
+     color:blue;
+ }
+ #disclaimer{
+     font-size:13px;
+     display:none;
+     position:absolute;
+ }
+ #pageSuper:hover + #disclaimer{
+     display:block;
+ }
   #novel-information{
       background-color: rgba(250, 250, 250, 0.8);
       padding:20px;
@@ -261,6 +287,7 @@
       width:15%;
       min-width:125px;
       vertical-align: top;
+      color:black;
       
   }
   .info{
@@ -345,7 +372,9 @@
     font-weight:lighter;
     
 }
-
+.full-section{
+     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 button:hover{
     color:var(--styleColor);
 }
@@ -386,6 +415,7 @@ ul{
     font-weight:300;
     vertical-align:center;
     margin-top:2px;
+    
 }
 #group:hover{
 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -414,6 +444,7 @@ select{
     }
     #data{
       flex-direction:column;
+      transition: all .3s ease;
     }
   }
   @media (max-width: 775px) {

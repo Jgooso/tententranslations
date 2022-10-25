@@ -12,9 +12,10 @@
    :status='user.status'
    class = 'view-header'
   />
+  <button @click='switchdarkmode()'>Switch</button>
   <div class = 'view-border-one bord'></div>
     <router-view
-      :tier = 'user.tier'
+      tier = 1
       :font-size = 'user.fontsize'
       class = 'view-content'
     />
@@ -76,9 +77,16 @@ export default {
           if(this.darkmode){
            r.style.setProperty('--backgroundColor', 'white')
            r.style.setProperty('--textColor', 'black')
+           r.style.setProperty('--shadowColor', 'rgba(0,0,0,0.19)')
+           r.style.setProperty('--borderColor', 'black')
+            r.style.setProperty('--styleColor', '#75147C')
+
           }else{
             r.style.setProperty('--backgroundColor', '#262626')
-            r.style.setProperty('--textColor', '#848484')
+            r.style.setProperty('--textColor', '#959595')
+            r.style.setProperty('--shadowColor', 'rgba(255,255,255,0.19)')
+            r.style.setProperty('--borderColor', 'white')
+            r.style.setProperty('--styleColor', '#A837AF')
           }
           this.darkmode = !this.darkmode;
 
@@ -90,6 +98,7 @@ export default {
       
     },
     created(){
+      /*
       const userID = $cookies.get('user')
       console.log(userID)
       if(userID==null){
@@ -115,8 +124,8 @@ export default {
           .catch(err => {
             console.log(err)
           })
-     
-    }
+     */
+     this.user = {'id':838383,'status':'Moderator','fontsize':19,'tier':1}
     }
   
 }
@@ -128,6 +137,8 @@ export default {
   --backgroundColor: #FFFFFF;
   --textColor: #000000;
   --fontsize: 19px;
+  --shadowColor: rgba(0,0,0,0.19);
+  --borderColor:black;
 }
 *{
   font:Arial, Helvetica;
@@ -161,10 +172,11 @@ export default {
       margin:auto;
       max-width:1200px;
       min-width:1000px;
-      padding:0px;
+      padding:20px;
       height:fit-content;
       height:100%;
       border:none;
+      /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
   }
   .view-border-two{
     grid-row:2;

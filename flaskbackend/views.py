@@ -21,15 +21,15 @@ novelcursor = noveldb.cursor(buffered=True,dictionary=True)
 
 def get_multiplenovels():
     #Retrieve Data from Frontend
+    noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
-    try:
-        category = request.args.get('category')[request.args.get('category').index('-')+1:]
-    except ValueError:
-        category = request.args.get('category')
     identifier = request.args.get('identifier').replace('|','&nbsp;')
     tier= request.args.get('tier')
-    get_multiple_novel_val = (identifier,tier,tier)
-
+    page = (int(request.args.get('page'))-1)*12
+    order = request.args.get('order')
+    if order == "views" or order == "length":
+        order = order + ' DESC' 
+    get_multiple_novel_val = (identifier,tier,tier,page)
     #multiple_novel_sql
     get_multiple_novel_chapter_sql =    """
                                         SELECT chapternumber,uploaddate 
@@ -37,37 +37,38 @@ def get_multiplenovels():
                                         WHERE CONTENT IS NOT NULL AND chapteractive <= %s AND novelid = %s 
                                         ORDER BY chapternumber+0 DESC LIMIT 2
                                     """
-    if category != 'undefined':
-        get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,lastupload,firstupload,imageurl,SUM(chapters.views) as views
+    if identifier != 'undefined':
+        get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,imageurl,SUM(chapters.views) as views,SUM(character_length(content)) as length
                                 FROM novels 
                                     INNER JOIN noveldescriptors 
                                         ON novels.id = noveldescriptors.novelid 
                                     INNER JOIN Chapters
                                         ON novels.id = chapters.novelid
-                                    INNER JOIN descriptors
-                                        ON noveldescriptors.descriptor = descriptors.id
-                                WHERE descriptors.descriptor = %s AND chapteractive <= %s AND novels.novelactive <= %s
+                                    INNER JOIN identifiers
+                                        ON noveldescriptors.descriptor = identifiers.id
+                                WHERE identifiers.descriptor = %s AND chapteractive <= %s AND novels.novelactive <= %s
                                 GROUP BY novels.id
+                                ORDER BY """+order+"""
+                                LIMIT 12 OFFSET %s
                              """
         novelcursor.execute(get_multiple_novel_sql,get_multiple_novel_val)
     else:
-        get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,lastupload,firstupload,imageurl, SUM(chapters.views) as views 
+        get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,imageurl, SUM(chapters.views) as views,SUM(character_length(content)) as length
                                         FROM novels 
                                             INNER JOIN chapters
                                                 ON novels.id = chapters.novelid
                                             WHERE novels.novelactive <= %s AND chapteractive <= %s
                                     GROUP BY novels.id
+                                    ORDER BY  """+order+"""
+                                    LIMIT 12 OFFSET %s
                                 """
-        novelcursor.execute(get_multiple_novel_sql,(tier,tier))
+        novelcursor.execute(get_multiple_novel_sql,(tier,tier,page))
     novelData = novelcursor.fetchall()
-    print(tier)
     #Add chapters to novelData
     for novel in novelData:
         get_multiple_novel_val = (tier,novel['id'])
         novelcursor.execute(get_multiple_novel_chapter_sql,get_multiple_novel_val)
         chapterResults = novelcursor.fetchall()
-        if(novel['lastupload']):
-            novel['lastupload'] = novel['lastupload'].isoformat()
         for chapter in chapterResults:
             chapter['uploaddate'] = time_difference(chapter['uploaddate'])
         try:
@@ -75,16 +76,18 @@ def get_multiplenovels():
             novel['secondChapter']=chapterResults[1]
         except IndexError:
            pass
-        print(novel['lastupload'])
     return jsonify(novelData)
 
 def get_singlenovel():
     novel = request.args.get('novel')
     tier = request.args.get('tier')
     edit = request.args.get('edit')
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         #Retrieve Novel Data
-        get_single_novel_sql = """SELECT DISTINCT novels.id,novels.novelid,novels.title,alternativetitle,description,url,novelactive, SUM(chapters.views) as views 
+        
+        get_single_novel_sql = """SELECT DISTINCT novels.id,novels.novelid,novels.title,alternativetitle,description,url,novelactive, SUM(chapters.views) as views,CEILING(SUM(character_length(content))/1800) as pages 
                         FROM novels 
                             INNER JOIN chapters 
                                 ON novels.id = chapters.novelid 
@@ -109,26 +112,26 @@ def get_singlenovel():
         novelcursor.execute(get_single_novel_chapter_sql,get_chapter_list_val)
         chapter_list = novelcursor.fetchall()
        
-        #Retrieve Novel Descriptors
-        get_single_novel_descriptor_sql = """SELECT descriptors.descriptor,descriptors.type 
+        #Retrieve Novel identifiers
+        get_single_novel_descriptor_sql = """SELECT identifiers.descriptor,identifiers.type 
                                 FROM noveldescriptors 
-                                    INNER JOIN descriptors 
-                                        ON descriptors.id = noveldescriptors.descriptor 
+                                    INNER JOIN identifiers 
+                                        ON identifiers.id = noveldescriptors.descriptor 
                                 WHERE noveldescriptors.novelid = %s"""
         get_single_novel_descriptor_val = (novelData['id'],)
         novelcursor.execute(get_single_novel_descriptor_sql,get_single_novel_descriptor_val)
-        descriptors = novelcursor.fetchall()
+        identifiers = novelcursor.fetchall()
         genres = []
         tags = []
-        for descriptor in descriptors:
+        for descriptor in identifiers:
             if descriptor['type'] == 'genre':
                 genres.append(descriptor['descriptor'])
             elif descriptor['type'] == 'tag':
                 tags.append(descriptor['descriptor'])
             elif descriptor['type'] == 'uploadstatus':
-                uploadstatus = descriptor['descriptor']
+                uploadstatus = descriptor['descriptor'][1:]
             elif descriptor['type'] == 'novelstatus':
-                novelstatus = descriptor['descriptor']
+                novelstatus = descriptor['descriptor'][1:]
             elif descriptor['type'] == 'novelrelease':
                 novelrelease = descriptor['descriptor']
             elif descriptor['type'] == 'authors':
@@ -141,11 +144,11 @@ def get_singlenovel():
         novelData['novelrelease'] = novelrelease
         #Editable get Genres and tags
         if(edit=='True'):
-            novelcursor.execute('SELECT * FROM descriptors WHERE type = "tag" OR type = "genre"')
-            descriptors = novelcursor.fetchall()
+            novelcursor.execute('SELECT * FROM identifiers WHERE type = "tag" OR type = "genre"')
+            identifiers = novelcursor.fetchall()
             genres = []
             tags = []
-            for d in descriptors:
+            for d in identifiers:
                 if d['type'] == 'tag':
                     tags.append(d['descriptor'])
                 elif d['type'] == 'genre':
@@ -173,7 +176,7 @@ def get_singlenovel():
         for result in novelcursor.execute(post_single_novel_sql,post_single_novel_val,multi=True):
             if result.with_rows:
                 id = novelcursor.fetchone()['id']
-        post_single_novel_descriptor_sql = "REPLACE INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM descriptors WHERE descriptor = %s AND type != 'uploadstatus'"
+        post_single_novel_descriptor_sql = "REPLACE INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s AND type != 'uploadstatus'"
         for descriptor in data['genres'] + data['tags']+[data['completed']]:
             post_single_novel_descriptor_val = (id,descriptor)
             novelcursor.execute(post_single_novel_descriptor_sql,post_single_novel_descriptor_val)
@@ -223,11 +226,11 @@ def get_chapter():
 
 def get_genres_and_tags():
     if request.method == 'GET':
-        novelcursor.execute('SELECT * FROM descriptors WHERE type = "tag" OR type = "genre"')
-        descriptors = novelcursor.fetchall()
+        novelcursor.execute('SELECT * FROM identifiers WHERE type = "tag" OR type = "genre"')
+        identifiers = novelcursor.fetchall()
         genres = []
         tags = []
-        for descriptor in descriptors:
+        for descriptor in identifiers:
             if descriptor['type'] == 'tag':
                 tags.append(descriptor['descriptor'])
             elif descriptor['type'] == 'genre':
@@ -267,9 +270,7 @@ def get_noveltitles():
         novelcursor.execute("""
                                 SELECT title,novels.novelid,id
                                     FROM novels 
-                                    INNER JOIN noveldescriptors 
-                                        ON novels.id = noveldescriptors.novelid 
-                                WHERE descriptor in (220,507,509)
+                                    
                             """)
         novels = novelcursor.fetchall()
         return jsonify(novels)
@@ -298,13 +299,13 @@ def get_home_page_novels():
                                         ORDER BY chapternumber+0 DESC LIMIT 2
                                     """
         home_page_popular_sql = """
-                                SELECT novels.id,novels.novelid,novels.title,imageurl,novelactive,description,sum(chapters.views) as views,ANY_VALUE(genre.des) as genre
+                                SELECT novels.id,novels.novelid,novels.title,imageurl,novelactive,description,sum(chapters.views) as views,ROW_NUMBER() OVER (ORDER BY sum(chapters.views) DESC) row_num,ANY_VALUE(genre.des) as genre
                                 FROM novels INNER JOIN chapters ON chapters.novelid = novels.id
                                 LEFT JOIN (
-                                        SELECT descriptors.descriptor AS des ,noveldescriptors.novelid AS nov
-                                            FROM noveldescriptors INNER JOIN descriptors ON noveldescriptors.descriptor = descriptors.id
+                                        SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
+                                            FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
                                             WHERE type = 'genre'
-                                            ORDER BY descriptors.descriptor
+                                            ORDER BY identifiers.descriptor
                                     ) AS genre
                                         ON genre.nov = novels.id
                                     WHERE novelactive <= %s
@@ -315,10 +316,10 @@ def get_home_page_novels():
         home_page_recent_sql =  """
                                 SELECT novels.id,title,novels.novelid,imageurl,ANY_VALUE(genre.des) AS genre,novelactive FROM novels 
                                     LEFT JOIN (
-                                        SELECT descriptors.descriptor AS des ,noveldescriptors.novelid AS nov
-                                            FROM noveldescriptors INNER JOIN descriptors ON noveldescriptors.descriptor = descriptors.id
+                                        SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
+                                            FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
                                             WHERE type = 'genre'
-                                            ORDER BY descriptors.descriptor
+                                            ORDER BY identifiers.descriptor
                                     ) AS genre
                                         ON genre.nov = novels.id
                                     WHERE novelactive <= %s
@@ -329,10 +330,10 @@ def get_home_page_novels():
         home_page_latest_sql =  """
                                 SELECT novels.id,title,novels.novelid,imageurl,ANY_VALUE(genre.des) AS genre,novelactive FROM novels 
                                     LEFT JOIN (
-                                        SELECT descriptors.descriptor AS des ,noveldescriptors.novelid AS nov
-                                            FROM noveldescriptors INNER JOIN descriptors ON noveldescriptors.descriptor = descriptors.id
+                                        SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
+                                            FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
                                             WHERE type = 'genre'
-                                            ORDER BY descriptors.descriptor
+                                            ORDER BY identifiers.descriptor
                                     ) AS genre
                                         ON genre.nov = novels.id
                                     WHERE novelactive <= %s
@@ -361,3 +362,49 @@ def get_home_page_novels():
             
 
         return jsonify({'popular':popular_novels,'recent':recent_novels,'latest':latest_novels})
+
+def get_feedback():
+    if request.method == 'GET':
+        page= int(request.args.get('page'))
+        novelcursor.execute("SELECT * FROM feedback LIMIT 5 OFFSET %s",(page,))
+        feedback_list = novelcursor.fetchall()
+        return jsonify(feedback_list)
+    if request.method == 'POST':
+        feedback = request.get_json()['feedback']
+        novelcursor.execute("INSERT INTO feedback(feedback) VALUES (%s)",(feedback,))
+        noveldb.commit()
+        return 'posted'
+    if request.method == 'DELETE':
+        id= request.args.get('id')
+        novelcursor.execute("DELETE FROM feedback WHERE id = %s",(id,))
+        return 'deleted'
+def get_novels_page_count():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
+    tier= request.args.get('tier')
+    identifier = request.args.get('identifier').replace('|','&nbsp;')
+    tier= request.args.get('tier')
+    if request.method == 'GET':
+        if identifier != 'undefined':
+            novelcursor.execute("""SELECT COUNT(novels.novelid) as count FROM novels 
+                                    INNER JOIN noveldescriptors 
+                                        ON novels.id = noveldescriptors.novelid 
+                                    INNER JOIN identifiers
+                                        ON noveldescriptors.descriptor = identifiers.id
+                                    WHERE novelactive <= %s AND 
+                                        identifiers.descriptor = %s
+                                        
+                                """,(tier,identifier))
+        else:
+             novelcursor.execute("SELECT COUNT(novelid) as count FROM novels WHERE novelactive <= %s",(tier,) )
+        novel_count = (int(novelcursor.fetchone()['count']))
+        page_count = ((novel_count)//12)+1
+        print(page_count)
+        return {'page_count':page_count,'novel_count':novel_count}
+
+#ADD REMAINING FILE SIZE
+def get_database_size():
+    if request.method == 'GET':
+       pass
+
+        

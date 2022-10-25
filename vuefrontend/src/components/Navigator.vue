@@ -1,6 +1,6 @@
 <template>
     <div id = "navigator">
-        <!--<a href = "index.html">Home</a>/-->
+         <router-link :to = "{name: 'homePage'}">Home</router-link>/
         <router-link :to = "{name: 'coverPage', params:{novel:novelid}}" v-text='novel'/>/
         <router-link :to = "{name: 'chapterPage', params:{novel:novelid,chapter:chapter.chapternumber}}" v-if='chapter' v-text='chapter.title+" - "+chapter.chapternumber'/>
     </div> 

@@ -47,9 +47,9 @@ export default{
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:black 1px solid;
+    border:var(--borderColor) 1px solid;
     border-radius:5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
 
 }
 #HomeCard:hover{

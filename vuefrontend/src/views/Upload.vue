@@ -4,6 +4,9 @@
     <label for="fname">URL:
         <input type = "text" id = 'urltextbox' name = 'url' maxlength="34" style='width:280px' >
     </label>
+    <input type="file"
+       id="cover-image" name="cover_image"
+       accept="image/png, image/jpeg">
     <GenreSelector
     :genres='genres'
     :selectedgenres='selectedgenres'

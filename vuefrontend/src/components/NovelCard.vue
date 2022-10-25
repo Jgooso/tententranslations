@@ -46,13 +46,12 @@ export default{
     width:250px;
     min-height:250px;
     max-height:515px;
-    margin-left:50px;
     margin-bottom:50px;
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:black 1px solid;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border:white 1px solid;
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     border-radius:10px;
     text-decoration:none;
 

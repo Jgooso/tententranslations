@@ -73,7 +73,7 @@ def correct_grammer(text):#corrects grammers. Ignores spelling mistakes
     return my_new_text
 def scrub_HTML(text):
     html_special_characters={
-         '&':'&#38;',
+        '&':'&#38;',
         '<':'&#60;',
         '>':'&#62;',
         '"':'&#34;',
@@ -116,7 +116,8 @@ def remove_html_tags(text):
     text = text.replace('</p>','\n')
     text = text.replace('</br>','\n')
     text = text.replace('</ br>','\n')
-    clean = re.compile('<.*?>')
+    text = text.replace('<br/>','\n')
+    clean = re.compile('(<rp|<rt|<ru).*(/rp>|/rt>|by>)')
     return re.sub(clean,'',text)
 
 
@@ -150,16 +151,15 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
             if result.with_rows:
                 novel_identifier = novelcursor.fetchone()[0]
     
-    #Get list of all descriptors
-    descriptors = genres + tags.split(',') + [author,release]
-    for d in descriptors:
+    #Get list of all identifiers
+    identifiers = genres + tags.split(',') + [author,release,'nOngoing','uUnreleased']
+    for d in identifiers:
         if(d == author):
-            novelcursor.execute("REPLACE INTO descriptors (descriptor,type) VALUES (%s,%s)",(author,'authors'))
-        descriptor_insert_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM descriptors WHERE descriptor = %s"
+            novelcursor.execute("REPLACE INTO identifiers (descriptor,type) VALUES (%s,%s)",(author,'authors'))
+        descriptor_insert_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s"
         descriptor_insert_val = (novel_identifier,d.strip())
         print(d.strip())
         novelcursor.execute(descriptor_insert_sql,descriptor_insert_val)
-    novelcursor.execute("INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM descriptors WHERE descriptor = 'Ongoing'",(novel_identifier,))
 
     #Upload Chapters
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
@@ -193,9 +193,6 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             text = '   '+'   '.join([str(p)[str(p).index('>')+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
             #process text content
             text = remove_html_tags(text)
-            while '</rt>' in text:
-                text = text[:text.index('<rt>')-1] + text[text.index('</rt>')+6:]
-
             #find good points of division
             new_lines=[_.start() for _ in re.finditer('\n', text)]
             new_lines.sort(key=distance_from_thousand)
@@ -230,7 +227,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
 def update():#Search for new chapters and download them to database
     today = date.today()
     yesterday = today  - timedelta(days = 1)
-    novelcursor.execute("SELECT novelid,url,novelstatus FROM novels")
+    novelcursor.execute("SELECT id,url,novelstatus FROM novels")
     novels = novelcursor.fetchall()
     for novel in novels:
         #SETUP: define sql, get online chapters and database chapters
@@ -238,7 +235,7 @@ def update():#Search for new chapters and download them to database
         chapter_sql = "SELECT novelid,chapterid,chapternumber,section,views,chapteractive FROM chapters WHERE novelid = %s ORDER BY chapternumber"
         novel_sql = "UPDATE noveldescriptors SET descriptor = 'completed' WHERE novelid=%s AND descriptor in ('Ongoing','On Hold','Dropped')"
         data_sql = "INSERT INTO data (novelid,chapterid,views,date) VALUES (%s,%s,%s,%s)"
-        novelid = (novel[0],)
+        novelid = (novel['id'],)
         novelcursor.execute(chapter_sql,novelid)
         chapters = novelcursor.fetchall()
         chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
@@ -246,8 +243,8 @@ def update():#Search for new chapters and download them to database
         if len(chapter_list) > len(chapters) and (novel[-1] == 'Ongoing' or novel[-1] == 'On Hold'):
             chapter_list = chapter_list[len(chapters):]
             last_chapter = chapters[-1]
-            chapter_number = last_chapter[2]+1
-            section = last_chapter[3]
+            chapter_number = last_chapter['chapternumber']+1
+            section = last_chapter['section']
             processChapters(chapter_number=chapter_number,section=section,novel_id=novelid[0],chapter_list=chapter_list)
         for chapter in chapters:
             if chapter[2] != 0 and chapter[-1] == 0:

@@ -7,7 +7,7 @@
                 <router-link :to = "{name: 'aboutPage'}" class='nav' style="text-decoration:none;">About</router-link>
                 <router-link :to = "{name: 'contactPage'}" class='nav' style="text-decoration:none;">Contact</router-link>
                 <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='status.includes("Moderator")'>Manage</router-link>
-                <KoFiButton id = 'KoFi'/>
+                <KoFiButton id = 'KoFi' v-else/>
                 <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
@@ -102,7 +102,7 @@ export default{
       margin-bottom:auto;
     }
   .nav{
-      color: black;
+      color: var(--textColor);
       font-weight:bold;
       margin-left: 35px;
       font-size: 15px;
@@ -173,7 +173,7 @@ img{
 .menu-btn__burger {
   width: 30px;
   height: 3px;
-  background: #fff;
+  background: var(--textColor);
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(255,101,47,.2);
   transition: all .3s ease-in-out;
@@ -184,7 +184,7 @@ img{
   position: absolute;
   width: 30px;
   height: 3px;
-  background: #fff;
+  background: var(--textColor);
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(255,101,47,.2);
   transition: all .3s ease-in-out;
@@ -220,6 +220,7 @@ img{
     .nav{
         width:0;  
          transition: all .3s ease-in-out;
+         display:none;
     }
     .menu-btn{
         right:10px;
@@ -237,6 +238,8 @@ img{
     }
     #KoFi{
     width:0px;
+    display:none;
+    transition: all .2s ease-in-out;
   }
 }
 </style>

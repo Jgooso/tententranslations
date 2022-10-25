@@ -1,13 +1,12 @@
 <template>
 <div id = 'Browse' >
-    <br>
 
     <h1 id = 'sortCategory' v-html='this.$route.params.identifier ? this.$route.params.identifier : "All Novels"'/>
 
     <header id = 'top'>
         <div id = 'count'>
             <UtfBox shape = '&#9733;'/>
-            <p id = 'resultCount'>{{novelData.length}} RESULTS</p>
+            <p id = 'resultCount'>{{novelCount}} RESULTS</p>
             <label class = 'category'> Order By</label>
         </div>
 
@@ -18,15 +17,20 @@
             <input type ='button' class = 'category' @click='print("views")' value = 'Views' id = 'sort-views'>
             <input type ='button' class = 'category' @click='print("firstupload")' value = 'New' id = 'sort-firstupload'>
         </div>
+        <h6>Page {{page}} of {{(pageCount)}}</h6>
     </header>
 
     <div class = "novelList">
-        <div v-for='novel in novelData.sort(sort)' :key = 'novel.title' id = 'novels'>
+        <div v-for='novel in novelData' :key = 'novel.title' id = 'novels'>
             <NovelCard 
                 :novelData='novel'
                 type="browse"
                 />
         </div>
+    </div>
+    <div id = 'pageNav'>
+    <button v-if='page> 1'  @click='changePage(-1)'>Previous Page</button>
+    <button v-if='page < pageCount' @click='changePage(1)'>Next Page</button>
     </div>
 </div>
 </template>
@@ -45,7 +49,10 @@ import UtfBox from '../components/UtfBox'
             return{
             novelData:[],
             chapterList:[],
-            attributesort:'new'
+            attributesort:'lastupload',
+            page:1,
+            pageCount:0,
+            novelCount:0,
             }
         },
         props:[
@@ -86,7 +93,8 @@ import UtfBox from '../components/UtfBox'
         if(identifier != undefined){
             identifier = identifier.replace(/&nbsp;/g,'|')
         }
-       getAPI.get('/novel/multiple?tier='+this.tier+'&category='+this.$route.params.browsetype+'&identifier='+identifier)
+        const url = '/novel/multiple?tier='+this.tier+'&identifier='+identifier+'&order='+this.attributesort+'&page='+this.page
+       getAPI.get(url)
           .then(response => {
             console.log('Post API has recieved data')
             this.novelData=response.data
@@ -98,25 +106,51 @@ import UtfBox from '../components/UtfBox'
         },
         print(p){
             const selected = document.getElementsByClassName('selected')
+            this.attributesort = p
             for(var i=0; i < selected.length; i++){
                 selected[i].classList.remove('selected')
             }
             document.getElementById('sort-'+p).classList.add('selected')
             console.log(p)
+            this.getNovels()
+        },
+        changePage(change){
+            this.page = this.page + change
+            this.getNovels()
         }
         
     },
     created(){
-        this.getNovels()  
+         var identifier = this.$route.params.identifier
+         if(identifier != undefined){
+            identifier = identifier.replace(/&nbsp;/g,'|')
+        }
+        getAPI.get('/novels-page-count?tier='+this.tier+'&identifier='+identifier)
+          .then(response => {
+            console.log('Post API has recieved data')
+            console.log(response.data)
+            this.pageCount = response.data['page_count']
+            this.novelCount = response.data['novel_count']
+            this.getNovels('lastupload',1)  
+          })
+          .catch(err => {
+            console.log(err)
+          })
         this.$watch(
       () => this.$route.params,
       (toParams, previousParams) => {
         // react to route changes...
+
             if(Object.keys(previousParams).includes('browsetype') && Object.keys(toParams).length == 0){
-                this.getNovels()
+                const selected = document.getElementsByClassName('selected')
+                this.getNovels('lastupload',1)
+                for(var i=0; i < selected.length; i++){
+                selected[i].classList.remove('selected')
+            }
             }
       }
     )     
+    
     }
     
     }
@@ -137,6 +171,7 @@ import UtfBox from '../components/UtfBox'
     margin-bottom:30px;
     position:relative;
     height:37px;
+    
 }
 .novelList{
    display: grid;
@@ -144,6 +179,8 @@ import UtfBox from '../components/UtfBox'
    margin:auto;
    height:fit-content;
     transition: all .3s ease;
+     /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset , 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
+     padding:10px;
  
 }
 #count{
@@ -186,6 +223,8 @@ input[type='button'].category:hover{
 .selected{
     color:var(--styleColor);
     border-bottom:4px solid var(--styleColor);
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+    transition: all .3s ease;
 }
 @media (max-width: 1200px){
      .novelList{

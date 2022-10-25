@@ -1,5 +1,5 @@
 <template>
-<div id = 'homePage'>
+<div id = 'homePage' v-if='popularNovels[0]'>
 <div class = 'divide'>
     <UtfBox shape = '&#x2B24;'/><h3 id = "divider">Most Popular</h3>
 </div><br>
@@ -86,7 +86,7 @@ h3{
 .divide{
     display:flex;
     flex-direction:row;
-    border-bottom:1px black solid;
+    border-bottom:1px var(--borderColor) solid;
     height:30px;
     width:100%;
     padding-bottom:35px;

@@ -11,13 +11,14 @@
             </div>
         <br><br>
         <div  id = "navigation">
-    <select id = "myselect" @change="selectChapter()">
-        <option 
-            v-for="chapter in chapterList" 
-            :key="chapter.chapternumber"
-            :value="chapter.chapternumber"
-            :selected ='this.$route.params.chapter==chapter.chapternumber'
-            >
+        
+            <select id = "myselect" @change="selectChapter()">
+                <option 
+                    v-for="chapter in chapterList" 
+                    :key="chapter.chapternumber"
+                    :value="chapter.chapternumber"
+                    :selected ='this.$route.params.chapter==chapter.chapternumber'
+                >
            {{chapter.chapternumber}} - {{chapter.title}}
         </option>
     </select>
@@ -68,12 +69,12 @@ import NavButton from './Navbutton'
     padding-left:10px;
     padding-right:10px;
     font-size:15px;
-    width:355px;
     height:35px;
-    background-color: rgb(235,235,235);
+    background-color: var(--backgroundColor);
     border:none;
     border-radius:5px;
     font-weight:300;
+    width:50%;
 }
 #control-bar{
     position: -webkit-sticky;
@@ -105,6 +106,7 @@ button.controlbuttons{
     vertical-align:middle;
     line-height:20px;
     margin-left:17px;
+    margin-right:10px;
     color:var(--styleColor);
     user-select: none;
     -webkit-user-select: none;
@@ -115,4 +117,12 @@ button.controlbuttons:hover{
     background-color:var(--styleColor);
     transition: all .2s ease;
 }
+#myselect.items{
+    background-color:red;
+}
+@media (max-width:1000px) {
+   #myselect{
+       min-width:200px;
+   }
+  }
 </style>
