@@ -2,7 +2,6 @@ from flask import Flask
 from flask_cors import CORS
 from settings import ProdConfig
 from scripts import download
-import stripe
 
 
 

@@ -20,4 +20,4 @@ class Config(object):
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
-    DEBUG = False
+    DEBUG = True

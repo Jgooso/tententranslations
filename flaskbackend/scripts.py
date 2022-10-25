@@ -1,6 +1,4 @@
-from typing import Type
 import mysql.connector
-
 #downloading novels and chapters
 import re
 import requests
@@ -120,9 +118,22 @@ def remove_html_tags(text):
     clean = re.compile('(<rp|<rt|<ru).*(/rp>|/rt>|by>)')
     return re.sub(clean,'',text)
 
+def upload_image(image,url):
+    response = requests.get(image)
+    local_filename = image.split('/')[-1]
+    totalbits = 0
+    print(image)
+    if response.status_code == 200:
+        with open('/assets/'+url, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    totalbits += 1024
+                    print("Downloaded",totalbits*1025,"KB...")
+                    f.write(chunk)
+    
+    return url
 
-
-def download(URL,genres,tags):#download novels from NCODE.SYOSETU
+def download(URL,genres,tags,image):#download novels from NCODE.SYOSETU
     #Retrieve elements from webpage
     novel_obj = get_HTML(URL)
     jp_title = novel_obj.title.text
@@ -131,7 +142,7 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
     release = novel_obj.find(class_='long_update').text.strip()[:4]
     author = scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:])
     description = scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   '))))
-
+    
     #INSERT data into database
     novel_insert_sql =  """INSERT INTO novels(novelid,title,alternativetitle,url,description,novelactive) 
                                        VALUES(%s,%s,%s,%s,%s,%s);
@@ -161,15 +172,18 @@ def download(URL,genres,tags):#download novels from NCODE.SYOSETU
         print(d.strip())
         novelcursor.execute(descriptor_insert_sql,descriptor_insert_val)
 
+
     #Upload Chapters
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
     processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_identifier)
+
+    #Upload IMAGE
+    
     noveldb.commit()
 
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
     sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     chapter_order = chapter_number+section
-
     for i in range(len(chapter_list)):
         print(chapter_number)
         current_chapter = chapter_list[i]
@@ -195,13 +209,17 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
             text = remove_html_tags(text)
             #find good points of division
             new_lines=[_.start() for _ in re.finditer('\n', text)]
-            new_lines.sort(key=distance_from_thousand)
             divide_index={0:0}
             for line in new_lines:
-                if line//1000 !=0 and line//1000 not in divide_index:
-                    divide_index[line//1000]=line
-            divide_index[len(divide_index)]=len(text)
-            divide_index=dict(sorted(divide_index.items(), key=lambda item: item[1]))
+                if line//1000 !=0:
+                    if line//1000 not in divide_index:
+                        divide_index[line//1000] = line
+                    if line < divide_index[line//1000]:
+                        divide_index[line//1000] = line
+            if len(text) - divide_index[len(divide_index)-1] < 100:
+                divide_index[len(divide_index)-1] = len(text)
+            else:
+                divide_index[len(divide_index)]=len(text)
             divider = [v for (k,v) in divide_index.items()]
 
             #translate and grammer check chapters

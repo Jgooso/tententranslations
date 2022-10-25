@@ -4,9 +4,10 @@
     <label for="fname">URL:
         <input type = "text" id = 'urltextbox' name = 'url' maxlength="34" style='width:280px' >
     </label>
+    <img :src='image' id = 'output'/>
     <input type="file"
        id="cover-image" name="cover_image"
-       accept="image/png, image/jpeg">
+       accept="image/png, image/jpeg" @change='showFile()'>
     <GenreSelector
     :genres='genres'
     :selectedgenres='selectedgenres'
@@ -31,7 +32,8 @@ export default{
             genres:[],
             tags:[],
             selectedtags:[],
-            selectedgenres:[]
+            selectedgenres:[],
+            image:[]
         }
     },
     components:{
@@ -45,14 +47,18 @@ methods:{
             loadingscreen.style.display = 'block'
             const url = document.getElementById('urltextbox').value;
             const genres = document.getElementsByClassName('genrecheckbox')
+            const files = document.getElementById('cover-image').files
             var selectedGenres = []
+            var image = document.getElementById('output');
+	        const upload = URL.createObjectURL(files[0]);
+            console.log(upload)
             for(var i=0; i < genres.length; i++){
                 if(genres[i].checked==true){
                     selectedGenres.push(genres[i].value)
                 }
             }
             console.log('posted')
-            getAPI.post('/novel/single', {url:url,tags:this.selectedtags,genres:selectedGenres})
+            getAPI.post('/novel/single', {url:url,tags:this.selectedtags,genres:selectedGenres,image:upload})
                 .then(function (response) {
                     console.log(response);
                     loadingscreen.style.display = 'none'
@@ -61,6 +67,18 @@ methods:{
                     console.log(error);
                     loadingscreen.style.display = 'none'
             }); 
+        },
+        showFile(){
+            const files = document.getElementById('cover-image').files
+            var image = document.getElementById('output');
+	        image.src = URL.createObjectURL(files[0]);
+            console.log(files)
+            console.log(image.src)
+            for (const i = 0; i < files.length; i++) {
+                const name = files[i].name;
+                const type = files[i].type;
+                alert('Filename: ' + name + ' , Type: ' + type);
+  }
         }
     },
     created(){

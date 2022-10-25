@@ -1,7 +1,7 @@
 <template>
 <div>
 <label for='tagfilter'>Filter
-        <input type='text' id = 'tagfilter' @keyup='filterTag()' @focusin='showtags()' @focusout='hidetags()'>
+        <input type='text' id = 'tagfilter' @keyup='filterTag()' @focusin='showtags()'>
     </label>
     <div  id = 'tagList'>
         <ul class = 'selectedtaglist' >

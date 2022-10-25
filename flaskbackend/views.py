@@ -160,8 +160,10 @@ def get_singlenovel():
         input_tags = ','.join(data['tags'])
         input_genres = data['genres']
         input_url = data['url']
+        image = data['image']
         print(input_url)
-        download(URL=input_url,tags=input_tags,genres=input_genres)
+        print(request.files)
+        #download(URL=input_url,tags=input_tags,genres=input_genres,image = image)
         return data
     if request.method == 'PUT':#Edit Novel
         data = request.get_json()
