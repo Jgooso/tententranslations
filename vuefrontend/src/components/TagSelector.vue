@@ -10,7 +10,10 @@
             </li>
         </ul>
         <div id = 'tagselector'>
-            <button v-for='tag in tags' :key='tag' class = 'tagbutton unselected' :id = 'tag' v-html='tag' @click='addTag(tag)'/>
+            <label v-for='i in tags.length' :key='i' class = 'tagbutton unselected'  :id = 'tags[i]+i'>
+                <input type='checkbox' :value='tags[i]' :name = '"tag"+i' @change='addTag(tags[i]+i)'>
+                {{tags[i]}}
+            </label>
         </div>
     </div>
 </div>
@@ -126,6 +129,9 @@ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.1
     width:500px;
     text-align:left;
     overflow-wrap: break-word
+}
+input[type="checkbox"]  {
+   display: none;
 }
 @media (max-width: 775px) {
     #tagList{

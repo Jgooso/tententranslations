@@ -1,7 +1,8 @@
 <template>
 <div id = 'genres'>
-        <label v-for='genre in genres' :key = 'genre'>
-            <input type='checkbox' :value='genre' :name = 'genre' class = 'genrecheckbox' :checked='selectedgenres.includes(genre)'>{{genre}}
+        <label v-for='i in genres.length' :key = 'i'>
+            <input type='checkbox' :value='genres[i]' 
+                                :name = '"genre"+i' class = 'genrecheckbox' :checked='selectedgenres.includes(genres[i])' @click='changeGenre(genres[i])'>{{genres[i]}}
         </label>
     </div>
 </template>
@@ -12,7 +13,22 @@ export default{
     props:[
         'genres',
         'selectedgenres'
-    ]
+    ],
+    methods:{
+        changeGenre(genre){
+            if(this.selectedgenres.includes(genre)){
+               for( var i = 0; i < this.selectedgenres.length; i++){ 
+                    if ( this.selectedgenres[i] === genre) { 
+                        this.selectedgenres.splice(i, 1); 
+                        i--; 
+                    }
+    
+                }
+            }else{
+                this.selectedgenres.push(genre)
+            }        
+        }
+    }
 }
 </script>
 <style scoped>

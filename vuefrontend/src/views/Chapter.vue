@@ -39,12 +39,6 @@ import { getAPI } from '../axios-api'
                 selectorList:[]
             }
         },methods:{
-            changeFontSize(change){
-                const txt = document.getElementById('chapter-content');
-                const style = window.getComputedStyle(txt, null).getPropertyValue('font-size');
-                const currentSize = parseFloat(style);
-                txt.style.fontSize = (currentSize + change) + 'px';
-            },
             triggerEdit(){
                 if(document.getElementById('chapter-content').contentEditable=='true'){
                     const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber

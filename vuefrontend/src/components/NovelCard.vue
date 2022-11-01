@@ -8,6 +8,7 @@
     </div>
     -->
     <p v-text='novelData.title' id = 'title' />
+    <div id = 'chapter-box'>
     <p id = "recent-chapters">Recent Chapters</p>
     <div class = 'chapter'> 
         <router-link 
@@ -17,12 +18,14 @@
         <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
         
     </div>
+    <hr style='margin:0px'>
     <div class = 'chapter'>
         <router-link 
          :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" 
          v-text='novelData.secondChapter["chapternumber"]' 
          class = 'chapterNumber'/>
         <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
+    </div>
     </div>
 </div>
 </router-link>
@@ -74,36 +77,34 @@ export default{
     margin-bottom:5px;
 }
 .chapter{
-    width:100%;
-    height:fit-content;
+    height:40px;
     display:flex;
     flex-direction:row;
-    border-radius:20px;
+    vertical-align: middle;
 }
 .chapter:hover{
-    background-color:var(--styleColor)
+    border: 1px solid purple;
+    
+}
+#chapter-box{
+    width:50%;
 }
 .chapterNumber{
-    background-color:rgb(221,221,221);
     border-radius:10px;
     text-align:center;
-    font-size:12px;
+    font-size:15px;
     line-height:12px;
-    color:rgb(102,102,102);
+    color:var(--textColor);
     width:43px;
     height:24px;
     font-weight:bold;
     padding-top:6px;
-    margin-top:7px;
+    margin-top:auto;
     margin-bottom:auto;
+    text-decoration:none;
     
 }
-.chapterNumber:hover{
-    background-color:var(--styleColor);
-    color:white;
-    transition: all .3s ease;
-    text-decoration:none;
-}
+
 #title{
     font-weight:bold;
     color:var(--textColor);
@@ -123,6 +124,8 @@ export default{
     height:24px;
     line-height:24px;
     vertical-align: middle;
+    margin-top:auto;
+    margin-bottom:auto;
 
 }
 .cover_image img{

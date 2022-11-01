@@ -75,6 +75,7 @@ import NavButton from './Navbutton'
     border-radius:5px;
     font-weight:300;
     width:50%;
+    color:var(--borderColor);
 }
 #control-bar{
     position: -webkit-sticky;

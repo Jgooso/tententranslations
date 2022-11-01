@@ -36,6 +36,12 @@ def feedback():
 @app.route('/novels-page-count',methods=['GET'])
 def novel_page_count():
     return get_novels_page_count()
+@app.route('/dates',methods=['GET'])
+def dates():
+    return get_dates()
+@app.route('/test',methods=['GET','POST'])
+def test():
+    return testing()
 @app.after_request
 def add_header(response):
     response.headers.add('Access-Control-Allow-Origin', '')

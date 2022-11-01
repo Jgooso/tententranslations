@@ -1,7 +1,6 @@
 import os
 
 class Config(object):
-    #SECRET_KEY = 
     APP_DIR = os.path.abspath(os.path.dirname(__file__))
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     BCRYPT_LOG_ROUNDS = 13
@@ -20,4 +19,7 @@ class Config(object):
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
+    DEBUG = False
+class DevConfig(Config):
+    ENV = 'dev'
     DEBUG = True

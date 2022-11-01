@@ -1,9 +1,11 @@
 import datetime
 from operator import indexOf
-
+import os
 from jinja2 import Undefined
 import mysql.connector
 import json
+import pytz
+from PIL import Image
 from slugify import slugify
 from scripts import download, processView, ranker, time_difference
 from flask import Flask, jsonify, request, session
@@ -156,13 +158,13 @@ def get_singlenovel():
         #Return Data
         return jsonify({'Novel':novelData,'Chapters':chapter_list,'Genres':genres,'Tags':tags})
     if request.method == 'POST':#Create Novel
-        data = request.get_json()
-        input_tags = ','.join(data['tags'])
-        input_genres = data['genres']
-        input_url = data['url']
-        image = data['image']
-        print(input_url)
-        print(request.files)
+        #data = request.get_json()
+        #input_tags = ','.join(data['tags'])
+        #input_genres = data['genres']
+        #input_url = data['url']
+        #image = data['image']
+        date = 'finished'
+        print(request.form)
         #download(URL=input_url,tags=input_tags,genres=input_genres,image = image)
         return data
     if request.method == 'PUT':#Edit Novel
@@ -241,29 +243,56 @@ def get_genres_and_tags():
     
 def get_schedules():
     if request.method == 'GET':
-        novel = request.args.get('novel')
-        get_schedule__sql = ('SELECT * FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE novels.novelid = %s')
-        get_schedule_val = (novel,)
+        start_date = datetime.date(2022, 10, 1) 
+        end_date = datetime.date(2022, 10, 30) 
+        get_schedule__sql = ('SELECT title,upload_date FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE upload_date BETWEEN %s AND %s')
+        get_schedule_val = (start_date,end_date)
         novelcursor.execute(get_schedule__sql,get_schedule_val)
         schedule_list = novelcursor.fetchall()
+        
         schedule_bucket = {}
         for schedule in schedule_list:
-            if schedule['day'] not in schedule_bucket:
-                schedule_bucket[schedule['day']] = []
-            schedule_bucket[schedule['day']].append(schedule)
+            day = schedule['upload_date']
+            print(day.day,day.hour)
+            if day.day not in schedule_bucket:
+                schedule_bucket[day.day] = []
+            schedule_bucket[day.day].append(day.hour)
 
         return jsonify(schedule_bucket)
     if request.method == 'POST':
-        data = request.get_json()
-        input_novel = data['novel']
-        input_time = data['time'][:2]
-        input_dates = data['dates']
-        print(input_novel,input_time,input_dates)
-        for date in input_dates:
-            post_schedule_sql = 'INSERT INTO schedule (time,day,novelid) SELECT %s,%s,id FROM novels WHERE novelid = %s'
-            post_schedule_val = (input_time,date,input_novel)
-            novelcursor.execute(post_schedule_sql,post_schedule_val)
-            print(date)
+        local = pytz.timezone("America/Chicago")
+        data = request.form
+        novel = data['novel']
+        date = [int(d) for d in data['upload-start'].split('-')]
+        start_date = datetime.datetime(date[0],date[1],date[2])
+        times = [datetime.time(int(data[t][:2])) for t in data if 'time' in t]
+        days_of_the_week = [int(data[w]) for w in data if 'day' in w]
+        print(novel)
+        print(start_date)
+        print(times)
+        print(days_of_the_week)
+        dates = []
+        novelcursor.execute('SELECT COUNT(content) as length FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE novels.novelid = %s',(novel,))
+        length = novelcursor.fetchone()['length']
+        print(length)
+        i = 0
+        while len(dates) < length:
+            day = start_date + datetime.timedelta(days=i)
+            print(day,((day.weekday()+1)%7))
+            if (day.weekday()+1)%7 in days_of_the_week:
+                for t in times:
+                    dates.append(datetime.datetime.combine(day,t).astimezone(local))
+                    if len(dates) >= length:
+                        break
+
+            if(i > 100):
+                break
+            i+=1
+        print(len(dates))
+        for d in dates:
+            d = d.astimezone(pytz.UTC)
+            print('utc:'+d.strftime("%Y-%m-%d, %H:%M"))
+            novelcursor.execute("INSERT INTO schedule (upload_date,novelid) SELECT %s,id FROM novels WHERE novelid = %s",(d,novel))
         noveldb.commit()
         return data
 
@@ -405,8 +434,51 @@ def get_novels_page_count():
         return {'page_count':page_count,'novel_count':novel_count}
 
 #ADD REMAINING FILE SIZE
+
+def get_dates():
+    if request.method == 'GET':
+        offset= int(request.args.get('offset'))
+        start_date = datetime.date(2022, 10, 1) 
+        end_date = datetime.date(2022, 10, 31) 
+        #start_date = start_date - datetime.timedelta(days=(start_date.weekday()+1)%7)
+        #print(start_date)
+        delta = end_date - start_date   # returns timedelta
+        october_calender = {'month':'October','weekday_start':(start_date.weekday()+1)%7,'days':{}}
+        get_schedule__sql = ('SELECT title,upload_date FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE upload_date BETWEEN %s AND %s')
+        get_schedule_val = (start_date,end_date)
+        novelcursor.execute(get_schedule__sql,get_schedule_val)
+        schedule_list = novelcursor.fetchall()
+        schedule_bucket = {}
+        for schedule in schedule_list:
+            day = schedule['upload_date'] - datetime.timedelta(minutes=offset)
+            if day.day not in schedule_bucket:
+                schedule_bucket[day.day] = []
+            schedule_bucket[day.day].append({'novel':schedule['title'],'hour':day.hour})
+        for i in range(delta.days + 1):
+            day = start_date + datetime.timedelta(days=i)
+            october_calender['days'][day.day] = []
+            try:
+                for d in schedule_bucket[day.day]:
+                    october_calender['days'][day.day].append(d)
+            except:
+                pass
+        return jsonify(october_calender)
+def testing():
+    if request.method=='POST':
+        print(request.form)
+        print(request.files)
+        file_name = request.files['file'].filename
+        file = convertToBinaryData(request.files['file'])
+        print(os.listdir('./static'))
+       
+        with open(os.path.join('./static/assets',file_name),'wb') as f:
+            f.write(file)
+        return request.method
 def get_database_size():
     if request.method == 'GET':
        pass
 
-        
+def convertToBinaryData(file):
+    # Convert digital data to binary format
+    binaryData = file.read()
+    return binaryData

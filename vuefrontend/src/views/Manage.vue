@@ -50,6 +50,7 @@ export default{
     min-height:1000px;
     margin-top:50px;
     margin-left:0px;
+    width:100%;
 }
 #management-navigator{
     height:500px;
@@ -59,6 +60,7 @@ export default{
     flex-direction:column;
     min-width:200px;
     margin-right:10px;
+    left:20px;
     position:fixed;
 }
 .manage-nav{
@@ -88,9 +90,13 @@ input[type='password']{
     float:right;
 }
 #editView{
-width:87%;
-position:relative;
-align:right;
-margin-left:200px;
+    width:100%;
+    align:right;
+    margin-left:90px;
+}
+@media (max-width: 775px) {
+  #editView{
+      margin-left:0px;
+  }
 }
 </style>

@@ -8,7 +8,7 @@
                 <router-link :to = "{name: 'contactPage'}" class='nav' style="text-decoration:none;">Contact</router-link>
                 <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='status.includes("Moderator")'>Manage</router-link>
                 <KoFiButton id = 'KoFi' v-else/>
-                <router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>
+                <!--<router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>-->
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
     </div>
@@ -33,7 +33,6 @@
 <script>
 import KoFiButton from '../components/KoFiButton'
 export default{
-  
     name: 'Header',
     props:{
       'status': String

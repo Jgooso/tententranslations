@@ -16,8 +16,9 @@
             <input type ='button' class = 'category' @click='print("length")' value = 'Length' id = 'sort-length'>
             <input type ='button' class = 'category' @click='print("views")' value = 'Views' id = 'sort-views'>
             <input type ='button' class = 'category' @click='print("firstupload")' value = 'New' id = 'sort-firstupload'>
+            <h6 id = 'pageNumber'>Page {{page}} of {{(pageCount)}}</h6>
         </div>
-        <h6>Page {{page}} of {{(pageCount)}}</h6>
+        
     </header>
 
     <div class = "novelList">
@@ -29,8 +30,8 @@
         </div>
     </div>
     <div id = 'pageNav'>
-    <button v-if='page> 1'  @click='changePage(-1)'>Previous Page</button>
-    <button v-if='page < pageCount' @click='changePage(1)'>Next Page</button>
+    <button v-if='page > 1' class = 'navigationButton'  id = 'prev' @click='changePage(-1)'>&#8592;Previous Page</button>
+    <button v-if='page < pageCount' class = 'navigationButton' id = 'next' @click='changePage(1)'>Next Page&#8594;</button>
     </div>
 </div>
 </template>
@@ -87,12 +88,8 @@ import UtfBox from '../components/UtfBox'
             }
 
         },
-        getNovels(){
-            var identifier = this.$route.params.identifier
-        console.log(identifier)
-        if(identifier != undefined){
-            identifier = identifier.replace(/&nbsp;/g,'|')
-        }
+        getNovels(identifier){
+            
         const url = '/novel/multiple?tier='+this.tier+'&identifier='+identifier+'&order='+this.attributesort+'&page='+this.page
        getAPI.get(url)
           .then(response => {
@@ -117,33 +114,42 @@ import UtfBox from '../components/UtfBox'
         changePage(change){
             this.page = this.page + change
             this.getNovels()
+        },
+        getPages(identifier){
+            getAPI.get('/novels-page-count?tier='+this.tier+'&identifier='+identifier)
+                .then(response => {
+                    console.log('Post API has recieved data')
+                    console.log(response.data)
+                    this.pageCount = response.data['page_count']
+                    this.novelCount = response.data['novel_count']
+                    this.getNovels(identifier)  
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         }
         
     },
     created(){
-         var identifier = this.$route.params.identifier
-         if(identifier != undefined){
-            identifier = identifier.replace(/&nbsp;/g,'|')
-        }
-        getAPI.get('/novels-page-count?tier='+this.tier+'&identifier='+identifier)
-          .then(response => {
-            console.log('Post API has recieved data')
-            console.log(response.data)
-            this.pageCount = response.data['page_count']
-            this.novelCount = response.data['novel_count']
-            this.getNovels('lastupload',1)  
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        var identifier = this.$route.params.identifier
+            console.log(identifier)
+            if(identifier != undefined){
+                identifier = identifier.replace(/&nbsp;/g,'|')
+            }
+        this.getPages(identifier)
         this.$watch(
       () => this.$route.params,
       (toParams, previousParams) => {
         // react to route changes...
-
+            var identifier = this.$route.params.identifier
+            console.log(identifier)
+            if(identifier != undefined){
+                identifier = identifier.replace(/&nbsp;/g,'|')
+            }
             if(Object.keys(previousParams).includes('browsetype') && Object.keys(toParams).length == 0){
                 const selected = document.getElementsByClassName('selected')
-                this.getNovels('lastupload',1)
+                this.getNovels(identifier)
+                this.getPages(identifier)
                 for(var i=0; i < selected.length; i++){
                 selected[i].classList.remove('selected')
             }
@@ -187,11 +193,21 @@ import UtfBox from '../components/UtfBox'
     width:275px;
     display:flex;
     flex-direction:row;
-   
-
 }
 #sortButtons{
-    width:400px;
+    width:100%;
+    display:block;
+}
+#pageNumber{
+    position:relative;
+    vertical-align: middle;
+    margin-bottom:-3px;
+    padding-bottom:10px;
+    padding-top:4px;
+    font-size:15px;
+    min-width:75px;
+    float:right;
+    margin-right:30px;
 }
 .category{
     background:none;
@@ -225,6 +241,26 @@ input[type='button'].category:hover{
     border-bottom:4px solid var(--styleColor);
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     transition: all .3s ease;
+}
+.navigationButton{
+    border:none;
+    background:none;
+}
+#next{
+    width:150px;
+    margin-right:30px;
+    float:right;
+}
+#prev{
+    width:150px;
+    float:left;
+    margin-left:30px;
+
+}
+#pageNav{
+    width:100%;
+    background-color:red;
+    display:block;
 }
 @media (max-width: 1200px){
      .novelList{

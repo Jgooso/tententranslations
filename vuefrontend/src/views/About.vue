@@ -18,3 +18,17 @@
         <hr>
     </div>
 </template>
+<script>
+import {getAPI} from '../axios-api'
+export default{
+    created(){
+         getAPI.get('/image',{responseType:'blob'})
+          .then(response => {
+            console.log('Chapter API has recieved data')
+          })
+          .catch(err => {
+            console.log(err)
+          })
+    }
+}
+</script>
