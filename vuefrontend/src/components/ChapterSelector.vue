@@ -47,16 +47,29 @@ import NavButton from './Navbutton'
                 this.$router.push({name: 'chapterPage', params:{title:this.$route.params.title,chapter:x}})
             },
             changeFontSize(change){
-            var r = document.querySelector(':root');
-            const new_font_size =parseInt(r.style.getPropertyValue('--fontsize').slice(0,2))+change
-            if(new_font_size > 5){
-            r.style.setProperty('--fontsize',  new_font_size+ 'px')
-            }
-            console.log(r.style.getPropertyValue('--fontsize'))
+                 const v = document.getElementById('chapter-content')
+                 const newFontSize = parseInt(v.style.fontSize.slice(0,2))+change
+                 v.style.fontSize=newFontSize+'px'
+                 $cookies.set('font-size',newFontSize+'px')
+                 console.log()
+                 
             }
             
             
         },
+        mounted(){
+            const v = document.getElementById('chapter-content')
+            try{
+                v.style.fontSize = $cookies.get('font-size')
+                console.log($cookies.get('font-size'))
+            }catch{
+                console.log('no cookies')
+                $cookies.set('font-size','19px')
+                v.style.fontSize='19px'
+            }
+           
+            console.log(v)
+        }
     }
 </script>
 <style scoped>

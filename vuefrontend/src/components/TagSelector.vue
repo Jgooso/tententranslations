@@ -10,9 +10,9 @@
             </li>
         </ul>
         <div id = 'tagselector'>
-            <label v-for='i in tags.length' :key='i' class = 'tagbutton unselected'  :id = 'tags[i]+i'>
-                <input type='checkbox' :value='tags[i]' :name = '"tag"+i' @change='addTag(tags[i]+i)'>
-                {{tags[i]}}
+            <label v-for='i in tags.length' :key='i' class = 'tagbutton unselected'  :id = 'tags[i]'>
+                <input type='checkbox' :value='tags[i]' :name = '"tag"+i' @change='addTag(tags[i])'>
+                <p v-html='tags[i]'/>
             </label>
         </div>
     </div>
@@ -32,10 +32,12 @@ import tagBox from '../components/TagBox'
         },
         methods:{
             addTag(tag){
+                console.log(tag)
             const tagbutton = document.getElementById(tag)
             tagbutton.classList.remove('unselected')
-            if(!this.selectedtags.includes(tag)){
-                this.selectedtags.push(tag)
+            const tagvalue = tag.replace(/[0-9]/g, '')
+            if(!this.selectedtags.includes(tagvalue)){
+                this.selectedtags.push(tagvalue)
             }
             console.log(this.selectedtags)
            

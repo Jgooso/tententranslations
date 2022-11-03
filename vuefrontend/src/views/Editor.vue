@@ -15,7 +15,7 @@
     <!-- Novel Edit End-->
     <div id="cover" ref = 'cover'>
     <div v-if='novelData.title'>
-        <p id = "noveltitle" v-text='novelData.title'/>
+        <p id = "noveltitle" v-text='novelData.title' contenteditable="true"/>
     <div id = "inner">
         <div id = "novel-information">
              <div id = "data">
@@ -74,7 +74,7 @@
     <div id = "summary">
         <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
-            <p id="noveldescription" v-html = 'novelData.description'/>
+            <p id="noveldescription" v-html = 'novelData.description' contenteditable="true"/>
         </div>
     </div>
     <!-- Chapter Edit-->
@@ -95,7 +95,9 @@
             </li>
         </ul>
         <div id = 'chapterEditor'>
-            <button id ='back-button' @click='hideChapter()'>&#8592;</button>
+            <label>&#8592;
+            <input type='button' id ='back-button' @click='hideChapter()'>
+            </label>
             <h3>Title</h3>
                  <pre v-html='chapterContent' id = 'chapter-content' contenteditable='True'/>
         </div>
@@ -126,7 +128,7 @@ export default{
             sectionList:[],
             chapterContent:'',
             currentChapter:[],
-            saved:false,
+            saved:'',
 
         }
     },
@@ -190,7 +192,7 @@ export default{
             }
                this.novelData.novelstatus=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('noveldescription').innerHTML
-               this.novelData.title=document.getElementById('novelTitle').innerHTML
+               this.novelData.title=document.getElementById('noveltitle').innerHTML
                const url = '/novel/single?novel='+this.selectednovel
             getAPI.put(url,{
                    description:this.novelData.description,
@@ -223,17 +225,20 @@ export default{
             }
         },
         save(e){
-            console.log('testing')
-            if (e.ctrlKey && e.key === 's') {
-                console.log('working')
-                 this.chapterContent = document.getElementById('chapter-content').innerHTML
+            if(e.key != 's'){
+                this.saved = false
             }
+            if (e.ctrlKey && e.key === 's') {
+                 this.chapterContent = document.getElementById('chapter-content').innerHTML
+                 this.saved=true;
+            }
+             
         },
         displayChapter(chapterItem){
             const chapter_contents = document.getElementsByClassName('selected')
             document.getElementById('chapterEditor').style.left='0px';
             document.getElementById('table').style.width='0px';
-            document.addEventListener('keyup', this.save, false);
+            document.getElementById('chapter-content').addEventListener('keydown', this.save, false);
             const url = '/chapter?novel='+this.novelData.id+'&chapter='+chapterItem
             getAPI.get(url)
             .then(response => {
@@ -245,9 +250,15 @@ export default{
             })
         },
         hideChapter(){
-            document.getElementById('chapterEditor').style.left='100%'
-             document.getElementById('table').style.width='100%';
-             document.removeEventListener('keyup', this.save, false);
+            console.log(this.saved)
+            if(this.saved==true){
+                console.log('orking')
+                document.getElementById('chapterEditor').style.left='100%'
+                document.getElementById('table').style.width='100%';
+                document.getElementById('chapter-content').removeEventListener('keyup', this.save);
+            }else{
+                
+            }
         }
     },
     created(){

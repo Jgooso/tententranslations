@@ -72,21 +72,19 @@ import { getAPI } from '../axios-api'
                 this.selectorList.push((({ title, chapternumber }) => ({ title, chapternumber }))(this.chapterList[i]))
             }
             this.selectorList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
-            var r = document.querySelector(':root');
-            console.log(parseInt(r.style.getPropertyValue('--fontsize').slice(0,2))+1 + 'px')
         },
     }
 </script>
 <style scoped>
 #chapter-content{
 font-family: Times;
-font-size:var(--fontsize);
 white-space: pre-wrap;
 font-weight:lighter;
 overflow:hidden;
 margin:auto;
 margin-top:25px;
 margin-bottom:40px;
+font-size:19px;
 }
 #chapter-navigator{
     margin-bottom:20px;

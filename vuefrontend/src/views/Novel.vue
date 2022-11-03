@@ -37,7 +37,6 @@
                 this.sectionList = sections
                 console.log(sections.length)
             }else{
-                
                 this.sectionList = [{'section':0}]
                 console.log(this.sectionList)
             }
@@ -54,7 +53,9 @@
 </script>
 
 <style>
-
+#chapter-font{
+ 
+}
 button{
   border:none;
 }

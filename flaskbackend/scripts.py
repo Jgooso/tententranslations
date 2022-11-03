@@ -115,7 +115,7 @@ def remove_html_tags(text):
     text = text.replace('</br>','\n')
     text = text.replace('</ br>','\n')
     text = text.replace('<br/>','\n')
-    clean = re.compile('(<rp|<rt|<ru|</ru).*(/rp>|/rt>|by>)')
+    clean = re.compile('(<rp|<rt|<ru|</r|<r).*?(/rp>|/rt>|by>|b>)')
     return re.sub(clean,'',text)
 
 def upload_image(image,url):

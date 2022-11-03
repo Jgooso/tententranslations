@@ -16,7 +16,6 @@
   <div class = 'view-border-one bord'></div>
     <router-view
       tier = 1
-      :font-size = 'user.fontsize'
       class = 'view-content'
     />
   <div class = 'view-border-two bord'></div>
@@ -97,7 +96,8 @@ export default {
       //this.$router.push({name:'errorPage'})
       
     },
-    created(){
+    mounted(){
+
       /*
       const userID = $cookies.get('user')
       console.log(userID)
@@ -136,7 +136,6 @@ export default {
   --styleColor: #75147C;
   --backgroundColor: #FFFFFF;
   --textColor: #000000;
-  --fontsize: 19px;
   --shadowColor: rgba(0,0,0,0.19);
   --borderColor:black;
 }
