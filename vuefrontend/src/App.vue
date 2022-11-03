@@ -17,6 +17,7 @@
     <router-view
       tier = 1
       class = 'view-content'
+      v-on:switchmode='switchdarkmode()'
     />
   <div class = 'view-border-two bord'></div>
   <Footer class = 'view-footer'/>
@@ -40,7 +41,7 @@ export default {
   },
   data(){
     return{
-    darkmode:false,
+    darkmode:($cookies.get('darkmode')==='true'),
     testing:[],
     user: []
     }
@@ -70,25 +71,28 @@ export default {
         signup(){
            this.$refs.signin.$refs.signin.style.display='block'
         },
-        switchdarkmode(){
+        setdarkmode(){
           var r = document.querySelector(':root');
-         
           if(this.darkmode){
-           r.style.setProperty('--backgroundColor', 'white')
-           r.style.setProperty('--textColor', 'black')
-           r.style.setProperty('--shadowColor', 'rgba(0,0,0,0.19)')
-           r.style.setProperty('--borderColor', 'black')
-            r.style.setProperty('--styleColor', '#75147C')
-
-          }else{
             r.style.setProperty('--backgroundColor', '#262626')
             r.style.setProperty('--textColor', '#959595')
             r.style.setProperty('--shadowColor', 'rgba(255,255,255,0.19)')
             r.style.setProperty('--borderColor', 'white')
             r.style.setProperty('--styleColor', '#A837AF')
+            console.log('darkmode')
+          }else{
+            r.style.setProperty('--backgroundColor', 'white')
+            r.style.setProperty('--textColor', 'black')
+            r.style.setProperty('--shadowColor', 'rgba(0,0,0,0.19)')
+            r.style.setProperty('--borderColor', 'black')
+            r.style.setProperty('--styleColor', '#75147C')
           }
-          this.darkmode = !this.darkmode;
 
+        },
+        switchdarkmode(){
+          this.darkmode=!this.darkmode
+          this.setdarkmode()
+          $cookies.set('darkmode',this.darkmode)
         }
             
         },
@@ -96,8 +100,8 @@ export default {
       //this.$router.push({name:'errorPage'})
       
     },
-    mounted(){
-
+    created(){
+      this.setdarkmode()
       /*
       const userID = $cookies.get('user')
       console.log(userID)

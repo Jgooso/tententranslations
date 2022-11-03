@@ -13,6 +13,7 @@
         <ChapterSelector
             :chapterList= 'selectorList'
             v-on:changeChapter="updateContent($event)"
+            v-on:switchmode='$emit("switchmode")'
         />
           <pre v-html = 'chapterContent' id = 'chapter-content'/>
     </div>

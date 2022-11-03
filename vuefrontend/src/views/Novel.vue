@@ -6,6 +6,7 @@
       :sectionList='sectionList'
       :tier='tier'
       :key='$route.params.chapter'
+      v-on:switchmode='$emit("switchmode")'
     />
 </div>
 </template>

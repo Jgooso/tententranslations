@@ -5,8 +5,8 @@
                 <button class = 'controlbuttons' @click='changeFontSize(1)'>+</button>
                 <button class = 'controlbuttons' @click='changeFontSize(-1)'>-</button>
                   <!--
-                <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>
-                <button class = 'controlbuttons'>&#xF288;</button> -->
+                <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>-->
+                <button class = 'controlbuttons' @click='switchdarkmode()'>&#xF288;</button> 
              
             </div>
         <br><br>
@@ -38,7 +38,12 @@ import NavButton from './Navbutton'
         name: 'ChapterSelector',
         props:[
             'chapterList'
-        ],components:{
+        ],
+        date(){
+            return{
+                darkmode:'light'
+            }
+        },components:{
             NavButton
         },
         methods:{
@@ -49,11 +54,15 @@ import NavButton from './Navbutton'
             changeFontSize(change){
                  const v = document.getElementById('chapter-content')
                  const newFontSize = parseInt(v.style.fontSize.slice(0,2))+change
-                 v.style.fontSize=newFontSize+'px'
-                 $cookies.set('font-size',newFontSize+'px')
-                 console.log()
+                 if(newFontSize > 6){
+                    v.style.fontSize=newFontSize+'px'
+                    $cookies.set('font-size',newFontSize+'px')
+                 }
                  
-            }
+            },
+            switchdarkmode(){
+                this.$emit("switchmode")
+        }
             
             
         },
@@ -67,8 +76,6 @@ import NavButton from './Navbutton'
                 $cookies.set('font-size','19px')
                 v.style.fontSize='19px'
             }
-           
-            console.log(v)
         }
     }
 </script>
