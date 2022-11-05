@@ -1,5 +1,4 @@
 import datetime
-from operator import indexOf
 import os
 from jinja2 import Undefined
 import mysql.connector
@@ -18,8 +17,6 @@ config = {
 'port': '3306',
 'database': 'tententranslations',
 'raise_on_warnings': True,}
-noveldb = mysql.connector.connect(**config)
-novelcursor = noveldb.cursor(buffered=True,dictionary=True)
 
 def get_multiplenovels():
     #Retrieve Data from Frontend
@@ -78,6 +75,7 @@ def get_multiplenovels():
             novel['secondChapter']=chapterResults[1]
         except IndexError:
            pass
+    noveldb.close()
     return jsonify(novelData)
 
 def get_singlenovel():
@@ -156,16 +154,11 @@ def get_singlenovel():
                 elif d['type'] == 'genre':
                     genres.append(d['descriptor'])
         #Return Data
+        noveldb.close()
         return jsonify({'Novel':novelData,'Chapters':chapter_list,'Genres':genres,'Tags':tags})
     if request.method == 'POST':#Create Novel
-        #data = request.get_json()
-        #input_tags = ','.join(data['tags'])
-        #input_genres = data['genres']
-        #input_url = data['url']
-        #image = data['image']
-        date = 'finished'
-        print(request.form)
-        #download(URL=input_url,tags=input_tags,genres=input_genres,image = image)
+        data = request.form
+        download(data=data)
         return data
     if request.method == 'PUT':#Edit Novel
         data = request.get_json()
@@ -176,7 +169,6 @@ def get_singlenovel():
                                 SELECT id FROM novels WHERE novelid = %s
                                  """
         post_single_novel_val = (data['description'],data['title'],novelid,novel,novelid)
-        
         for result in novelcursor.execute(post_single_novel_sql,post_single_novel_val,multi=True):
             if result.with_rows:
                 id = novelcursor.fetchone()['id']
@@ -184,16 +176,19 @@ def get_singlenovel():
         for descriptor in data['genres'] + data['tags']+[data['completed']]:
             post_single_novel_descriptor_val = (id,descriptor)
             novelcursor.execute(post_single_novel_descriptor_sql,post_single_novel_descriptor_val)
-
         noveldb.commit()
+        noveldb.close()
         return data
     if request.method == 'DELETE':#Delete Novel
         delete_single_novel_sql = 'DELETE FROM novels WHERE novelid=%s'
         delete_single_novel_val = (novel,)
         novelcursor.execute(delete_single_novel_sql,delete_single_novel_val)
         noveldb.commit()
-
+        noveldb.close() #close the connection
+        return 'deleted'
 def get_chapter():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     chapter = request.args.get('chapter')
     novel = request.args.get('novel')
     update_chapter = request.args.get('chapterupdate')
@@ -211,6 +206,7 @@ def get_chapter():
             if result.with_rows:
                 chapter_results = novelcursor.fetchone()['content']
         noveldb.commit()
+        noveldb.close()
         return chapter_results
     if request.method == 'PUT':
         data = request.get_json()
@@ -226,9 +222,12 @@ def get_chapter():
         novelcursor.execute(put_get_chapter_sql,put_get_chapter_val)
         chapter_data = novelcursor.fetchone()['content']
         noveldb.commit()
+        noveldb.close()
         return chapter_data
 
 def get_genres_and_tags():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         novelcursor.execute('SELECT * FROM identifiers WHERE type = "tag" OR type = "genre"')
         identifiers = novelcursor.fetchall()
@@ -239,9 +238,12 @@ def get_genres_and_tags():
                 tags.append(descriptor['descriptor'])
             elif descriptor['type'] == 'genre':
                 genres.append(descriptor['descriptor'])
+        noveldb.close()
         return jsonify({'genres':genres, 'tags':tags})
     
 def get_schedules():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         start_date = datetime.date(2022, 10, 1) 
         end_date = datetime.date(2022, 10, 30) 
@@ -267,10 +269,6 @@ def get_schedules():
         start_date = datetime.datetime(date[0],date[1],date[2])
         times = [datetime.time(int(data[t][:2])) for t in data if 'time' in t]
         days_of_the_week = [int(data[w]) for w in data if 'day' in w]
-        print(novel)
-        print(start_date)
-        print(times)
-        print(days_of_the_week)
         dates = []
         novelcursor.execute('SELECT COUNT(content) as length FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE novels.novelid = %s',(novel,))
         length = novelcursor.fetchone()['length']
@@ -297,6 +295,8 @@ def get_schedules():
         return data
 
 def get_noveltitles():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         novelcursor.execute("""
                                 SELECT title,novels.novelid,id
@@ -307,6 +307,8 @@ def get_noveltitles():
         return jsonify(novels)
 
 def get_user():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         user_id = request.args.get('userID')
         novelcursor.execute("SELECT * FROM users WHERE id = %s",(user_id,))
@@ -321,6 +323,8 @@ def get_user():
         noveldb.commit()
         return str(user_id)
 def get_home_page_novels():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     tier= request.args.get('tier')
     if request.method == 'GET':
         get_multiple_novel_chapter_sql =    """
@@ -395,6 +399,8 @@ def get_home_page_novels():
         return jsonify({'popular':popular_novels,'recent':recent_novels,'latest':latest_novels})
 
 def get_feedback():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         page= int(request.args.get('page'))
         novelcursor.execute("SELECT * FROM feedback LIMIT 5 OFFSET %s",(page,))
@@ -436,6 +442,8 @@ def get_novels_page_count():
 #ADD REMAINING FILE SIZE
 
 def get_dates():
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         offset= int(request.args.get('offset'))
         start_date = datetime.date(2022, 10, 1) 

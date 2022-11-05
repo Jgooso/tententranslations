@@ -57,7 +57,14 @@ import { getAPI } from '../axios-api'
                 document.getElementById('chapter-content').contentEditable='true'
                 document.getElementById('editButton').innerHTML='Save'
                 }
-            }    
+            },
+            handleScroll(){
+            if(window.scrollY > 200){
+                document.getElementById("chapter-navigator").classList.add('sticky-navigation')
+            }else{
+                 document.getElementById("chapter-navigator").classList.remove('sticky-navigation')
+            }
+        }   
         },
         created(){
             const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber
@@ -74,6 +81,9 @@ import { getAPI } from '../axios-api'
             }
             this.selectorList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
         },
+        mounted(){
+             document.getElementById('chapter').addEventListener('scroll', this.handleScroll);
+        }
     }
 </script>
 <style scoped>
@@ -81,16 +91,32 @@ import { getAPI } from '../axios-api'
 font-family: Times;
 white-space: pre-wrap;
 font-weight:lighter;
-overflow:hidden;
 margin:auto;
 margin-top:25px;
 margin-bottom:40px;
 font-size:19px;
+
 }
 #chapter-navigator{
     margin-bottom:20px;
-    position:relative;
+    position:fixed;
     left:50;
-    z-index:2;
+    z-index:10;
+    top:20px;
+    position: -webkit-sticky;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    transition: all .3s ease-in-out;
+}
+.sticky-navigation{
+    width:75%;
+    white-space: nowrap;
+   
+
+}
+@media (max-width: 775px) {
+    .sticky-navigation{
+        width:65%;
+    }
 }
 </style>

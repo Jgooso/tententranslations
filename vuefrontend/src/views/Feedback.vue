@@ -1,8 +1,8 @@
 <template>
     <div id = 'feedback'>
-        <div v-for='f in feedback'  :key = 'f.id' class = 'feedbackbox'>
+        <div v-for='f in feedback'  :key = 'f.id' class = 'feedbackbox' :id = 'f.id'>
             <p>{{f.feedback}}</p>
-            <button class = 'delete-feedback'></button>
+            <button class = 'delete-feedback' @click='deleteFeedback(f.id)'>X</button>
         </div>
         <nav id = 'page-navigation'>
          <button class = 'page-button' id = 'left-arrow'>&larr;</button>
@@ -33,6 +33,16 @@ export default{
           .catch(err => {
             console.log(err)
           })
+        },
+        deleteFeedback(id){
+            console.log(id)
+            document.getElementById(id).style.display='none'
+            getAPI.delete('/feedback?id='+id).then(response =>{
+                console.log('Deleted Feedback')
+            }).catch(err =>{
+                console.log(err)
+
+            })
         }
     },
     created(){
@@ -53,6 +63,13 @@ export default{
     overflow:scroll;
     margin-left:20px;
     margin-right:20px;
+}
+.delete-feedback{
+    border:none;
+    background:transparent;
+    position:relative;
+    bottom:30px;
+    left:97%;
 }
 .page-button{
     border:none;

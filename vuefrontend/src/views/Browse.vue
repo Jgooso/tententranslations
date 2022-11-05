@@ -259,7 +259,6 @@ input[type='button'].category:hover{
 }
 #pageNav{
     width:100%;
-    background-color:red;
     display:block;
 }
 @media (max-width: 1200px){

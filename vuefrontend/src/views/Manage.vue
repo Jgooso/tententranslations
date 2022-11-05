@@ -1,5 +1,6 @@
 <template>
 <div class = 'manager'>
+    <div id = 'loadingscreen'><div class="loader"></div></div>
     <div id = 'management-navigator'>
         <router-link :to = "{name: 'uploadPage'}" class='manage-nav'>Upload</router-link>
         <router-link :to = "{name: 'schedulePage'}" class='manage-nav'>Schedule</router-link>
@@ -93,6 +94,29 @@ input[type='password']{
     width:100%;
     align:right;
     margin-left:90px;
+}
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  margin:auto;
+  margin-top:170px;
+
+}
+#loadingscreen{
+    display:none;
+    position:absolute;
+    z-index:5;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.5)
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 @media (max-width: 775px) {
   #editView{

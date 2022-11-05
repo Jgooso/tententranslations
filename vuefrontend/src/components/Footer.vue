@@ -16,7 +16,7 @@ export default{
 </script>
 <style scoped>
   #footer{
-      height: 75px;
+      height: 150px;
       align-items: center;
       justify-content:center;
       display:flex;
@@ -24,6 +24,7 @@ export default{
       margin-bottom:50px;
       grid-row: 3;
       grid-column: 1 / span 3;
+      border-top:5px rgba(200,200,200,0.6) solid
  
   }
     #navigation{

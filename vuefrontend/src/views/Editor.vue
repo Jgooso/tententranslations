@@ -84,8 +84,9 @@
                 <li class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
                 <ul>
                     <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key="chapter.chapternumber" class='table-list' :id='"chapter"+chapter.chapternumber'>
+                        <p v-html='chapter.title'  contenteditable='True'/>
                         <label>
-                        {{chapter.title}}
+                            &#8594;
                         <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter.chapternumber)'>
                         </label>
                        
@@ -95,9 +96,10 @@
             </li>
         </ul>
         <div id = 'chapterEditor'>
-            <label>&#8592;
-            <input type='button' id ='back-button' @click='hideChapter()'>
+            <label v-if='saved'>&#8592;
+                <input type='button' id ='back-button' @click='hideChapter()' >
             </label>
+            <p v-else> Unsaved Changes</p>
             <h3>Title</h3>
                  <pre v-html='chapterContent' id = 'chapter-content' contenteditable='True'/>
         </div>
@@ -181,8 +183,8 @@ export default{
        
         },
         submit(){
-            //const loadingscreen = document.getElementById('loadingscreen')
-            //loadingscreen.style.display = 'block'
+            const loadingscreen = document.getElementById('loadingscreen')
+            loadingscreen.style.display = 'block'
             const genres = document.getElementsByClassName('genrecheckbox')
             var selectedGenres = []
             for(var i=0; i < genres.length; i++){
@@ -203,9 +205,11 @@ export default{
                    novelactive:this.novelData.novelactive
                }).then(function (response) {
                     console.log(response);
+                    loadingscreen.style.display='none'
             })
                 .catch(function (error) {
                     console.log(error);
+                    loadingscreen.style.display='none'
             })
         },
         showGenres(){
@@ -250,9 +254,7 @@ export default{
             })
         },
         hideChapter(){
-            console.log(this.saved)
             if(this.saved==true){
-                console.log('orking')
                 document.getElementById('chapterEditor').style.left='100%'
                 document.getElementById('table').style.width='100%';
                 document.getElementById('chapter-content').removeEventListener('keyup', this.save);

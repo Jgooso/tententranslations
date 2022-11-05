@@ -12,7 +12,6 @@
    :status='user.status'
    class = 'view-header'
   />
-  <button @click='switchdarkmode()'>Switch</button>
   <div class = 'view-border-one bord'></div>
     <router-view
       tier = 1
@@ -102,6 +101,7 @@ export default {
     },
     created(){
       this.setdarkmode()
+      console.log($cookies.keys()  )
       /*
       const userID = $cookies.get('user')
       console.log(userID)

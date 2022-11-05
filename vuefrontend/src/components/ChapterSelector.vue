@@ -62,12 +62,14 @@ import NavButton from './Navbutton'
             },
             switchdarkmode(){
                 this.$emit("switchmode")
-        }
+        },
+        
             
             
         },
         mounted(){
             const v = document.getElementById('chapter-content')
+           
             try{
                 v.style.fontSize = $cookies.get('font-size')
                 console.log($cookies.get('font-size'))
@@ -83,7 +85,7 @@ import NavButton from './Navbutton'
 #navigation{
     display:flex;
     flex-direction:row;
-    position: relative;
+    position:sticky;
 }
 #myselect{
     padding-left:10px;
@@ -146,4 +148,10 @@ button.controlbuttons:hover{
        min-width:200px;
    }
   }
+html:not([data-scroll='0']) {
+    #chapter-content{
+        background-color:blue;
+    }
+
+}
 </style>

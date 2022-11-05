@@ -1,6 +1,6 @@
 <template>
 <div id = 'download'>
-    <div id = 'loadingscreen'><div class="loader"></div></div>
+
      <h1 id = "noveltitle">Lorem Ipsum</h1>
     <form id = 'upload' method='postData'>
         <div id = 'upload_tables'>
@@ -117,7 +117,6 @@ methods:{
             }catch{
                 console.log('no file')
             }
-            console.log()
             getAPI.post('/novel/single',formData, {headers: {"Content-Type": "multipart/form-data"}}).then((res) => {
                 console.log(res);
                 loadingscreen.style.display = 'none'
@@ -228,25 +227,7 @@ input{
 #tag-selector{
     display:none;
 }
-.loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-  margin:auto;
-  margin-top:170px;
 
-}
-#loadingscreen{
-    display:none;
-    position:absolute;
-    z-index:5;
-    width:100%;
-    height:100%;
-    background-color:rgba(0,0,0,0.5)
-}
 #upload_tables{
     display:flex;
     flex-direction:row;
@@ -339,10 +320,7 @@ input{
       font-family: 'Times New Roman', serif;
       
   }
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+
 @media (max-width: 775px) {
     #genres{
         grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;

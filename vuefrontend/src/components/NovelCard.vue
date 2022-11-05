@@ -10,22 +10,19 @@
     <p v-text='novelData.title' id = 'title' />
     <div id = 'chapter-box'>
     <p id = "recent-chapters">Recent Chapters</p>
-    <div class = 'chapter'> 
-        <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" 
-         v-text='novelData.firstChapter["chapternumber"]' 
-         class = 'chapterNumber'/>
-        <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
-        
-    </div>
+    <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" style='text-decoration:none'>
+        <div class = 'chapter'> 
+            <p v-text='novelData.firstChapter["chapternumber"]' class = 'chapterNumber'/>
+            <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
+        </div>
+    </router-link>
     <hr style='margin:0px'>
+    <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" style='text-decoration:none'>
     <div class = 'chapter'>
-        <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" 
-         v-text='novelData.secondChapter["chapternumber"]' 
-         class = 'chapterNumber'/>
+        <p v-text='novelData.secondChapter["chapternumber"]' class = 'chapterNumber'/>
         <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
     </div>
+    </router-link>
     </div>
 </div>
 </router-link>

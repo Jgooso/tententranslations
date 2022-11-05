@@ -133,7 +133,23 @@ def upload_image(image,url):
     
     return url
 
-def download(URL,genres,tags,image):#download novels from NCODE.SYOSETU
+def download(data):#download novels from NCODE.SYOSETU
+
+    #Parse form in data
+    genres=[]
+    tags=[]
+    url=''
+    novelstatus='nCompleted'
+    image = None
+    for d in data:
+        if 'genre' in d:
+            genres.append(data[d])
+        if 'tag' in d:
+            tags.append(data[d])
+        if d=='url':
+            URL=data[d]
+        if d=='novelstatus':
+            novelstatus='n'+data[d]
     #Retrieve elements from webpage
     novel_obj = get_HTML(URL)
     jp_title = novel_obj.title.text
@@ -163,7 +179,7 @@ def download(URL,genres,tags,image):#download novels from NCODE.SYOSETU
                 novel_identifier = novelcursor.fetchone()[0]
     
     #Get list of all identifiers
-    identifiers = genres + tags.split(',') + [author,release,'nOngoing','uUnreleased']
+    identifiers = genres + tags + [author,release,novelstatus,'uUnreleased']
     for d in identifiers:
         if(d == author):
             novelcursor.execute("REPLACE INTO identifiers (descriptor,type) VALUES (%s,%s)",(author,'authors'))
