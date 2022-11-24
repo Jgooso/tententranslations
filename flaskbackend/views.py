@@ -1,13 +1,13 @@
 import datetime
 import os
-from jinja2 import Undefined
+#from jinja2 import Undefined
 import mysql.connector
-import json
+#import json
 import pytz
 from PIL import Image
 from slugify import slugify
 from scripts import download, processView, ranker, time_difference
-from flask import Flask, jsonify, request, session
+from flask import jsonify, request
 
 #Setup
 config = {
@@ -259,7 +259,7 @@ def get_schedules():
             if day.day not in schedule_bucket:
                 schedule_bucket[day.day] = []
             schedule_bucket[day.day].append(day.hour)
-
+        noveldb.close()
         return jsonify(schedule_bucket)
     if request.method == 'POST':
         local = pytz.timezone("America/Chicago")
@@ -292,6 +292,7 @@ def get_schedules():
             print('utc:'+d.strftime("%Y-%m-%d, %H:%M"))
             novelcursor.execute("INSERT INTO schedule (upload_date,novelid) SELECT %s,id FROM novels WHERE novelid = %s",(d,novel))
         noveldb.commit()
+        noveldb.close()
         return data
 
 def get_noveltitles():
@@ -304,6 +305,7 @@ def get_noveltitles():
                                     
                             """)
         novels = novelcursor.fetchall()
+        noveldb.close()
         return jsonify(novels)
 
 def get_user():
@@ -314,6 +316,7 @@ def get_user():
         novelcursor.execute("SELECT * FROM users WHERE id = %s",(user_id,))
         user = novelcursor.fetchone()
         print(user_id)
+        noveldb.close()
         return jsonify(user)
     if request.method == 'POST':
         data = request.get_json()
@@ -321,6 +324,7 @@ def get_user():
         print(user_id)
         novelcursor.execute('INSERT INTO users(id) VALUES (%s)',(user_id,))
         noveldb.commit()
+        noveldb.close()
         return str(user_id)
 def get_home_page_novels():
     noveldb = mysql.connector.connect(**config)
@@ -395,7 +399,7 @@ def get_home_page_novels():
             except IndexError:
                 pass
             
-
+        noveldb.close()
         return jsonify({'popular':popular_novels,'recent':recent_novels,'latest':latest_novels})
 
 def get_feedback():
@@ -405,15 +409,18 @@ def get_feedback():
         page= int(request.args.get('page'))
         novelcursor.execute("SELECT * FROM feedback LIMIT 5 OFFSET %s",(page,))
         feedback_list = novelcursor.fetchall()
+        noveldb.close()
         return jsonify(feedback_list)
     if request.method == 'POST':
         feedback = request.get_json()['feedback']
         novelcursor.execute("INSERT INTO feedback(feedback) VALUES (%s)",(feedback,))
         noveldb.commit()
+        noveldb.close()
         return 'posted'
     if request.method == 'DELETE':
         id= request.args.get('id')
         novelcursor.execute("DELETE FROM feedback WHERE id = %s",(id,))
+        noveldb.close()
         return 'deleted'
 def get_novels_page_count():
     noveldb = mysql.connector.connect(**config)
@@ -437,6 +444,7 @@ def get_novels_page_count():
         novel_count = (int(novelcursor.fetchone()['count']))
         page_count = ((novel_count)//12)+1
         print(page_count)
+        noveldb.close()
         return {'page_count':page_count,'novel_count':novel_count}
 
 #ADD REMAINING FILE SIZE
@@ -470,6 +478,7 @@ def get_dates():
                     october_calender['days'][day.day].append(d)
             except:
                 pass
+        noveldb.close()
         return jsonify(october_calender)
 def testing():
     if request.method=='POST':

@@ -84,7 +84,7 @@
                 <li class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
                 <ul>
                     <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key="chapter.chapternumber" class='table-list' :id='"chapter"+chapter.chapternumber'>
-                        <p v-html='chapter.title'  contenteditable='True'/>
+                        <!--<p v-html='chapter.title'  contenteditable='True'/>-->
                         <label>
                             &#8594;
                         <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter.chapternumber)'>
@@ -129,8 +129,9 @@ export default{
             chapterList:[],
             sectionList:[],
             chapterContent:'',
-            currentChapter:[],
+            currentChapter:'',
             saved:'',
+            chapterTitle:''
 
         }
     },
@@ -173,7 +174,6 @@ export default{
             this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapternumber != 0)
             this.genres = response.data['Genres']
             this.tags = response.data['Tags']
-            this.isMounted=true
             this.currentChapter = null
             this.chapterContent = ''
           })
