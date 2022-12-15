@@ -79,22 +79,30 @@
     </div>
     <!-- Chapter Edit-->
     <div id = "TableOfContents">
-        <ul  id = 'table' ref='tableofcontentlist'>
-            <li v-for='section in sectionList'>
-                <li class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
-                <ul>
-                    <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key="chapter.chapternumber" class='table-list' :id='"chapter"+chapter.chapternumber'>
-                        <!--<p v-html='chapter.title'  contenteditable='True'/>-->
+        <table  id = 'table' ref='tableofcontentlist'>
+            <th style='width:100%'>
+            <td style='width:100%'>Chapter Title</td>
+            <td style='width:50px'>Edited</td>
+            <td style='width:50px'>Uploaded</td>
+            </th>
+            <tr v-for='section in sectionList' style='display:flex;flex-direction:column'>
+                <p v-if='section.title' class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
+                <tr style='width:100%'>
+                    <tr v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key="chapter.chapternumber" class='table-list' :id='"chapter"+chapter.chapternumber'>
+                        <td class='chapter-title'>
                         <label>
-                            &#8594;
+                        {{chapter.title}}
                         <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter.chapternumber)'>
                         </label>
-                       
-                        <br>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+                        </td>
+                        <td v-if='chapter.chapteredited == 1' style='color:lightgreen;text-align:center;font-weight:bold;font-size:20px;width:10px'>&#10003;</td>
+                        <td v-else style='color:red;text-align:center;font-weight:bold;font-size:20px;width:10%px;'>X</td>
+                        <td v-if='chapter.chapteractive == 1' style='color:lightgreen;text-align:center;font-weight:bold;font-size:20px'>&#10003;</td>
+                        <td v-else style='color:red;text-align:center;font-weight:bold;font-size:20px;width:10px'>X</td>
+                    </tr>
+                </tr>
+            </tr>
+        </table>
         <div id = 'chapterEditor'>
             <label v-if='saved'>&#8592;
                 <input type='button' id ='back-button' @click='hideChapter()' >
@@ -339,14 +347,14 @@ tr{
     overflow:hidden;
     display:flex;
     flex-direction:row;
+    border: 1px solid black
 }
 #table{
-text-decoration:none;
+    text-decoration:none;
     list-style:none;
     width:100%;
     position:relative;
     transition: 1s ease-in-out;
-    
 }
 .section{
     color:#000000;
@@ -357,20 +365,38 @@ text-decoration:none;
 }
 .chapter-list{
     background:none;
-    border:none;
     -webkit-appearance: none;
-    width:100%;
+    width:80%;
     text-align:left;
     margin-left:0px;
+    border:none
+
 }
 .table-list{
     height:fit-content;
     max-height:30px;
     overflow:hidden;
-    border-bottom:1px solid lightgray;
     width:100%;
     margin-left:0px;
-    
+    display:flex;
+    flex-direction:row;
+    margin:0px;
+}
+.chapter-select{
+    margin-left:40px;
+}
+.chapter-title{
+    width:100%;
+    text-overflow:ellipsis;
+    margin:0px;
+    padding-left:20px;
+}
+.table-list:hover{
+   background-color:var(--styleColor);
+   color:white;
+}
+td{
+    border: 1px black solid;
 }
 /*Chapter Table of Contents End*/
 
@@ -380,7 +406,7 @@ text-decoration:none;
     left:100%;
     transition: 1s ease-in-out;
     top:0px;
-    width:100%;
+    width:0px;
 }
 #back-button{
     background:none;

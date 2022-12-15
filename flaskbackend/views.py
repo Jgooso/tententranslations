@@ -104,7 +104,7 @@ def get_singlenovel():
 
         #Retrieve Chapters
         get_single_novel_chapter_sql = """
-                            SELECT title,novelid,uploaddate,chapternumber,section,id,chapterorder 
+                            SELECT title,novelid,uploaddate,chapternumber,section,id,chapterorder,chapteractive,chapteredited 
                                 FROM chapters WHERE novelid = %s AND chapteractive <= %s 
                                 ORDER BY chapterorder+0
                            """

@@ -61,7 +61,7 @@ export default{
     flex-direction:column;
     min-width:200px;
     margin-right:10px;
-    left:20px;
+    left:0;
     position:fixed;
 }
 .manage-nav{
