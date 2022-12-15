@@ -494,7 +494,16 @@ def testing():
 def get_database_size():
     if request.method == 'GET':
        pass
-
+def get_change_chapter_edit():
+    if request.method == 'PUT':
+        noveldb = mysql.connector.connect(**config)
+        novelcursor = noveldb.cursor(buffered=True,dictionary=True)
+        edit = request.args.get('edit')
+        chapter = request.args.get('chapter')
+        novelcursor.execute("UPDATE chapters SET chapteredited = %s WHERE id = %s",(edit,chapter))
+        noveldb.commit()
+        noveldb.close()
+        return chapter
 def convertToBinaryData(file):
     # Convert digital data to binary format
     binaryData = file.read()

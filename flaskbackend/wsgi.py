@@ -39,6 +39,9 @@ def novel_page_count():
 @app.route('/dates',methods=['GET'])
 def dates():
     return get_dates()
+@app.route('/chaptereditchange',methods=['PUT'])
+def change_chapter_edit():
+    return get_change_chapter_edit()
 @app.route('/test',methods=['GET','POST'])
 def test():
     return testing()

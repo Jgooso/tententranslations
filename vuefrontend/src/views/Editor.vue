@@ -282,6 +282,14 @@ export default{
                 chapter.chapteredited = 0
             }
             console.log(chapter)
+            const url = '/chaptereditchange?edit='+chapter.chapteredited+'&chapter='+chapter.id
+            getAPI.put(url)
+            .then(response => {
+                console.log('sent')
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
     },
     created(){
