@@ -93,7 +93,7 @@
                         <td class='chapter-title'>
                         <label>
                         {{chapter.title}}
-                        <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter.chapternumber)'>
+                        <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter)'>
                         </label>
                         </td>
                         <td v-if='chapter.chapteredited == 1' style='color:lightgreen;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>&#10003;</td>
@@ -242,21 +242,33 @@ export default{
                 this.saved = false
             }
             if (e.ctrlKey && e.key === 's') {
-                 this.chapterContent = document.getElementById('chapter-content').innerHTML
+                 this.currentChapter.content = document.getElementById('chapter-content').innerHTML
                  this.saved=true;
+                 getAPI.put('chapter?chapter='+this.currentChapter.id,{
+                     title:this.currentChapter.title,
+                     content:this.currentChapter.content
+                     })
+                    .then(response => {
+                        console.log('sent')
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
              
         },
         displayChapter(chapterItem){
+            console.log(chapterItem)
             document.getElementById('chapterEditor').style.left='0px';
              document.getElementById('chapterEditor').style.width='100%';
             document.getElementById('table').style.width='0px';
             document.getElementById('chapter-content').addEventListener('keydown', this.save, false);
-            const url = '/chapter?novel='+this.novelData.id+'&chapter='+chapterItem
+            const url = '/chapter?chapter='+chapterItem.id
             getAPI.get(url)
             .then(response => {
                 console.log('Chapter API has recieved data')
                 this.chapterContent = response.data
+                this.currentChapter = chapterItem
             })
             .catch(err => {
                 console.log(err)

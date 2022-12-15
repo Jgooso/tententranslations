@@ -190,17 +190,16 @@ def get_chapter():
     noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     chapter = request.args.get('chapter')
-    novel = request.args.get('novel')
-    update_chapter = request.args.get('chapterupdate')
     if request.method == 'GET':
+        print(chapter)
         get_chapter_sql = """
                         SELECT DISTINCT content 
                             FROM chapters 
-                            WHERE chapternumber = %s AND novelid=%s;
+                            WHERE id = %s;
                         UPDATE chapters SET views = views + (1 - chapteractive) 
-                            WHERE chapternumber = %s AND novelid = %s
+                            WHERE id = %s
                       """
-        get_chapter_val = (chapter,novel,chapter,novel)
+        get_chapter_val = (chapter,chapter)
         chapter_results = []
         for result in novelcursor.execute(get_chapter_sql,get_chapter_val,multi=True):
             if result.with_rows:
@@ -210,20 +209,12 @@ def get_chapter():
         return chapter_results
     if request.method == 'PUT':
         data = request.get_json()
-        try:
-            put_chapter_sql = 'UPDATE chapters SET content = %s WHERE chapternumber = %s AND novelid = %s'
-            put_chapter_val = (data['content'],update_chapter,novel)
-            novelcursor.execute(put_chapter_sql,put_chapter_val)
-        except:
-            print(update_chapter,novel)
-            
-        put_get_chapter_sql = "SELECT DISTINCT content FROM chapters WHERE chapternumber = %s AND novelid=%s"
-        put_get_chapter_val = (chapter,novel)
-        novelcursor.execute(put_get_chapter_sql,put_get_chapter_val)
-        chapter_data = novelcursor.fetchone()['content']
+        put_chapter_sql = 'UPDATE chapters SET content = %s WHERE id = %s'
+        put_chapter_val = (data['content'],chapter)
+        novelcursor.execute(put_chapter_sql,put_chapter_val)
         noveldb.commit()
         noveldb.close()
-        return chapter_data
+        return chapter
 
 def get_genres_and_tags():
     noveldb = mysql.connector.connect(**config)

@@ -42,7 +42,7 @@ import { getAPI } from '../axios-api'
         },methods:{
             triggerEdit(){
                 if(document.getElementById('chapter-content').contentEditable=='true'){
-                    const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber
+                    const url = '/chapter?chapter='+this.chapter.id
                     document.getElementById('content').contentEditable='false'
                     document.getElementById('editButton').innerHTML='Edit'
                     const content = document.getElementById('content').innerHTML
@@ -67,7 +67,7 @@ import { getAPI } from '../axios-api'
         }   
         },
         created(){
-            const url = '/chapter?novel='+this.chapter.novelid+'&chapter='+this.chapter.chapternumber
+            const url = '/chapter?chapter='+this.chapter.id
             getAPI.get(url)
           .then(response => {
             console.log('Chapter API has recieved data')
