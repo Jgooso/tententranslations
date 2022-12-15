@@ -78,13 +78,14 @@
         </div>
     </div>
     <!-- Chapter Edit-->
+     <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">CHAPTERS</h3></div><br>
     <div id = "TableOfContents">
         <table  id = 'table' ref='tableofcontentlist'>
-            <th style='width:100%'>
-            <td style='width:100%'>Chapter Title</td>
-            <td style='width:50px'>Edited</td>
-            <td style='width:50px'>Uploaded</td>
-            </th>
+            <tr class='table-list'>
+            <td class = 'chapter-title'>Chapter Title</td>
+            <td class = 'chapter-check-box' style='font-size:15px'>Edited</td>
+            <td class = 'chapter-check-box' style='font-size:15px'>Uploaded</td>
+            </tr>
             <tr v-for='section in sectionList' style='display:flex;flex-direction:column'>
                 <p v-if='section.title' class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
                 <tr style='width:100%'>
@@ -95,10 +96,10 @@
                         <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter.chapternumber)'>
                         </label>
                         </td>
-                        <td v-if='chapter.chapteredited == 1' style='color:lightgreen;text-align:center;font-weight:bold;font-size:20px;width:10px'>&#10003;</td>
-                        <td v-else style='color:red;text-align:center;font-weight:bold;font-size:20px;width:10%px;'>X</td>
-                        <td v-if='chapter.chapteractive == 1' style='color:lightgreen;text-align:center;font-weight:bold;font-size:20px'>&#10003;</td>
-                        <td v-else style='color:red;text-align:center;font-weight:bold;font-size:20px;width:10px'>X</td>
+                        <td v-if='chapter.chapteredited == 1' style='color:lightgreen;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>&#10003;</td>
+                        <td v-else style='color:red;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>X</td>
+                        <td v-if='chapter.chapteractive == 1' style='color:lightgreen;x' class = 'chapter-check-box'>&#10003;</td>
+                        <td v-else style='color:red;' class = 'chapter-check-box'>X</td>
                     </tr>
                 </tr>
             </tr>
@@ -247,8 +248,8 @@ export default{
              
         },
         displayChapter(chapterItem){
-            const chapter_contents = document.getElementsByClassName('selected')
             document.getElementById('chapterEditor').style.left='0px';
+             document.getElementById('chapterEditor').style.width='100%';
             document.getElementById('table').style.width='0px';
             document.getElementById('chapter-content').addEventListener('keydown', this.save, false);
             const url = '/chapter?novel='+this.novelData.id+'&chapter='+chapterItem
@@ -260,15 +261,27 @@ export default{
             .catch(err => {
                 console.log(err)
             })
+            console.log(document.getElementById('chapter-content').innerHTML)
         },
         hideChapter(){
             if(this.saved==true){
-                document.getElementById('chapterEditor').style.left='100%'
+                var editor = document.getElementById('chapterEditor')
+                editor.style.left='100%'
+                editor.style.width='0px'
+                this.chapterContent = ''
                 document.getElementById('table').style.width='100%';
                 document.getElementById('chapter-content').removeEventListener('keyup', this.save);
             }else{
                 
             }
+        },
+        chapteredit(chapter){
+            if (chapter.chapteredited == 0){
+                chapter.chapteredited = 1
+            }else{
+                chapter.chapteredited = 0
+            }
+            console.log(chapter)
         }
     },
     created(){
@@ -347,7 +360,6 @@ tr{
     overflow:hidden;
     display:flex;
     flex-direction:row;
-    border: 1px solid black
 }
 #table{
     text-decoration:none;
@@ -355,6 +367,7 @@ tr{
     width:100%;
     position:relative;
     transition: 1s ease-in-out;
+    border:1px solid black
 }
 .section{
     color:#000000;
@@ -381,6 +394,7 @@ tr{
     display:flex;
     flex-direction:row;
     margin:0px;
+    border-bottom:1px solid black
 }
 .chapter-select{
     margin-left:40px;
@@ -395,8 +409,14 @@ tr{
    background-color:var(--styleColor);
    color:white;
 }
-td{
-    border: 1px black solid;
+.chapter-check-box{
+text-align:center;
+font-weight:bold;
+font-size:20px;
+width:10%
+}
+.edited-check:hover{
+    background-color:white;
 }
 /*Chapter Table of Contents End*/
 
@@ -407,6 +427,8 @@ td{
     transition: 1s ease-in-out;
     top:0px;
     width:0px;
+    display:flex;
+    flex-direction:column;
 }
 #back-button{
     background:none;
@@ -419,6 +441,7 @@ td{
     white-space: pre-wrap;
     font-weight:lighter;
     overflow:hidden;
+    position:absolute;
 }
 /*Chapter Editor Page End*/
 
@@ -472,7 +495,6 @@ td{
         margin-top:20px;
     }
     #novel-information{
-        background-color: rgba(250, 250, 250, 0.8);
         padding:20px;
         width: 100%;
         height:fit-content;
