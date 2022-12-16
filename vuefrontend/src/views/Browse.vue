@@ -14,7 +14,7 @@
             <input type='button' class = 'category' @click='sort("lastupload")' value = 'Latest' id = 'sort-lastupload'>
             <input type ='button' class = 'category' @click='sort("title")' value = 'A-Z' id = 'sort-title'>
             <input type ='button' class = 'category' @click='sort("length")' value = 'Length' id = 'sort-length'>
-            <input type ='button' class = 'category' @click='sort("views")' value = 'Views' id = 'sort-views'>
+            <input type ='button' class = 'category' @click='sort("views")' value = 'Trending' id = 'sort-views'>
             <input type ='button' class = 'category' @click='sort("firstupload")' value = 'New' id = 'sort-firstupload'>
             <h6 id = 'pageNumber'>Page {{page}} of {{(pageCount)}}</h6>
         </div>

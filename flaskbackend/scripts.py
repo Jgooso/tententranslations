@@ -341,6 +341,8 @@ def upload():#change permissions for viewing of novels
     noveldb.commit()
     noveldb.close()
 def processView(views):
+    if views == None:
+        return 0
     if views >= 1000000:
         processed_views = str(views//1000000) + 'M'
     elif views >= 1000:

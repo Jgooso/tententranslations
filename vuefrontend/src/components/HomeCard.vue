@@ -1,28 +1,31 @@
 <template>
-<div id = "HomeCard">
+<router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" style="text-decoration:none">
+<div id = 'HomeCard' >
     <!--
     <div  class = "cover_image"  @click='goTo(novelData.id)'>
         <img :src="novelData.imageurl" v-if='novelData.imageurl'/>
         <span class='overlay'></span>
     </div>
     -->
-    <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
-    <div class = 'chapter'> 
-        <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" 
-         v-text='novelData.firstChapter["chapternumber"]' 
-         class = 'chapterNumber'/>
-        <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
-        
-    </div>
+    <p v-text='novelData.title' id = 'title' />
+    <div id = 'chapter-box'>
+    <p id = "recent-chapters">Recent Chapters</p>
+    <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" style='text-decoration:none'>
+        <div class = 'chapter'> 
+            <p v-text='novelData.firstChapter["chapternumber"]' class = 'chapterNumber'/>
+            <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
+        </div>
+    </router-link>
+    <hr style='margin:0px'>
+    <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" style='text-decoration:none'>
     <div class = 'chapter'>
-        <router-link 
-         :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" 
-         v-text='novelData.secondChapter["chapternumber"]' 
-         class = 'chapterNumber'/>
+        <p v-text='novelData.secondChapter["chapternumber"]' class = 'chapterNumber'/>
         <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
     </div>
+    </router-link>
+    </div>
 </div>
+</router-link>
 </template>
 
 <script>
@@ -72,35 +75,32 @@ export default{
    
 }
 .chapter{
-    width:100%;
-    height:fit-content;
+    height:40px;
     display:flex;
-    flex-direction:column;
-    margin-top:10px;
-    border-radius:20px;
+    flex-direction:row;
+    vertical-align: middle;
 }
 .chapter:hover{
-    background-color:purple;
+    border: 1px solid purple;
+    
+}
+#chapter-box{
+    width:50%;
 }
 .chapterNumber{
-    background-color:rgb(221,221,221);
     border-radius:10px;
     text-align:center;
-    font-size:12px;
+    font-size:15px;
     line-height:12px;
-    color:rgb(102,102,102);
+    color:var(--textColor);
     width:43px;
     height:24px;
     font-weight:bold;
     padding-top:6px;
-    margin-bottom:5px;
-    
-}
-.chapterNumber:hover{
-    background-color:var(--styleColor);
-    color:white;
-    transition: all .3s ease;
+    margin-top:auto;
+    margin-bottom:auto;
     text-decoration:none;
+    
 }
 #title{
     font-weight:bold;
