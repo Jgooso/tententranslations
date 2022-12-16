@@ -185,6 +185,7 @@ export default{
             this.tags = response.data['Tags']
             this.currentChapter = null
             this.chapterContent = ''
+            console.log(this.novelData)
           })
           .catch(err => {
             console.log(err)
@@ -196,6 +197,7 @@ export default{
             loadingscreen.style.display = 'block'
             const genres = document.getElementsByClassName('genrecheckbox')
             var selectedGenres = []
+            console.log(this.novelData.id)
             for(var i=0; i < genres.length; i++){
                 if(genres[i].checked==true){
                     selectedGenres.push(genres[i].value)
@@ -204,14 +206,11 @@ export default{
                this.novelData.novelstatus=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('noveldescription').innerHTML
                this.novelData.title=document.getElementById('noveltitle').innerHTML
-               const url = '/novel/single?novel='+this.selectednovel
+               const url = '/novel/single?novel='+this.novelData.id
             getAPI.put(url,{
-                   description:this.novelData.description,
+                   novelData:this.novelData,
                    tags:this.novelData.tags,
                    genres:selectedGenres,
-                   completed:this.novelData.novelstatus,
-                   title:this.novelData.title,
-                   novelactive:this.novelData.novelactive
                }).then(function (response) {
                     console.log(response);
                     loadingscreen.style.display='none'

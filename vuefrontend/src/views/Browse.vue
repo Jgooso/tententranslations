@@ -11,11 +11,11 @@
         </div>
 
         <div id = 'sortButtons'>
-            <input type='button' class = 'category' @click='print("lastupload")' value = 'Latest' id = 'sort-lastupload'>
-            <input type ='button' class = 'category' @click='print("title")' value = 'A-Z' id = 'sort-title'>
-            <input type ='button' class = 'category' @click='print("length")' value = 'Length' id = 'sort-length'>
-            <input type ='button' class = 'category' @click='print("views")' value = 'Views' id = 'sort-views'>
-            <input type ='button' class = 'category' @click='print("firstupload")' value = 'New' id = 'sort-firstupload'>
+            <input type='button' class = 'category' @click='sort("lastupload")' value = 'Latest' id = 'sort-lastupload'>
+            <input type ='button' class = 'category' @click='sort("title")' value = 'A-Z' id = 'sort-title'>
+            <input type ='button' class = 'category' @click='sort("length")' value = 'Length' id = 'sort-length'>
+            <input type ='button' class = 'category' @click='sort("views")' value = 'Views' id = 'sort-views'>
+            <input type ='button' class = 'category' @click='sort("firstupload")' value = 'New' id = 'sort-firstupload'>
             <h6 id = 'pageNumber'>Page {{page}} of {{(pageCount)}}</h6>
         </div>
         
@@ -60,37 +60,12 @@ import UtfBox from '../components/UtfBox'
             'tier'
         ],
         methods:{
-        sort(a,b){
-            switch (this.attributesort){
-                case 'Latest':
-                    if(Date.parse(a.lastupload) < Date.parse(b.lastupload)) { return 1; }
-                    if(Date.parse(a.lastupload) > Date.parse(b.lastupload)) { return -1; }
-                    return 0;
-                case 'alphabetical':
-                    if(a.title < b.title) { return -1; }
-                    if(a.title > b.title) { return 1; }
-                    return 0;
-                case 'length':
-                    if(a.firstChapter['chapternumber'] < b.firstChapter['chapternumber']) { return 1; }
-                    if(a.firstChapter['chapternumber'] > b.firstChapter['chapternumber']) { return -1; }
-                    return 0;
-                case 'views':
-                    const view_a = parseInt(a.views)
-                    const view_b = parseInt(b.views)
-                    if(view_a < view_b) { return 1; }
-                    if(view_a > view_b) { return -1; }
-                    return 0;
-                case 'new':
-                    if(Date.parse(a.firstupload) < Date.parse(b.firstupload)) { return 1; }
-                    if(Date.parse(a.firstupload) > Date.parse(b.firstupload)) { return -1; }
-                    return 0;
-
+        getNovels(identifier){  
+            if(identifier != undefined){
+                identifier = identifier.replace(/&nbsp;/g,'|')
             }
-
-        },
-        getNovels(identifier){
-            
         const url = '/novel/multiple?tier='+this.tier+'&identifier='+identifier+'&order='+this.attributesort+'&page='+this.page
+        console.log(identifier)
        getAPI.get(url)
           .then(response => {
             console.log('Post API has recieved data')
@@ -101,7 +76,7 @@ import UtfBox from '../components/UtfBox'
             console.log(err)
           })
         },
-        print(p){
+        sort(p){
             const selected = document.getElementsByClassName('selected')
             this.attributesort = p
             for(var i=0; i < selected.length; i++){
@@ -109,11 +84,11 @@ import UtfBox from '../components/UtfBox'
             }
             document.getElementById('sort-'+p).classList.add('selected')
             console.log(p)
-            this.getNovels()
+            this.getNovels(this.$route.params.identifier)
         },
         changePage(change){
             this.page = this.page + change
-            this.getNovels()
+            this.getNovels(this.$route.params.identifier)
         },
         getPages(identifier){
             getAPI.get('/novels-page-count?tier='+this.tier+'&identifier='+identifier)
@@ -133,9 +108,6 @@ import UtfBox from '../components/UtfBox'
     created(){
         var identifier = this.$route.params.identifier
             console.log(identifier)
-            if(identifier != undefined){
-                identifier = identifier.replace(/&nbsp;/g,'|')
-            }
         this.getPages(identifier)
         this.$watch(
       () => this.$route.params,

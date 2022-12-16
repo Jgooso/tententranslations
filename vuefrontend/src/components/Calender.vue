@@ -92,7 +92,10 @@ export default{
         }
     },
     created(){
-        
+        var today = new Date();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        console.log(mm + '/' + yyyy)
         getAPI.get('/dates')
           .then(response => {
             console.log('Chapter API has recieved data')

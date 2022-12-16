@@ -8,6 +8,7 @@ from PIL import Image
 from slugify import slugify
 from scripts import download, processView, ranker, time_difference
 from flask import jsonify, request
+import calendar
 
 #Setup
 config = {
@@ -162,19 +163,19 @@ def get_singlenovel():
         return data
     if request.method == 'PUT':#Edit Novel
         data = request.get_json()
-        novelid = slugify(data['title'])
+        novelData = data['novelData']
+        novelid = request.args.get('novel')
         post_single_novel_sql =  """
                                 UPDATE novels SET description = %s, title = %s, novelid = %s
-                                    WHERE novelid = %s;
-                                SELECT id FROM novels WHERE novelid = %s
+                                    WHERE id = %s;
                                  """
-        post_single_novel_val = (data['description'],data['title'],novelid,novel,novelid)
-        for result in novelcursor.execute(post_single_novel_sql,post_single_novel_val,multi=True):
-            if result.with_rows:
-                id = novelcursor.fetchone()['id']
-        post_single_novel_descriptor_sql = "REPLACE INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s AND type != 'uploadstatus'"
-        for descriptor in data['genres'] + data['tags']+[data['completed']]:
-            post_single_novel_descriptor_val = (id,descriptor)
+        post_single_novel_val = (novelData['description'],novelData['title'],slugify(novelData['title']),novelid)
+        novelcursor.execute(post_single_novel_sql,post_single_novel_val)
+        novelcursor.execute("DELETE FROM noveldescriptors WHERE novelid = %s",(novelid,))
+        post_single_novel_descriptor_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s"
+        for descriptor in data['genres'] + data['tags']+['n'+novelData['novelstatus'],novelData['novelrelease'],novelData['authors'],'u'+novelData['uploadstatus']]:
+            print(descriptor)
+            post_single_novel_descriptor_val = (novelid,descriptor)
             novelcursor.execute(post_single_novel_descriptor_sql,post_single_novel_descriptor_val)
         noveldb.commit()
         noveldb.close()
@@ -411,6 +412,7 @@ def get_feedback():
     if request.method == 'DELETE':
         id= request.args.get('id')
         novelcursor.execute("DELETE FROM feedback WHERE id = %s",(id,))
+        noveldb.commit()
         noveldb.close()
         return 'deleted'
 def get_novels_page_count():
@@ -445,12 +447,16 @@ def get_dates():
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         offset= int(request.args.get('offset'))
-        start_date = datetime.date(2022, 10, 1) 
-        end_date = datetime.date(2022, 10, 31) 
+        month = int(request.args.get('month'))
+        year = int(request.args.get('year'))
+        month_name = datetime.datetime.strptime(str(month), "%m").strftime("%B")
+        end_day = calendar.monthrange(year, month)[1]
+        start_date = datetime.date(year, month, 1) 
+        end_date = datetime.date(year, month, end_day) 
         #start_date = start_date - datetime.timedelta(days=(start_date.weekday()+1)%7)
         #print(start_date)
         delta = end_date - start_date   # returns timedelta
-        october_calender = {'month':'October','weekday_start':(start_date.weekday()+1)%7,'days':{}}
+        calender = {'month':month_name,'weekday_start':(start_date.weekday()+1)%7,'days':{}}
         get_schedule__sql = ('SELECT title,upload_date FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE upload_date BETWEEN %s AND %s')
         get_schedule_val = (start_date,end_date)
         novelcursor.execute(get_schedule__sql,get_schedule_val)
@@ -463,14 +469,14 @@ def get_dates():
             schedule_bucket[day.day].append({'novel':schedule['title'],'hour':day.hour})
         for i in range(delta.days + 1):
             day = start_date + datetime.timedelta(days=i)
-            october_calender['days'][day.day] = []
+            calender['days'][day.day] = []
             try:
                 for d in schedule_bucket[day.day]:
-                    october_calender['days'][day.day].append(d)
+                    calender['days'][day.day].append(d)
             except:
                 pass
         noveldb.close()
-        return jsonify(october_calender)
+        return jsonify(calender)
 def testing():
     if request.method=='POST':
         print(request.form)

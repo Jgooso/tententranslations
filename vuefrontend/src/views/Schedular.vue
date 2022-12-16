@@ -1,8 +1,13 @@
 <template>
 <body v-if='dates[8]'>
 <h1>
-{{month}}
+{{month_name}}{{year}}
 </h1>
+<div id = 'navigator'>
+<label>&lt;<input type = button class = 'navigation-button' @click='change_month(1)'></label>
+<label>Today<input type = button class = 'navigation-button' @click='change_month("today")'></label>
+<label>&gt;<input type = button class = 'navigation-button' @click='change_month(-1)'></label>
+</div>
 <div id = 'calender'>
     <div class = 'weekday' v-for='(day,v) in daysoftheWeek'>
     {{day}}
@@ -43,7 +48,9 @@ export default{
         return {
             dates:[],
             daysoftheWeek:['Sunday','Monday','Tuesady','Wednesday','Thursday','Friday','Saturday'],
-            month:'',
+            month_name:'',
+            month:0,
+            year:0,
             day:0,
             selectedDay:[],
             novels:[],
@@ -89,24 +96,49 @@ export default{
                 console.log(err);
             })
             
-        }
-    },
-    created(){
+        },
+        get_calender(month,year){
         const diff = new Date().getTimezoneOffset()
-        console.log(diff)
-        getAPI.get('/dates?offset='+diff)
+        getAPI.get('/dates?offset='+diff+'&month='+month+'&year='+year)
           .then(response => {
             console.log('Chapter API has recieved data')
             this.dates = response.data['days']
             console.log(response.data)
             this.start_date = response.data["weekday_start"]
             console.log(this.start_date)
-            this.month = response.data['month']
+            this.month_name = response.data['month']
           })
           .catch(err => {
             console.log(err)
           })
           
+        },
+        change_month(change){
+            if (change == 'today'){
+                var today = new Date();
+                this.month = String(today.getMonth() + 1).padStart(2, '0');
+                this.year = today.getFullYear()
+                this.get_calender(this.month,this.year)
+                return
+            }
+            this.month -= change
+            if (this.month > 12){
+                this.month = 1
+                this.year +=1
+            }
+            if (this.month < 1){
+                this.month = 12
+                this.year -=1
+            }
+             this.get_calender(this.month,this.year)
+        }
+    },
+    created(){
+        
+        var today = new Date();
+        this.month = String(today.getMonth() + 1).padStart(2, '0');
+        this.year = today.getFullYear()
+        this.get_calender(this.month,this.year)
     }
 
 }
@@ -184,6 +216,10 @@ h6{
     margin-left:auto;
     vertical-align:middle;
 
+}
+.navigation-button{
+    background:none;
+    border:none;
 }
 @media (max-width: 775px) {
   .hour{
