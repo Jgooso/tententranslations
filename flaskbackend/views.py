@@ -236,23 +236,6 @@ def get_genres_and_tags():
 def get_schedules():
     noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
-    if request.method == 'GET':
-        start_date = datetime.date(2022, 10, 1) 
-        end_date = datetime.date(2022, 10, 30) 
-        get_schedule__sql = ('SELECT title,upload_date FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE upload_date BETWEEN %s AND %s')
-        get_schedule_val = (start_date,end_date)
-        novelcursor.execute(get_schedule__sql,get_schedule_val)
-        schedule_list = novelcursor.fetchall()
-        
-        schedule_bucket = {}
-        for schedule in schedule_list:
-            day = schedule['upload_date']
-            print(day.day,day.hour)
-            if day.day not in schedule_bucket:
-                schedule_bucket[day.day] = []
-            schedule_bucket[day.day].append(day.hour)
-        noveldb.close()
-        return jsonify(schedule_bucket)
     if request.method == 'POST':
         local = pytz.timezone("America/Chicago")
         data = request.form
@@ -264,7 +247,7 @@ def get_schedules():
         dates = []
         novelcursor.execute('SELECT COUNT(content) as length FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE novels.novelid = %s',(novel,))
         length = novelcursor.fetchone()['length']
-        print(length)
+        print(days_of_the_week)
         i = 0
         while len(dates) < length:
             day = start_date + datetime.timedelta(days=i)

@@ -47,7 +47,7 @@ export default{
     data(){
         return {
             dates:[],
-            daysoftheWeek:['Sunday','Monday','Tuesady','Wednesday','Thursday','Friday','Saturday'],
+            daysoftheWeek:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
             month_name:'',
             month:0,
             year:0,
