@@ -32,8 +32,6 @@ config = {
 'database': 'tententranslations',
 'raise_on_warnings': True,}
 
-noveldb = mysql.connector.connect(**config)
-novelcursor = noveldb.cursor(buffered=True)
 translator = Translator()
 tool = language_tool_python.LanguageTool('en-US')
 
@@ -134,7 +132,8 @@ def upload_image(image,url):
     return url
 
 def download(data):#download novels from NCODE.SYOSETU
-
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True)
     #Parse form in data
     genres=[]
     tags=[]
@@ -196,8 +195,10 @@ def download(data):#download novels from NCODE.SYOSETU
     #Upload IMAGE
     
     noveldb.commit()
-
+    noveldb.close()
 def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
+    chapterdb = mysql.connector.connect(**config)
+    chaptercursor = chapterdb.cursor(buffered=True)
     sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     chapter_order = chapter_number+section
     for i in range(len(chapter_list)):
@@ -215,7 +216,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 chapter_order,#chapterorder
                 0,#views
             )
-            novelcursor.execute(sql,val)
+            chaptercursor.execute(sql,val)
         else:
             chapter_obj = get_HTML('https://ncode.syosetu.com' + str(current_chapter['href']))
             chapter_title = translate(str(chapter_obj.find(class_ = 'novel_subtitle').text))
@@ -254,11 +255,13 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 0,#views
 
             )
-            novelcursor.execute(sql,val)
+            chaptercursor.execute(sql,val)
             chapter_number += 1
         chapter_order += 1
-
+    chapterdb.close()
 def update():#Search for new chapters and download them to database
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True)
     today = date.today()
     yesterday = today  - timedelta(days = 1)
     novelcursor.execute("SELECT id,url,novelstatus FROM novels")
@@ -266,26 +269,26 @@ def update():#Search for new chapters and download them to database
     for novel in novels:
         #SETUP: define sql, get online chapters and database chapters
         novel_obj = get_HTML(novel[1])
-        chapter_sql = "SELECT novelid,chapterid,chapternumber,section,views,chapteractive FROM chapters WHERE novelid = %s ORDER BY chapternumber"
+        chapter_sql = "SELECT novelid,id,chapternumber,section,views,chapteractive FROM chapters WHERE novelid = %s ORDER BY chapternumber"
         novel_sql = "UPDATE noveldescriptors SET descriptor = 'completed' WHERE novelid=%s AND descriptor in ('Ongoing','On Hold','Dropped')"
-        data_sql = "INSERT INTO data (novelid,chapterid,views,date) VALUES (%s,%s,%s,%s)"
+        data_sql = "INSERT INTO data (novelid,id,views,date) VALUES (%s,%s,%s,%s)"
         novelid = (novel['id'],)
         novelcursor.execute(chapter_sql,novelid)
         chapters = novelcursor.fetchall()
         chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
         #check if there are more chapters on NCODE than database; if so, get newest chapter in database than call processChapters
-        if len(chapter_list) > len(chapters) and (novel[-1] == 'Ongoing' or novel[-1] == 'On Hold'):
+        if len(chapter_list) > len(chapters) and (novel['novelstatus'] == 'Ongoing' or novel['novelstatus'] == 'On Hold'):
             chapter_list = chapter_list[len(chapters):]
             last_chapter = chapters[-1]
             chapter_number = last_chapter['chapternumber']+1
             section = last_chapter['section']
-            processChapters(chapter_number=chapter_number,section=section,novel_id=novelid[0],chapter_list=chapter_list)
+            processChapters(chapter_number=chapter_number,section=section,novel_id=novel['id'],chapter_list=chapter_list)
         for chapter in chapters:
-            if chapter[2] != 0 and chapter[-1] == 0:
+            if chapter['chapternumber'] != 0 and chapter['chapteractive'] == 1:
                 try:
-                    novelcursor.execute("SELECT views from data WHERE chapterid = %s AND novelid = %s AND date = %s",(chapter[1],novel[0],yesterday  - timedelta(days = 1)))
+                    novelcursor.execute("SELECT views from data WHERE chapterid = %s AND novelid = %s AND date = %s",(chapter['id'],novel['id'],yesterday  - timedelta(days = 1)))
                     yesterday_views = novelcursor.fetchone()
-                    views = chapter[-2]-yesterday_views
+                    views = chapter['views']-yesterday_views
                 except TypeError:
                     views = chapter[-2]
                 data_val = (novel[0],chapter[1],views,yesterday)
@@ -295,10 +298,13 @@ def update():#Search for new chapters and download them to database
         if o.find(id='noveltype'):
             
             novelcursor.execute(novel_sql,novelid)
-        noveldb.commit()
         if today.strftime('%d') == '01':
             novelcursor.execute('UPDATE chapters SET views = 0')
+    noveldb.commit()
+    noveldb.close()
 def upload():#change permissions for viewing of novels
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True)
     now = pytz.timezone('America/Chicago')
     check_date = datetime.now(now).replace(microsecond=0)
     current_time = datetime.now().replace(microsecond=0)
@@ -332,7 +338,8 @@ def upload():#change permissions for viewing of novels
             noveldb.commit()
     except TypeError:
         pass
-        
+    noveldb.commit()
+    noveldb.close()
 def processView(views):
     if views >= 1000000:
         processed_views = str(views//1000000) + 'M'

@@ -1,5 +1,5 @@
 <template>
-<div id = 'chapter' v-if='chapter'>
+<div id = 'chapter' v-if='chapter' onscroll='handleScroll()'>
     <div>
      <br>
         <h3 style = "font-size: 25px" v-html='novelData.title+" - "+chapter.chapternumber'/><!-- chapter number-->
@@ -23,11 +23,13 @@
 import ChapterSelector from '../components/ChapterSelector'
 import Navigator from '../components/Navigator'
 import { getAPI } from '../axios-api'
+import KoFiButton from '../components/KoFiButton'
     export default{
         name: 'Chapter',
         components:{
             ChapterSelector,
             Navigator,
+            KoFiButton
         },props:[
         'novelData',
         'chapterList',
@@ -82,7 +84,7 @@ import { getAPI } from '../axios-api'
             this.selectorList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
         },
         mounted(){
-             document.getElementById('chapter').addEventListener('scroll', this.handleScroll);
+            window.addEventListener('scroll', this.handleScroll);
         }
     }
 </script>
@@ -103,6 +105,7 @@ font-size:19px;
     left:50;
     z-index:10;
     top:20px;
+    height:50px;
     position: -webkit-sticky;
     text-overflow:ellipsis;
     overflow:hidden;

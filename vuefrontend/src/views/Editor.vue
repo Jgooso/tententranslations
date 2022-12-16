@@ -169,7 +169,7 @@ export default{
             }else{
                 this.selectednovel = document.getElementById("novel-selector").value
             }
-            const url = '/novel/single?novel='+this.selectednovel+'&tier=5&edit=True'
+            const url = '/novel/single?novel='+this.selectednovel+'&tier=0&edit=True'
             getAPI.get(url)
           .then(response => {
             console.log('Post Novel has recieved data')

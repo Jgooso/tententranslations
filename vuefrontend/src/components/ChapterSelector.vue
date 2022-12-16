@@ -41,7 +41,7 @@ import NavButton from './Navbutton'
         ],
         date(){
             return{
-                darkmode:'light'
+                darkmode:''
             }
         },components:{
             NavButton
@@ -53,7 +53,7 @@ import NavButton from './Navbutton'
             },
             changeFontSize(change){
                  const v = document.getElementById('chapter-content')
-                 const newFontSize = parseInt(v.style.fontSize.slice(0,2))+change
+                 const newFontSize = parseInt(getComputedStyle(v).getPropertyValue('font-size').slice(0,2))+change
                  if(newFontSize > 6){
                     v.style.fontSize=newFontSize+'px'
                     $cookies.set('font-size',newFontSize+'px')

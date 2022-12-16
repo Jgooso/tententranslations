@@ -14,7 +14,7 @@
   />
   <div class = 'view-border-one bord'></div>
     <router-view
-      tier = 1
+      tier = 0
       class = 'view-content'
       v-on:switchmode='switchdarkmode()'
     />
@@ -129,7 +129,7 @@ export default {
             console.log(err)
           })
      */
-     this.user = {'id':838383,'status':'Moderator','fontsize':19,'tier':1}
+     this.user = {'id':838383,'status':'a','fontsize':19,'tier':1}
     }
   
 }

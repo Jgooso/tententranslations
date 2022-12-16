@@ -4,7 +4,7 @@
  <!--COVER-->
   <div id="cover" ref = 'cover'>
     <div v-if='novelData.title'>
-
+        {{novelData.ip}}
         <Navigator
          :novelid='novelData.id'
          :novel='novelData.title'

@@ -1,7 +1,7 @@
 <template>
 <body v-if='dates[8]'>
 <h1>
-{{month_name}}{{year}}
+{{month_name}}, {{year}}
 </h1>
 <div id = 'navigator'>
 <label>&lt;<input type = button class = 'navigation-button' @click='change_month(1)'></label>

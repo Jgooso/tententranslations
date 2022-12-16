@@ -34,7 +34,7 @@ def get_multiplenovels():
     get_multiple_novel_chapter_sql =    """
                                         SELECT chapternumber,uploaddate 
                                         FROM chapters 
-                                        WHERE CONTENT IS NOT NULL AND chapteractive <= %s AND novelid = %s 
+                                        WHERE CONTENT IS NOT NULL AND chapteractive >= %s AND novelid = %s 
                                         ORDER BY chapternumber+0 DESC LIMIT 2
                                     """
     if identifier != 'undefined':
@@ -46,7 +46,7 @@ def get_multiplenovels():
                                         ON novels.id = chapters.novelid
                                     INNER JOIN identifiers
                                         ON noveldescriptors.descriptor = identifiers.id
-                                WHERE identifiers.descriptor = %s AND chapteractive <= %s AND novels.novelactive <= %s
+                                WHERE identifiers.descriptor = %s AND chapteractive >= %s AND novels.novelactive >= %s
                                 GROUP BY novels.id
                                 ORDER BY """+order+"""
                                 LIMIT 12 OFFSET %s
@@ -57,7 +57,7 @@ def get_multiplenovels():
                                         FROM novels 
                                             INNER JOIN chapters
                                                 ON novels.id = chapters.novelid
-                                            WHERE novels.novelactive <= %s AND chapteractive <= %s
+                                            WHERE novels.novelactive >= %s AND chapteractive >= %s
                                     GROUP BY novels.id
                                     ORDER BY  """+order+"""
                                     LIMIT 12 OFFSET %s
@@ -106,7 +106,7 @@ def get_singlenovel():
         #Retrieve Chapters
         get_single_novel_chapter_sql = """
                             SELECT title,novelid,uploaddate,chapternumber,section,id,chapterorder,chapteractive,chapteredited 
-                                FROM chapters WHERE novelid = %s AND chapteractive <= %s 
+                                FROM chapters WHERE novelid = %s AND chapteractive >= %s 
                                 ORDER BY chapterorder+0
                            """
         get_chapter_list_val = (novelData['id'],tier)
@@ -197,7 +197,7 @@ def get_chapter():
                         SELECT DISTINCT content 
                             FROM chapters 
                             WHERE id = %s;
-                        UPDATE chapters SET views = views + (1 - chapteractive) 
+                        UPDATE chapters SET views = views + chapteractive
                             WHERE id = %s
                       """
         get_chapter_val = (chapter,chapter)
@@ -309,7 +309,7 @@ def get_home_page_novels():
         get_multiple_novel_chapter_sql =    """
                                         SELECT chapternumber,uploaddate 
                                         FROM chapters 
-                                        WHERE CONTENT IS NOT NULL AND chapteractive <= %s AND novelid = %s 
+                                        WHERE CONTENT IS NOT NULL AND chapteractive >= %s AND novelid = %s 
                                         ORDER BY chapternumber+0 DESC LIMIT 2
                                     """
         home_page_popular_sql = """
@@ -322,7 +322,7 @@ def get_home_page_novels():
                                             ORDER BY identifiers.descriptor
                                     ) AS genre
                                         ON genre.nov = novels.id
-                                    WHERE novelactive <= %s
+                                    WHERE novelactive >= %s
                                     GROUP BY novels.id
                                     ORDER BY views DESC
                                     LIMIT 9;
@@ -336,7 +336,7 @@ def get_home_page_novels():
                                             ORDER BY identifiers.descriptor
                                     ) AS genre
                                         ON genre.nov = novels.id
-                                    WHERE novelactive <= %s
+                                    WHERE novelactive >= %s
 	                                GROUP BY novels.id
                                     ORDER BY firstupload
                                     LIMIT 7;
@@ -350,7 +350,7 @@ def get_home_page_novels():
                                             ORDER BY identifiers.descriptor
                                     ) AS genre
                                         ON genre.nov = novels.id
-                                    WHERE novelactive <= %s
+                                    WHERE novelactive >= %s
 	                                GROUP BY novels.id
                                     ORDER BY lastupload
                                     LIMIT 7;
@@ -411,7 +411,7 @@ def get_novels_page_count():
                                         ON novels.id = noveldescriptors.novelid 
                                     INNER JOIN identifiers
                                         ON noveldescriptors.descriptor = identifiers.id
-                                    WHERE novelactive <= %s AND 
+                                    WHERE novelactive >= %s AND 
                                         identifiers.descriptor = %s
                                         
                                 """,(tier,identifier))
@@ -436,8 +436,6 @@ def get_dates():
         end_day = calendar.monthrange(year, month)[1]
         start_date = datetime.date(year, month, 1) 
         end_date = datetime.date(year, month, end_day) 
-        #start_date = start_date - datetime.timedelta(days=(start_date.weekday()+1)%7)
-        #print(start_date)
         delta = end_date - start_date   # returns timedelta
         calender = {'month':month_name,'weekday_start':(start_date.weekday()+1)%7,'days':{}}
         get_schedule__sql = ('SELECT title,upload_date FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE upload_date BETWEEN %s AND %s')
