@@ -42,11 +42,12 @@ def get_multiplenovels():
                                 FROM novels 
                                     INNER JOIN noveldescriptors 
                                         ON novels.id = noveldescriptors.novelid 
-                                    INNER JOIN Chapters
+                                    LEFT JOIN (SELECT data.views,novelid,content,chapteractive FROM chapters 
+							                            LEFT JOIN data ON data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters
                                         ON novels.id = chapters.novelid
                                     INNER JOIN identifiers
                                         ON noveldescriptors.descriptor = identifiers.id
-                                WHERE identifiers.descriptor = %s AND chapteractive >= %s AND novels.novelactive >= %s
+                                WHERE identifiers.descriptor = %s AND novels.novelactive >= %s
                                 GROUP BY novels.id
                                 ORDER BY """+order+"""
                                 LIMIT 12 OFFSET %s
@@ -55,14 +56,15 @@ def get_multiplenovels():
     else:
         get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,imageurl, SUM(chapters.views) as views,SUM(character_length(content)) as length
                                         FROM novels 
-                                            INNER JOIN chapters
+                                            LEFT JOIN (SELECT data.views,novelid,content,chapteractive FROM chapters 
+							                            LEFT JOIN data ON data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters
                                                 ON novels.id = chapters.novelid
-                                            WHERE novels.novelactive >= %s AND chapteractive >= %s
+                                            WHERE novels.novelactive >= %s
                                     GROUP BY novels.id
                                     ORDER BY  """+order+"""
                                     LIMIT 12 OFFSET %s
                                 """
-        novelcursor.execute(get_multiple_novel_sql,(tier,tier,page))
+        novelcursor.execute(get_multiple_novel_sql,(tier,page))
     novelData = novelcursor.fetchall()
     #Add chapters to novelData
     for novel in novelData:
@@ -88,13 +90,14 @@ def get_singlenovel():
     if request.method == 'GET':
         #Retrieve Novel Data
         
-        get_single_novel_sql = """SELECT DISTINCT novels.id,novels.novelid,novels.title,alternativetitle,description,url,novelactive, SUM(chapters.views) as views,CEILING(SUM(character_length(content))/1800) as pages 
-                        FROM novels 
-                            INNER JOIN chapters 
-                                ON novels.id = chapters.novelid 
-                        WHERE novels.novelid = %s
-                        GROUP BY novels.id
-                    """
+        get_single_novel_sql =  """SELECT DISTINCT novels.id,novels.novelid,novels.title,alternativetitle,description,url,novelactive, SUM(chapters.views) as views,CEILING(SUM(character_length(content))/1800) as pages 
+		                            FROM novels 
+			                            INNER JOIN (SELECT data.views,novelid,content FROM chapters 
+							                            LEFT JOIN data ON data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters
+				                                    ON novels.id = chapters.novelid 
+		                            WHERE novels.novelid = %s
+		                            GROUP BY novels.id
+                                """
         get_single_novel_val = (novel,)
         novelcursor.execute(get_single_novel_sql,get_single_novel_val)
         novelData=novelcursor.fetchone()
@@ -197,8 +200,7 @@ def get_chapter():
                         SELECT DISTINCT content 
                             FROM chapters 
                             WHERE id = %s;
-                        UPDATE chapters SET views = views + chapteractive
-                            WHERE id = %s
+                        UPDATE data set views = views + (SELECT chapteractive FROM chapters WHERE id = data.chapterid) WHERE date = CURDATE();
                       """
         get_chapter_val = (chapter,chapter)
         chapter_results = []
@@ -314,7 +316,8 @@ def get_home_page_novels():
                                     """
         home_page_popular_sql = """
                                 SELECT novels.id,novels.novelid,novels.title,imageurl,novelactive,description,sum(chapters.views) as views,ROW_NUMBER() OVER (ORDER BY sum(chapters.views) DESC) row_num,ANY_VALUE(genre.des) as genre
-                                FROM novels INNER JOIN chapters ON chapters.novelid = novels.id
+                                FROM novels LEFT JOIN (SELECT data.views,novelid,content FROM chapters 
+							                            LEFT JOIN data ON data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters ON chapters.novelid = novels.id
                                 LEFT JOIN (
                                         SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
                                             FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
