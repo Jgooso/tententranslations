@@ -216,10 +216,9 @@ export default {
         margin-top: 30px;
         /*margin: auto;*/
         transition: all .3s ease;
-        width:92.5%;
+        width:100%;
         grid-column: 1 / span 3;
-        
-        padding:20px;
+        padding:10px;
     }
 }
 </style>

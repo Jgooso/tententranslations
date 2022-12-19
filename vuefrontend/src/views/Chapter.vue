@@ -90,9 +90,9 @@ import KoFiButton from '../components/KoFiButton'
 </script>
 <style scoped>
 #chapter-content{
-font-family: Times;
+font-family: sans-serif;
 white-space: pre-wrap;
-font-weight:lighter;
+font-weight: 100;
 margin:auto;
 margin-top:25px;
 margin-bottom:40px;
@@ -101,25 +101,13 @@ font-size:19px;
 }
 #chapter-navigator{
     margin-bottom:20px;
-    position:fixed;
     left:50;
     z-index:10;
     top:20px;
-    height:50px;
-    position: -webkit-sticky;
-    text-overflow:ellipsis;
-    overflow:hidden;
+    height:fit-content;
     transition: all .3s ease-in-out;
 }
-.sticky-navigation{
-    width:75%;
-    white-space: nowrap;
-   
-
-}
 @media (max-width: 775px) {
-    .sticky-navigation{
-        width:65%;
-    }
+
 }
 </style>

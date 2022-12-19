@@ -85,7 +85,6 @@ import NavButton from './Navbutton'
 #navigation{
     display:flex;
     flex-direction:row;
-    position:sticky;
 }
 #myselect{
     padding-left:10px;
@@ -100,8 +99,6 @@ import NavButton from './Navbutton'
     color:var(--borderColor);
 }
 #control-bar{
-    position: -webkit-sticky;
-    position:sticky;
     top: 0;
     background-color: var(--backgroundColor);
     padding-top:10px;

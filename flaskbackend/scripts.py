@@ -1,12 +1,11 @@
 import mysql.connector
 #downloading novels and chapters
-import re
-import requests
+import string, random
+import re, requests, json
 from slugify import slugify
 import language_tool_python
 from bs4 import BeautifulSoup
 from googletrans import Translator
-import json
 
 #uploading chapters to weboage
 from datetime import datetime,date,timedelta
@@ -153,7 +152,7 @@ def download(data):#download novels from NCODE.SYOSETU
     novel_obj = get_HTML(URL)
     jp_title = novel_obj.title.text
     en_title = translate(jp_title)
-    novel_id = slugify(en_title.replace("'",""))
+    novel_id = ran_gen(7)
     release = novel_obj.find(class_='long_update').text.strip()[:4]
     author = scrub_HTML(translate(novel_obj.find(class_ = "novel_writername").text)[8:])
     description = scrub_HTML(correct_grammer(translate(novel_obj.find(id = 'novel_ex').text.replace('<br />','&#013;&#010;   '))))
@@ -363,3 +362,5 @@ def ranker(rank):
         return str(rank)+'rd'
     else:
         return str(rank)+'th'
+def ran_gen(size, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(size))

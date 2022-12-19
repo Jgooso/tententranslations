@@ -17,7 +17,8 @@ const routes = [
           {path:'upload',name:'uploadPage',component: ()=> import('@/views/Upload')},
           {path:'schedule',name:'schedulePage',component: ()=> import('@/views/Schedular')},
           {path:'edit',name:'editPage',component: ()=> import('@/views/Editor')},
-          {path:'feedback',name:'feedbackPage',component: ()=> import('@/views/Feedback')}
+          {path:'feedback',name:'feedbackPage',component: ()=> import('@/views/Feedback')},
+          {path:'descriptorbution',name:'descriptorPage',component: ()=> import('@/views/Descriptor')}
         ]
         ,name: 'managePage',component: ()=> import('@/views/Manage.vue')},
         {path:'/:pathmatch(.*)*',name:'not-found',component: ()=>import('@/views/Error.vue')}

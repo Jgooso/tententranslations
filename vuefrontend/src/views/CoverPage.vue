@@ -12,80 +12,52 @@
         <p id = "noveltitle" v-text='novelData.title'/>
         <div id = "inner">
             <img id = "image-border" :src="novelData.imageurl" v-if='novelData.imageurl'>
-            <div id = "novel-information">
-             <div id = "data">
-                <table>
-                    <tr>
-                        <td>Views</td>
-                        <td v-text='novelData.views' class='info'/>
-                    </tr>
-                    <tr>
-                        <td>Alternative</td>
-                        <td v-text='novelData.alternativetitle' class="info"/>
-                    </tr>
-                    <tr>
-                        <td>Raw</td>
-                        <td class="info"><a :href="novelData.url" class = 'selectable'>{{novelData.url}}</a></td>
-                    </tr>
-                    <tr>
-                        <td>Author</td>
-                        <td class="info"><router-link :to = "{name: 'explorePage', params:{browsetype:'novel-authors',identifier:novelData.authors}}" class='selectable' v-text='novelData.authors'/></td>
-                    </tr>
-                    <tr>
-                        <td>Genres</td>
-                        <td class="info">
-                            <ul class='comma-list'>
-                                <li v-for='genre in novelData.genres' :key='genre'>
-                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:genre}}" class='selectable' v-text='genre'/>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Tags</td>
-                        <td class="info">
-                            <ul class='comma-list'>
-                                <li v-for='tag in novelData.tags' :key='tag'>
-                                    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable' v-html='tag'/>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <td>Release</td>
-                        <td class="info" v-text='novelData.novelrelease'/>
-                    </tr>
-                    <tr>
-                        <td>Status</td>
-                        <td class="info">
-                            <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:'u'+novelData.uploadstatus}}" class='selectable' v-text='novelData.uploadstatus'/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Novel</td>
-                        <td class="info" v-if='!editable' v-text='novelData.novelstatus'/>
-                    </tr>
-                    <!--
-                    <tr>
-                        <td>Pages<span id = 'pageSuper'>(Approx.)</span><p id = 'disclaimer'>~1800 characters/360 words per Page</p></td>
-                        <td class="info"><p>{{novelData.pages}}</p></td>
-                    </tr>
-                    -->
-                </table>
-             </div>
+                <div id = "novel-test">
+                    <div class = 'column1 label'>Views</div>
+                    <div class = 'column2 info ' v-text='novelData.views'/>
+                    <div class = 'column1 label'>Alternative</div>
+                    <div class = 'column2 info ' v-text='novelData.alternativetitle'/>
+                    <div class = 'column1 label'>Raw</div>
+                    <div class = 'column2 info' ><a :href="novelData.url" class = 'selectable'>{{novelData.url}}</a></div>
+                    <div class = 'column1 label'>Author</div>
+                    <div class = 'column2 info' ><router-link :to = "{name: 'explorePage', params:{browsetype:'novel-authors',identifier:novelData.authors}}" class='selectable' v-text='novelData.authors'/></div>
+                    <div class = 'column1 label'>Genres</div>
+                    <div class = 'column2 info' >
+                        <ul class='comma-list'>
+                            <li v-for='genre in novelData.genres' :key='genre'>
+                                <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:genre}}" class='selectable' v-text='genre'/>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class = 'column1 label'>Tags</div>
+                    <div class = 'column2 info' >
+                        <ul class='comma-list'>
+                            <li v-for='tag in novelData.tags' :key='tag'>
+                                <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-tags',identifier:tag}}" class='selectable' v-html='tag'/>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class = 'column3 label' style='grid-row:1/span 1'>Release</div>
+                    <div class = 'column4 info' style='grid-row:1/span 1' v-text='novelData.novelrelease'/>
+                    <div class = 'column3 label' style='grid-row:2/span 1'>Status</div>
+                    <div class = 'column4 info' style='grid-row:2/span 1'>
+                        <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-status',identifier:'u'+novelData.uploadstatus}}" class='selectable' v-text='novelData.uploadstatus'/>
+                    </div>
+                    <div class = 'column3 label' style='grid-row:3/span 1'>Novel</div>
+                    <div class = 'column4 info' style='grid-row:3/span 1' v-if='!editable' v-text='novelData.novelstatus'/>
              <br>
-             
              <NavButton 
                 :first="1"
                 :last='chapterList.length'
+                style='grid-row:7/span 1;grid-column:1/span 2'
              />
              <br>
-            </div>   
+            </div>    
+               
         </div>     
     </div>
 </div>
+
   <br>
   <!--SUMMARY-->
   <div id = "summary">
@@ -113,7 +85,7 @@
                 <router-link 
                     :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
                     <p class = 'title'>{{chapter.title}}</p>
-                    <p class = 'date'>{{new Date(chapter.uploaddate).toLocaleString('default', { month: 'long', day:'numeric', year:'numeric' })}}</p>
+                    <p class = 'date'>{{chapter.uploaddate}}</p>
                 </router-link>
                 </li>
             </ul>
@@ -179,7 +151,30 @@
  *{
     font-weight:300;
  } 
- 
+ #novel-test{
+    display:grid;
+    grid-template-columns: 7.5% 60% 10% 10%;
+    align-self:center;
+    column-gap:10px;
+    row-gap:10px;
+    width:100%;
+    transition: all .2s ease;
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+    margin-top:20px;
+    padding:20px;
+ }
+ .column1{
+     grid-column:1 / span 1;
+ }
+ .column2{
+     grid-column:2 / span 1
+ }
+ .column3{
+     grid-column:3/ span 1;
+ }
+ .column4{
+     grid-column:4/ span 1
+ }
 #summary{
     width: 100%;
     text-align: left;
@@ -280,19 +275,14 @@
       max-width: 100%;
       
   }
-  td{
+  .label{
       font-weight: bold;
-      padding-bottom: 10px;
-      padding-right:20px;
-      width:15%;
-      min-width:125px;
       vertical-align: top;
       color:black;
       
   }
   .info{
       font-weight:normal;
-      width: 85%;
       line-height: 20px;
       vertical-align: bottom;
       color:rgb(136,136,136);
@@ -434,7 +424,7 @@ select{
         margin: auto;
      }
      #TableOfContents{
-         width:92.5%; 
+         width:100%; 
       }
   }
   @media (max-width:1000px) {
@@ -456,12 +446,17 @@ select{
     #inner{
         flex-direction:column;
     }
+    #novel-test{
+        display:flex;
+        flex-direction:column;
+    }
     #noveltitle{
         margin-bottom: 0px;
     }
     #tables{
         margin: auto;
         min-width: 500px;
+        
         
     }
     td.info{

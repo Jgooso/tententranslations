@@ -9,7 +9,7 @@ from slugify import slugify
 from scripts import download, processView, ranker, time_difference
 from flask import jsonify, request
 import calendar
-
+import matplotlib.pylab as plt
 #Setup
 config = {
 'user': 'root',
@@ -146,6 +146,8 @@ def get_singlenovel():
         novelData['novelstatus'] = novelstatus
         novelData['authors'] = author
         novelData['novelrelease'] = novelrelease
+        for chapter in chapter_list:
+            chapter['uploaddate'] = time_difference(chapter['uploaddate'])
         #Editable get Genres and tags
         if(edit=='True'):
             novelcursor.execute('SELECT * FROM identifiers WHERE type = "tag" OR type = "genre"')
@@ -159,7 +161,6 @@ def get_singlenovel():
                     genres.append(d['descriptor'])
         #Return Data
         noveldb.close()
-        print(len(chapter_list))
         return jsonify({'Novel':novelData,'Chapters':chapter_list,'Genres':genres,'Tags':tags})
     if request.method == 'POST':#Create Novel
         data = request.form
@@ -278,8 +279,11 @@ def get_noveltitles():
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         novelcursor.execute("""
-                                SELECT title,novels.novelid,id
-                                    FROM novels 
+                                SELECT title,novels.novelid,id,fully_edited FROM novels INNER JOIN
+                                    (SELECT novelid,(CASE WHEN COUNT(chapteredited)=SUM(chapteredited) THEN 1 ELSE 0 END)as fully_edited
+                                        FROM  chapters
+                                        GROUP BY novelid) AS chapters 
+                                    ON novels.id = chapters.novelid
                                     
                             """)
         novels = novelcursor.fetchall()
@@ -490,3 +494,20 @@ def convertToBinaryData(file):
     # Convert digital data to binary format
     binaryData = file.read()
     return binaryData
+def get_descriptor_distribution():
+    if request.method == 'GET':
+        noveldb = mysql.connector.connect(**config)
+        novelcursor = noveldb.cursor(buffered=True,dictionary=True)
+        novelcursor.execute('SELECT identifiers.descriptor, T.count,type FROM identifiers INNER JOIN (SELECT descriptor,COUNT(descriptor) as count FROM noveldescriptors GROUP BY descriptor) AS T ON T.descriptor = identifiers.id')
+        descriptor_list = novelcursor.fetchall()
+        descriptor_bucket = {}
+        for d in descriptor_list:
+            if d['type'] not in descriptor_bucket:
+                descriptor_bucket[d['type']] = []
+            descriptor_bucket[d['type']].append(d)
+        return jsonify(descriptor_bucket)
+def get_novel_analytics():
+    if request.method == 'GET':
+        start_date = request.args.get('start')
+        end_date = request.args.get('end')
+        novel = request.args.get('novel')
