@@ -59,14 +59,7 @@ import KoFiButton from '../components/KoFiButton'
                 document.getElementById('chapter-content').contentEditable='true'
                 document.getElementById('editButton').innerHTML='Save'
                 }
-            },
-            handleScroll(){
-            if(window.scrollY > 200){
-                document.getElementById("chapter-navigator").classList.add('sticky-navigation')
-            }else{
-                 document.getElementById("chapter-navigator").classList.remove('sticky-navigation')
-            }
-        }   
+            }, 
         },
         created(){
             const url = '/chapter?chapter='+this.chapter.id
@@ -83,9 +76,6 @@ import KoFiButton from '../components/KoFiButton'
             }
             this.selectorList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
         },
-        mounted(){
-            window.addEventListener('scroll', this.handleScroll);
-        }
     }
 </script>
 <style scoped>
