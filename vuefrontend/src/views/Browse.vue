@@ -26,6 +26,7 @@
             <NovelCard 
                 :novelData='novel'
                 type="browse"
+                class = 'novelcard'
                 />
         </div>
     </div>
@@ -239,13 +240,23 @@ input[type='button'].category:hover{
     }
     #top{
         flex-direction:column;
-        height: 79px;
+        height: 80px;
         
     }
   }
 @media (max-width: 775px) {
     .novelList{
          grid-template-columns: auto;
+    }
+    .novelcard{
+        width:100%;
+    }
+   
+}
+@media (max-width: 700px) {
+    #top{
+        height: 111px;
+        
     }
    
 }

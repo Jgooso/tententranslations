@@ -103,7 +103,7 @@ import NavButton from './Navbutton'
     background-color: var(--backgroundColor);
     padding-top:10px;
     padding-bottom:20px;
-    border-bottom:2px black solid
+    
 }
 #editButton{
     width:170px;

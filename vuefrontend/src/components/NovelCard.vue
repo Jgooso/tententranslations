@@ -154,9 +154,10 @@ display:block;
 @media (max-width: 775px) {
     .NovelCard{
         height:fit-content;
-        width:320px;
+        width:100%;
+        margin:auto;
         margin-bottom:20px;
-        border-bottom:2px black solid;
+
     }
 }
 </style>
