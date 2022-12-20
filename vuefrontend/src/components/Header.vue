@@ -1,7 +1,7 @@
 <template>
     <header>
     <div id="header-top">
-            <router-link :to = "{name: 'homePage'}" id = 'home-button'><img src = '../assets/TenTenTranslations.png' alt = 'Search' id='logo'></router-link>
+            <router-link :to = "{name: 'homePage'}" id = 'home-button'>TenTenTranslations</router-link>
             <div id = "header-navigation">
                 <router-link :to = "{name: 'Browse'}" class='nav' style="text-decoration:none;">Browse</router-link>
                 <router-link :to = "{name: 'aboutPage'}" class='nav' style="text-decoration:none;">About</router-link>
@@ -99,6 +99,11 @@ export default{
       height:fit-content;
       margin-top:auto;
       margin-bottom:auto;
+      font-family:cursive;
+      color:var(--styleColor);
+      font-size:25px;
+      float:left;
+      margin-left:20px;
     }
   .nav{
       color: var(--textColor);
@@ -146,13 +151,6 @@ export default{
       margin-left: 35px;
       display:none;
   }
-#logo{
-     min-width:200px;
-     height:60px;
-     margin-top:auto;
-     margin-bottom:auto;
-     
-}
 img{
   height:60px;
    overflow:hidden;
@@ -234,6 +232,7 @@ img{
       position:absolute;
       left:50px;
       transition: all .2s ease-in-out;
+      margin-left:0px;
     }
     #KoFi{
     width:0px;

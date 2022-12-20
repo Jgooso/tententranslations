@@ -4,11 +4,6 @@
  <!--COVER-->
   <div id="cover" ref = 'cover'>
     <div v-if='novelData.title'>
-        {{novelData.ip}}
-        <Navigator
-         :novelid='novelData.id'
-         :novel='novelData.title'
-        />
         <p id = "noveltitle" v-text='novelData.title'/>
         <div id = "inner">
             <img id = "image-border" :src="novelData.imageurl" v-if='novelData.imageurl'>
@@ -278,7 +273,7 @@
   .label{
       font-weight: bold;
       vertical-align: top;
-      color:black;
+      color:var(--textColor);
       
   }
   .info{
@@ -287,10 +282,11 @@
       vertical-align: bottom;
       color:rgb(136,136,136);
       font-size:14px;
+
   }
   .selectable{
       font-size:14px;
-      color:#3c3c3c
+      color:var(--textColor);
   }
   a:hover { 
     color: var(--styleColor);

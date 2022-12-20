@@ -57,7 +57,7 @@
     align-self:center;
     border-radius: 5px;
     margin-right: 2px;
-    width:84px;
+    width:88px;
     
   }
   #MoveButton{

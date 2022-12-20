@@ -1,7 +1,6 @@
 <template>
 <div id = 'chapter' v-if='chapter' onscroll='handleScroll()'>
     <div>
-     <br>
         <h3 style = "font-size: 15px;" class='novel-title' v-html='novelData.title'/><!-- chapter number-->
         <div id = 'control-bar'>
             <div class='control-buttons-container' selectable='false'>
@@ -60,24 +59,18 @@ import NavButton from '../components/Navbutton'
                 selectorList:[]
             }
         },methods:{
-            triggerEdit(){
-                if(document.getElementById('chapter-content').contentEditable=='true'){
-                    const url = '/chapter?chapter='+this.chapter.id
-                    document.getElementById('content').contentEditable='false'
-                    document.getElementById('editButton').innerHTML='Edit'
-                    const content = document.getElementById('content').innerHTML
-                    getAPI.put(url,{content:content})
-                        .then(function (response) {
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        })
-                }else{
-                document.getElementById('chapter-content').contentEditable='true'
-                document.getElementById('editButton').innerHTML='Save'
-                }
-            }, 
+            changeFontSize(change){
+                 const v = document.getElementById('chapter-content')
+                 const newFontSize = parseInt(getComputedStyle(v).getPropertyValue('font-size').slice(0,2))+change
+                 if(newFontSize > 6){
+                    v.style.fontSize=newFontSize+'px'
+                    $cookies.set('font-size',newFontSize+'px')
+                 }
+                 
+            },
+            switchdarkmode(){
+                this.$emit("switchmode")
+        }
         },
         created(){
             const url = '/chapter?chapter='+this.chapter.id
@@ -181,6 +174,8 @@ font-size:19px;
     height:50px;
     padding:5px;
     margin-left:35%;
+    float:right;
+    margin-left:auto;
 }
 #control-bar{
     top: 0;
@@ -195,8 +190,8 @@ font-size:19px;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     padding:5px;
     border-radius:5px;
-    position:sticky;
     top:10px;
+    width:180px;
 }
 button.controlbuttons{
     border-radius:15px;
@@ -206,31 +201,13 @@ button.controlbuttons{
     text-align:center;
     vertical-align:middle;
     font-weight:bold;
+    margin-left:22.5px;
     background-color:var(--backgroundColor);
     line-height:20px;
-    margin-left:17px;
-    margin-right:10px;
     color:var(--styleColor);
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
 }
-#myselect.items{
-    background-color:red;
-}
 
-@media (max-width:1000px) {
-   #myselect{
-       min-width:200px;
-   }
-  }
-html:not([data-scroll='0']) {
-    #chapter-content{
-        background-color:blue;
-    }
-
-}
-@media (max-width: 775px) {
-
-}
 </style>
