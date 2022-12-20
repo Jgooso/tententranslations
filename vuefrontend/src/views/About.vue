@@ -13,22 +13,9 @@
         <br>
         We make no claims to the ownership of these novel. All rights go to original author and publisher
         <br>
-        Thanks for coming to my website and I hope you enjoy reading
+        Thanks for coming to my website and I hope you enjoy reading.
         </p>
         <hr>
     </div>
 </template>
-<script>
-import {getAPI} from '../axios-api'
-export default{
-    created(){
-         getAPI.get('/image',{responseType:'blob'})
-          .then(response => {
-            console.log('Chapter API has recieved data')
-          })
-          .catch(err => {
-            console.log(err)
-          })
-    }
-}
-</script>
+

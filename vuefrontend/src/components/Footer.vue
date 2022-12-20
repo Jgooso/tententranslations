@@ -22,6 +22,7 @@ export default{
       display:flex;
       flex-direction:row;
       margin-bottom:50px;
+      margin-top:50px;
       grid-row: 3;
       grid-column: 1 / span 3;
       border-top:5px rgba(200,200,200,0.6) solid

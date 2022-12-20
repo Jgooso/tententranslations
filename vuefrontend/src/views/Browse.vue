@@ -258,6 +258,17 @@ input[type='button'].category:hover{
         height: 111px;
         
     }
+    #next{
+    width:150px;
+    margin-right:0px;
+    float:right;
+}
+#prev{
+    width:150px;
+    float:left;
+    margin-left:0px;
+
+}
    
 }
 </style>
