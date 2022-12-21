@@ -68,7 +68,7 @@
             <h3  id = "divider">Latest Chapters</h3>
             <button id = "switcher" @click ="sortToc">&#x21C5;</button>
         </div>
-        <ul  id = 'table' ref='tableofcontentlist'>
+        <ul  id = 'tableofcontentList' ref='tableofcontentlist'>
         <li v-for="section in sectionList" :key="section.section">
             <button v-if='section.title' @click="trigger(section.section)" class = 'section'>
                 <h3 v-text='section.title'/>
@@ -130,7 +130,7 @@
         },
        showMore(){
            //console.log('clicked')
-           document.getElementById('table').style.maxHeight="none";
+           document.getElementById('tableofcontentList').style.maxHeight="none";
            document.getElementById('showMore').style.display='none'
        },
        
@@ -150,11 +150,10 @@
     display:grid;
     grid-template-columns: 7.5% 60% 10% 10%;
     align-self:center;
-    column-gap:10px;
+    column-gap:20px;
     row-gap:10px;
     width:100%;
     transition: all .2s ease;
-    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     margin-top:20px;
     padding:20px;
  }
@@ -207,14 +206,12 @@
       margin-top: 30px;
   }
   #inner{
-      align-self:center;
       display:flex;
       flex-direction:row;
       width:100%;
       transition: all .2s ease;
-      box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
       margin-top:20px;
-      
   }
   #cover{
       background-color:var(--backgroundColor);
@@ -260,16 +257,6 @@
       display: flex;
       flex-direction: column;
   }
-  #data{
-      display:flex;
-      flex-direction:row;
-  }
-  table{
-      display:inline;
-      font-size: 15px;
-      max-width: 100%;
-      
-  }
   .label{
       font-weight: bold;
       vertical-align: top;
@@ -309,8 +296,7 @@
     content: "";
 }
   
-  
-#table{
+#tableofcontentList{
     height:fit-content;
     max-height:1000px;
     overflow-y:hidden;
@@ -449,20 +435,7 @@ select{
     #noveltitle{
         margin-bottom: 0px;
     }
-    #tables{
-        margin: auto;
-        min-width: 500px;
-        
-        
-    }
-    td.info{
-        max-width: 100%; 
-    }
-    #TableOfContents{
-    width:545;
-    transition: all .3s ease;
 
-}
 .group{
     flex-direction:column;
 }
