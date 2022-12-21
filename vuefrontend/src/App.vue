@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if='user.status'>
+  <div id="app" v-cloak>
      <sidebar ref='sidemenu'
      v-on:changesidebar='changesidebar()'
      v-on:closesignin='close_signin()'
@@ -147,6 +147,7 @@ export default {
   font:Arial, Helvetica;
   color:var(--textColor);
 }
+[v-cloak] { display: none }
 #app{
   display:grid;
   padding:0px;
@@ -177,8 +178,8 @@ export default {
       min-width:1000px;
       padding:20px;
       height:fit-content;
-      height:100%;
       border:none;
+      min-height:1000px;
       /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
   }
   .view-border-two{
@@ -195,6 +196,7 @@ export default {
     margin:0px;
     width:100%;
     border:none;
+    min-height:1000px;
 
   }
 

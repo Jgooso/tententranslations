@@ -57,7 +57,7 @@ export default{
 }
 #HomeCard:hover{
     width:200px;
-      transition: all .3s ease;
+    transition: all .3s ease;
 }
 #HomeCard:hover #title{
     -webkit-line-clamp: 8;
@@ -79,6 +79,7 @@ export default{
     display:flex;
     flex-direction:row;
     vertical-align: middle;
+    width:100%;
 }
 .chapter:hover{
     border: 1px solid purple;
@@ -151,11 +152,14 @@ display:block;
 
 }
 @media (max-width: 775px) {
-    .browse{
-        height:fit-content;
-        width:320px;
-        margin-bottom:20px;
-        border-bottom:2px black solid;
+    #HomeCard{
+        margin-left:0px;
     }
+    #HomeCard:hover{
+        width:120px;
+}
+#chapter-box{
+    width:100%;
+}
 }
 </style>

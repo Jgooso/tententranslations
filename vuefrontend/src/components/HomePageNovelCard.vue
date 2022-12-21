@@ -195,4 +195,9 @@ display:block;
 
     }
 }
+@media (max-width: 700px) {
+    .main{
+        width:300px;
+    }
+}
 </style>

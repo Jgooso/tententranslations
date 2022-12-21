@@ -179,7 +179,6 @@ def get_singlenovel():
         novelcursor.execute("DELETE FROM noveldescriptors WHERE novelid = %s",(novelid,))
         post_single_novel_descriptor_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s"
         for descriptor in data['genres'] + data['tags']+['n'+novelData['novelstatus'],novelData['novelrelease'],novelData['authors'],'u'+novelData['uploadstatus']]:
-            print(descriptor)
             post_single_novel_descriptor_val = (novelid,descriptor)
             novelcursor.execute(post_single_novel_descriptor_sql,post_single_novel_descriptor_val)
         noveldb.commit()
@@ -196,22 +195,22 @@ def get_chapter():
     noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     chapter = request.args.get('chapter')
+    novel = request.args.get('novel')
     if request.method == 'GET':
-        print(chapter)
         get_chapter_sql = """
-                        SELECT DISTINCT content 
+                        SELECT DISTINCT title,content 
                             FROM chapters 
-                            WHERE id = %s;
+                            WHERE novelid = (SELECT id from novels WHERE novelid = %s) and chapternumber = %s;
                         UPDATE data set views = views + (SELECT chapteractive FROM chapters WHERE id = data.chapterid) WHERE date = CURDATE();
                       """
-        get_chapter_val = (chapter,)
+        get_chapter_val = (novel,chapter)
         chapter_results = []
         for result in novelcursor.execute(get_chapter_sql,get_chapter_val,multi=True):
             if result.with_rows:
-                chapter_results = novelcursor.fetchone()['content']
+                chapter_results = novelcursor.fetchone()
         noveldb.commit()
         noveldb.close()
-        return chapter_results
+        return jsonify(chapter_results)
     if request.method == 'PUT':
         data = request.get_json()
         put_chapter_sql = 'UPDATE chapters SET content = %s WHERE id = %s'
@@ -251,11 +250,9 @@ def get_schedules():
         dates = []
         novelcursor.execute('SELECT COUNT(content) as length FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE novels.novelid = %s',(novel,))
         length = novelcursor.fetchone()['length']
-        print(days_of_the_week)
         i = 0
         while len(dates) < length:
             day = start_date + datetime.timedelta(days=i)
-            print(day,((day.weekday()+1)%7))
             if (day.weekday()+1)%7 in days_of_the_week:
                 for t in times:
                     dates.append(datetime.datetime.combine(day,t).astimezone(local))
@@ -265,10 +262,8 @@ def get_schedules():
             if(i > 100):
                 break
             i+=1
-        print(len(dates))
         for d in dates:
             d = d.astimezone(pytz.UTC)
-            print('utc:'+d.strftime("%Y-%m-%d, %H:%M"))
             novelcursor.execute("INSERT INTO schedule (upload_date,novelid) SELECT %s,id FROM novels WHERE novelid = %s",(d,novel))
         noveldb.commit()
         noveldb.close()
@@ -297,13 +292,11 @@ def get_user():
         user_id = request.args.get('userID')
         novelcursor.execute("SELECT * FROM users WHERE id = %s",(user_id,))
         user = novelcursor.fetchone()
-        print(user_id)
         noveldb.close()
         return jsonify(user)
     if request.method == 'POST':
         data = request.get_json()
         user_id = data['userID']
-        print(user_id)
         novelcursor.execute('INSERT INTO users(id) VALUES (%s)',(user_id,))
         noveldb.commit()
         noveldb.close()
@@ -427,7 +420,6 @@ def get_novels_page_count():
              novelcursor.execute("SELECT COUNT(novelid) as count FROM novels WHERE novelactive <= %s",(tier,) )
         novel_count = (int(novelcursor.fetchone()['count']))
         page_count = ((novel_count)//12)+1
-        print(page_count)
         noveldb.close()
         return {'page_count':page_count,'novel_count':novel_count}
 
@@ -468,11 +460,8 @@ def get_dates():
         return jsonify(calender)
 def testing():
     if request.method=='POST':
-        print(request.form)
-        print(request.files)
         file_name = request.files['file'].filename
         file = convertToBinaryData(request.files['file'])
-        print(os.listdir('./static'))
        
         with open(os.path.join('./static/assets',file_name),'wb') as f:
             f.write(file)

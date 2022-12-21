@@ -1,5 +1,5 @@
 <template>
-<div id = 'chapter' v-if='chapter' onscroll='handleScroll()'>
+<div id = 'chapter'>
     <div>
         <h3 style = "font-size: 15px;" class='novel-title' v-html='novelData.title'/><!-- chapter number-->
         <div id = 'control-bar'>
@@ -23,7 +23,7 @@
        
 </div>
        </div>
-            <h1 style='font-size:20px;'>{{chapter.title}}</h1>
+            <h1 style='font-size:20px;'>{{chapterTitle}}</h1>
           <pre v-html = 'chapterContent' id = 'chapter-content'/>
           <NavButton 
             :previous='this.$route.params.chapter != 1'
@@ -49,14 +49,13 @@ import NavButton from '../components/Navbutton'
             NavButton
         },props:[
         'novelData',
-        'chapterList',
-        'tier'
+        'chapterList'
         ],data(){
-            this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? 1:-1))
             return{
-                chapter:this.chapterList[this.$route.params.chapter-1],
-                chapterContent:'',
-                selectorList:[]
+                chapter:[],
+                chapterContent:null,
+                error:null,
+                chapterTitle:null,
             }
         },methods:{
             changeFontSize(change){
@@ -70,26 +69,37 @@ import NavButton from '../components/Navbutton'
             },
             switchdarkmode(){
                 this.$emit("switchmode")
+        },
+        setData(content,title) {
+                this.chapterContent = content
+                this.chapterTitle = title
         }
         },
         created(){
-            const url = '/chapter?chapter='+this.chapter.id
-            getAPI.get(url)
-          .then(response => {
-            console.log('Chapter API has recieved data')
-            this.chapterContent = response.data
-          })
-          .catch(err => {
-            console.log(err)
-          })
-            for(var i=0;i < this.chapterList.length; i++){
-                this.selectorList.push((({ title, chapternumber }) => ({ title, chapternumber }))(this.chapterList[i]))
-            }
-            this.selectorList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
-        },
+                const chapter = this.$route.params
+                console.log(chapter)
+                const url = '/chapter?novel='+chapter.title+'&chapter='+chapter.chapter
+                    getAPI.get(url)
+                    .then(response => {
+                    console.log('Chapter API has recieved data')
+                    this.chapterContent = response.data['content']
+                    this.chapterTitle = response.data['title']
+                    })
+                    .catch(err => {
+                    console.log(err)
+                    }) 
+  }
+            
+                
+                
+            
+        
     }
 </script>
 <style scoped>
+#chapter{
+    width:100%;
+}
 #chapter-content{
 font-family: sans-serif;
 white-space: pre-wrap;
@@ -98,6 +108,7 @@ margin:auto;
 margin-top:25px;
 margin-bottom:40px;
 font-size:19px;
+min-height:1000px;
 
 }
 .novel-title{
@@ -131,6 +142,10 @@ font-size:19px;
     width:50%;
     display:none;
 }
+#control-bar{
+    position:relative;
+    width:100%;
+}
 .chapter-link{
     color:black;
     border-left:1px solid black;
@@ -156,42 +171,20 @@ font-size:19px;
     border-radius:5px;
     width:50%;
 }
-#myselect{
-    padding-left:10px;
-    padding-right:10px;
-    font-size:15px;
-    height:35px;
-    background-color: var(--backgroundColor);
-    border:none;
-    border-radius:5px;
-    font-weight:300;
-    width:50%;
-    color:var(--borderColor);
-}
 #NavButtons{
-    position:relative;
     width:180px;
     height:50px;
     padding:5px;
-    margin-left:35%;
     float:right;
-    margin-left:auto;
-}
-#control-bar{
-    top: 0;
-    background-color: var(--backgroundColor);
-    padding-top:10px;
-    padding-bottom:20px;
-    
 }
 
 .control-buttons-container{
-    float:right;
+    position:absolute;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     padding:5px;
     border-radius:5px;
-    top:10px;
     width:180px;
+    right:0px;
 }
 button.controlbuttons{
     border-radius:15px;

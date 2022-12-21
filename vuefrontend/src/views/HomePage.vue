@@ -126,14 +126,18 @@ h3{
    transition: all .2s ease;
     }
     #mainPopular{
-        
         margin-left:auto;
         margin-right:auto;
     }
   }
 @media (max-width: 775px) {
-    .novelList{
-         grid-template-columns: auto;
+    .novelrow{
+         grid-template-columns: auto auto;
+         margin:0px;
+    }
+    #popularList{
+        grid-template-columns: auto;
+       margin-left:10px;
     }
    
 }
