@@ -78,6 +78,7 @@ export default{
     display:flex;
     flex-direction:row;
     vertical-align: middle;
+    border-radius:5px;
 }
 .chapter:hover{
     border: 1px solid purple;
@@ -87,7 +88,6 @@ export default{
     width:50%;
 }
 .chapterNumber{
-    border-radius:10px;
     text-align:center;
     font-size:15px;
     line-height:12px;
@@ -101,7 +101,11 @@ export default{
     text-decoration:none;
     
 }
-
+.chapter:hover .chapterNumber{
+   width:41px;
+   margin-right:1px;
+    
+}
 #title{
     font-weight:bold;
     color:var(--textColor);

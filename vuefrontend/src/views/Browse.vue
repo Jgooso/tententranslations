@@ -214,6 +214,8 @@ input[type='button'].category:hover{
     border-bottom:4px solid var(--styleColor);
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     transition: all .3s ease;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
 }
 .navigationButton{
     border:none;

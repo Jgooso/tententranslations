@@ -27,6 +27,7 @@ h3{
     margin:0px;
     height:30px;
     z-index:2;
+    border-radius:5px;
 }
 #point{
     margin:0px;

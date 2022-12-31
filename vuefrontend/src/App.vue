@@ -42,7 +42,8 @@ export default {
     return{
     darkmode:($cookies.get('darkmode')==='true'),
     testing:[],
-    user: []
+    user: [],
+    url:'http://ipinfo.io/json'
     }
   },
   methods:{
@@ -92,47 +93,36 @@ export default {
           this.darkmode=!this.darkmode
           this.setdarkmode()
           $cookies.set('darkmode',this.darkmode)
-        }
-            
         },
     errorCaptured: function(err) {
       //this.$router.push({name:'errorPage'})
       
     },
+    },
     created(){
       this.setdarkmode()
-      console.log($cookies.keys()  )
+      console.log($cookies.keys())
+      this.user = {'id':838383,'status':'a','fontsize':19,'tier':1}
+    },
+    mounted(){
       /*
-      const userID = $cookies.get('user')
-      console.log(userID)
-      if(userID==null){
-        const id = parseInt(Math.random()*1000000)
-        $cookies.set('user',id)
-        getAPI.post('/user',{userID:id})
-            .then(response => {
-            console.log(response)
+      let apiKey = '8ec778b9a4c4ba813db900bd2c328e6d9afbc4579c1c0d0ac13cc69c';
+      getAPI.get(`https://api.ipdata.co?api-key=${apiKey}`)
+          .then(response => {
+            const data = response.data
+            console.log(data.ip)
+            console.log(data.longitude)
+            console.log(data.latitude)
           })
           .catch(err => {
             console.log(err)
           })
-      }else{
-            getAPI.get('/user?userID='+userID)
-            .then(response => {
-            
-            console.log(response['data'])
-            this.user = response['data']
-            console.log(this.user)
-            var r = document.querySelector(':root');
-            r.style.setProperty('--fontsize', this.user.fontsize+'px')
-          })
-          .catch(err => {
-            console.log(err)
-          })
-     */
-     this.user = {'id':838383,'status':'a','fontsize':19,'tier':1}
-    }
-  
-}
+          */
+        }
+      
+
+    
+  }
 </script>
 
 <style>

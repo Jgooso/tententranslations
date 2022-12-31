@@ -11,7 +11,9 @@ from googletrans import Translator
 from datetime import datetime,date,timedelta
 import pytz
 from selenium import webdriver
-
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 #Basic intialializations
 
 '''
@@ -301,42 +303,41 @@ def update():#Search for new chapters and download them to database
             novelcursor.execute('UPDATE chapters SET views = 0')
     noveldb.commit()
     noveldb.close()
-def upload():#change permissions for viewing of novels
+def schedule_upload():
     noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True)
-    now = pytz.timezone('America/Chicago')
-    check_date = datetime.now(now).replace(microsecond=0)
-    current_time = datetime.now().replace(microsecond=0)
     novel_sql = """
                     SELECT DISTINCT schedule.novelid 
                         FROM Schedule 
-                            INNER JOIN novels 
-                                ON schedule.novelid = novels.novelid 
-                    WHERE day LIKE %s AND time = %s AND novels.novelactive = 1
+                    WHERE DATE(upload_date) = CURDATE() AND HOUR(upload_date) = HOUR(NOW());
+                    DELETE FROM schedule WHERE DATE(upload_date) = CURDATE() and HOUR(upload_date) = HOUR(NOW())
                 """
-    novel_val = (check_date.strftime("%A"),check_date.strftime("%H"))
+    for result in novelcursor.execute(novel_sql,multi=True):
+         if result.with_rows:
+                novel = novelcursor.fetchone()[0]
+    upload(novel)
+def upload(novel):#change permissions for viewing of novels
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True)
     chapter_sql =  """
-                   UPDATE chapters SET chapteractive = 1, uploaddate = %s
+                   UPDATE chapters SET chapteractive = 1, uploaddate = NOW()
                    WHERE novelid = %s AND chapteractive = 0 ORDER BY chapterorder+0 LIMIT 1;
-                   UPDATE novels SET lastupload = %s WHERE novelid = %s;
+                   UPDATE novels SET lastupload = NOW() WHERE novelid = %s;
                    """
-    #SQL NOT EXECUTING FIX
-    novelcursor.execute(novel_sql,novel_val)
-    print(novel_val)
     check_chapter_sql="SELECT ISNULL(content) FROM chapters WHERE novelid = %s AND chapteractive = 0 LIMIT 1"
     try:
         i=1
-        novel = novelcursor.fetchone()[0]
         print(novel)
         check_chapter_val = (novel,)
-        chapter_val = (current_time,novel,current_time,novel)
+        chapter_val = (novel,novel)
         novelcursor.execute(check_chapter_sql,check_chapter_val)
         if novelcursor.fetchone()[0] == 0: i = 2
         for x in range(i):
-            novelcursor.execute(chapter_sql,chapter_val,multi=True)
-            noveldb.commit()
+            for result in novelcursor.execute(chapter_sql,chapter_val,multi=True):
+                pass
     except TypeError:
         pass
+    #upload_bot(novelcursor=novelcursor,novel)
     noveldb.commit()
     noveldb.close()
 def processView(views):
@@ -364,3 +365,34 @@ def ranker(rank):
         return str(rank)+'th'
 def ran_gen(size, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
+def upload_bot(novelcursor,novel):
+    novelcursor.execute("SELECT novels.title,novels.novelid,chapters.chapternumber FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE chapteractive = 1 and novels.id = %s ORDER BY chapternumber+0 DESC LIMIT 1",(novel,))
+    chapter = novelcursor.fetchone()
+    novel_title = chapter[0]
+    link = 'https://tententranslation/novels/'+str(chapter[1])+'/'+str(chapter[2])
+    #print(link)
+    #print(novel_title)
+    chapter_number = chapter[2]
+    browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    browser.get('https://www.novelupdates.com')
+    #GET TO LOGIN PAGE
+    browser.find_element(by=By.LINK_TEXT, value='Login').click()
+    browser.find_element(by=By.ID, value='user_login').send_keys("jgooso")
+    browser.find_element(by=By.ID, value = 'user_pass').send_keys("testingpassword")
+    browser.find_element(by=By.ID, value = 'wp-submit').click()
+    #GET TO UPLOAD PAGE
+    browser.find_elements(by=By.ID, value='menu_right_item')[1].click()
+    browser.find_element(by=By.LINK_TEXT, value='User Profile').click()
+    browser.find_element(by=By.CLASS_NAME,value = 'ptool').click()
+    #TYPE DATA INTO BOXES
+    browser.find_element(by=By.ID, value = 'title_change_100').send_keys(novel_title)
+    browser.find_element(by=By.ID, value = 'arrelease').send_keys(chapter_number)
+    browser.find_element(by=By.ID,value = 'arlink').send_keys(link)
+    browser.find_element(by=By.ID,value='group_change_100').send_keys('tententranslations')
+    #SUBMIT
+
+    #CLOSE BOT
+    browser.close()
+noveldb = mysql.connector.connect(**config)
+novelcursor = noveldb.cursor(buffered=True)
+upload()

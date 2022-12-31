@@ -4,7 +4,7 @@ const routes = [
   {path: '/novel/:title', 
         children:[
             {path: '',name: 'coverPage',component: ()=> import('@/views/CoverPage.vue')},
-            {path:':chapter',name: 'chapterPage',component: ()=> import('@/views/Chapter.vue')},     
+            {path:':chapter',name: 'chapterPage',component: ()=> import('@/views/Chapter.vue'),props:true},     
         ],
         component: ()=> import('@/views/Novel.vue')},
         {path:'',name:'homePage',component: ()=> import ('@/views/HomePage.vue')},

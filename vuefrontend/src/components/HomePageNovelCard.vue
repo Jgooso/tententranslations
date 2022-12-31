@@ -41,7 +41,6 @@ export default{
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:var(--borderColor) 1px solid;
     border-radius:10px;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     position:relative;
@@ -55,7 +54,6 @@ export default{
     display:flex;
     flex-direction:column;
     padding:10px;
-   border:var(--borderColor) 1px solid;
     border-radius:5px;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     position:relative;

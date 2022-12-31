@@ -1,7 +1,7 @@
 <template>
 <div id = 'chapter'>
     <div>
-        <h3 style = "font-size: 15px;" class='novel-title' v-html='novelData.title'/><!-- chapter number-->
+        <h3 style = "font-size: 16px;" class='novel-title' v-html='novelData.title'/><!-- chapter number-->
         <div id = 'control-bar'>
             <div class='control-buttons-container' selectable='false'>
              
@@ -84,10 +84,12 @@ import NavButton from '../components/Navbutton'
                     console.log('Chapter API has recieved data')
                     this.chapterContent = response.data['content']
                     this.chapterTitle = response.data['title']
+                    //$cookies.set(response.data['id'],true)
                     })
                     .catch(err => {
                     console.log(err)
                     }) 
+            
   }
             
                 

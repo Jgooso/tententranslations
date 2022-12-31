@@ -198,7 +198,7 @@ def get_chapter():
     novel = request.args.get('novel')
     if request.method == 'GET':
         get_chapter_sql = """
-                        SELECT DISTINCT title,content 
+                        SELECT DISTINCT title,content,id 
                             FROM chapters 
                             WHERE novelid = (SELECT id from novels WHERE novelid = %s) and chapternumber = %s;
                         UPDATE data set views = views + (SELECT chapteractive FROM chapters WHERE id = data.chapterid) WHERE date = CURDATE();
@@ -500,3 +500,8 @@ def get_novel_analytics():
         start_date = request.args.get('start')
         end_date = request.args.get('end')
         novel = request.args.get('novel')
+def upload():
+    if request.method == 'PUT':
+        novel = request.args.get('novel')
+        upload(novel)
+        return novel

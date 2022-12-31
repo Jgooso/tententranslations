@@ -45,26 +45,19 @@ export default{
 #HomeCard{
     width:120px;
     height:280px;
+    margin:auto;
     margin-left:50px;
     margin-bottom:50px;
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:var(--borderColor) 1px solid;
     border-radius:5px;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
 
+
 }
 #HomeCard:hover{
-    width:200px;
-    transition: all .3s ease;
-}
-#HomeCard:hover #title{
-    -webkit-line-clamp: 8;
-     transition: all .3s ease;
-}
-#HomeCard:hover .chapter{
-    flex-direction:row;
+    box-shadow: 0 4px 8px 0 var(--styleColor), 0 6px 20px 0 var(--styleColor);
 }
 .home{
     width:100px;;

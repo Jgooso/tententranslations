@@ -3,52 +3,58 @@
 
      <h1 id = "noveltitle">Lorem Ipsum</h1>
     <form id = 'upload' method='postData'>
+     <!--
         <div id = 'upload_tables'>
             <div  id = 'image-border' v-if='imageSelected'>
             <button id = 'remove-image' @click='this.imageSelected=false'>&#9747;</button>
             <img src='#' id = 'output'>
             <input type = 'file' id = 'image-selector' @change='showFile()'>
             </div>
-            <table>
-                <tr>
-                    <td class='category'>Views</td>
-                    <td class = 'info  unselectable'>0</td>
-                </tr>
-                <tr>
-                    <td class='category'>Alternative</td>
-                    <td class='info  unselectable'>ロレム・イプサム</td>
-                </tr>
-                <tr>
-                    <td class='category'>URL</td>
-                    <td class='info'><input type = "url" id = 'urltextbox' name = 'url' maxlength="34" style='border:none;' placeholder='Enter novel URL'></td>
-                </tr>
-                <tr>
-                    <td class = 'category'>Authors</td>
-                    <td class='info'>Author-san</td>
-                </tr>
-                <tr>
-                    <td class='category'>Genres</td>
-                    <td  @click='showGenres()' class='info' v-if='selectedgenres.length>0'>{{selectedgenres}}</td>
-                    <td v-else style='color:red'  @click='showGenres()' class='info'>Select Genres</td>
-                </tr>
-                <tr>
-                    <td class='category'>Tags</td>
-                    <td @click='showTags()' class='info'  v-if='selectedtags.length>0'></td>
-                    <td v-else style='color:red'  @click='showTags()' class='info'>Select Tags</td>
-                    </tr>
-            </table>
-            <table>
-                <tr>
-                    <td class='category'>Release</td>
-                    <td class='info unselectable'>20XX</td>
-                </tr>
-                <tr>
-                    <td class='category'>Status</td>
-                    <td class='info'>Unreleased</td>
-                </tr>
-                <tr>
-                    <td class='category'>Novel</td>
-                    <td class='info'>
+                         
+        </div>
+
+        
+   -->
+   <div id = "novel-test">
+                    <div class = 'column1 label'>Views</div>
+                    <div class = 'column2 unselectable'>0</div>
+                    <div class = 'column1 label'>Alternative</div>
+                    <div class = 'column2 unselectable'>ロレム・イプサム</div>
+                    <div class = 'column1 label'>Raw</div>
+                    <div class = 'column2 info' ><input type = "url" id = 'urltextbox' name = 'url' maxlength="34" style='border:none;' placeholder='Enter novel URL'></div>
+                    <div class = 'column1 label'>Author</div>
+                    <div class = 'column2 info' >Author-san</div>
+                    <div class = 'column1 label'>Genres</div>
+                    <div class = 'column2 info' >
+                        <div @click='showGenres()' class='info' v-if='selectedgenres.length>0'>
+                            <ul class='comma-list'>
+                                <li v-for='genre in selectedgenres' :key='genre' v-html='genre'>
+                                </li>
+                            </ul>
+                    </div>
+                        <div v-else style='color:red'  @click='showGenres()' class='info'>Select Genres</div>
+                    </div>
+                    <div class = 'column1 label'>Tags</div>
+                    <div class = 'column2 info' >
+                        <div @click='showTags()' class='info'  v-if='selectedtags.length>0'>
+                            <ul class='comma-list'>
+                                <li v-for='tag in selectedtags' :key='tag'  v-html='tag'>
+                                </li>
+                            </ul>
+                        </div>
+                        <div v-else style='color:red'  @click='showTags()' class='info'>Select Tags</div>
+                        <TagSelector
+                            :tags='tags'
+                            :selectedtags='selectedtags'
+                            id = 'tag-selector'
+                        />
+                    </div>
+                    <div class = 'column3 label' style='grid-row:1/span 1'>Release</div>
+                    <div class = 'column4 unselectable' style='grid-row:1/span 1'>20XX</div>
+                    <div class = 'column3 label' style='grid-row:2/span 1'>Status</div>
+                    <div class = 'column4 unselectable' style='grid-row:2/span 1'>Unreleased</div>
+                    <div class = 'column3 label' style='grid-row:3/span 1'>Novel</div>
+                    <div class = 'column4 info' style='grid-row:3/span 1'>
                         <select id = 'completedEdit' placeholder='SELECT' style='color:red;' onfocus='this.style.color="rgb(136,136,136)"' form = 'upload' name = 'novelstatus'>
                             <option value="" disabled selected>Select your option</option>
                             <option value = 'Ongoing'>Ongoing</option>
@@ -56,23 +62,15 @@
                             <option value = 'On Hold'>On Hold</option>
                             <option value = 'Dropped'>Dropped</option>
                         </select>
-                     </td>
-                </tr>
-       
-            </table>
-        </div>
-        <div id = 'genre-selector'>
+                    </div>
+    </div>
+    <div id = 'genre-selector'>
              <GenreSelector
                 :genres='genres'
                 :selectedgenres='selectedgenres'
                 
                 />
         </div>
-        <TagSelector
-            :tags='tags'
-            :selectedtags='selectedtags'
-            id = 'tag-selector'
-        />
         
     </form>
     <div id = "summary">
@@ -320,7 +318,45 @@ input{
       font-family: 'Times New Roman', serif;
       
   }
-
+  #novel-test{
+     display:grid;
+    grid-template-columns: 7.5% 60% 10% 10%;
+    align-self:center;
+    column-gap:20px;
+    row-gap:10px;
+    width:100%;
+    transition: all .2s ease;
+    margin-top:20px;
+    padding:20px;
+  }
+.column1{
+     grid-column:1 / span 1;
+ }
+ .column2{
+     grid-column:2 / span 1
+ }
+ .column3{
+     grid-column:3/ span 1;
+ }
+ .column4{
+     grid-column:4/ span 1
+ }
+  .comma-list {
+  display: inline;
+}
+.comma-list li {
+  display: inline;
+}
+.selectable:hover {
+  color:var(--styleColor);
+  text-decoration:none;
+}
+.comma-list li::after {
+  content: ", ";
+}
+.comma-list li:last-child::after {
+    content: "";
+}
 @media (max-width: 775px) {
     #genres{
         grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
@@ -332,6 +368,10 @@ input{
     }
     #tagselector{
         width:350px;
+    }
+    #novel-test{
+        display:flex;
+        flex-direction:column;
     }
 }
 </style>

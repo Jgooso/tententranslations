@@ -1,6 +1,5 @@
 <template>
 <div>
-
  <!--COVER-->
   <div id="cover" ref = 'cover'>
     <div v-if='novelData.title'>
@@ -40,27 +39,20 @@
                     </div>
                     <div class = 'column3 label' style='grid-row:3/span 1'>Novel</div>
                     <div class = 'column4 info' style='grid-row:3/span 1' v-if='!editable' v-text='novelData.novelstatus'/>
-             <br>
-             <NavButton 
-                :first="1"
-                :last='chapterList.length'
-                style='grid-row:7/span 1;grid-column:1/span 2'
-             />
-             <br>
             </div>    
-               
+        <div id = "summary">
+        <div v-if='novelData.title'>
+          <p style='font-weight:bold'>SUMMARY</p>
+            <p id="description" v-html = 'novelData.description'/>
+        </div>
+    </div>
         </div>     
     </div>
 </div>
 
-  <br>
   <!--SUMMARY-->
-  <div id = "summary">
-        <div v-if='novelData.title'>
-           <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
-            <p id="description" v-html = 'novelData.description'/>
-        </div>
-    </div>
+  
+    <br>
  <!--TABLE OF CONTENTS-->
   <div id = "TableOfContents">
         <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;">
@@ -78,7 +70,7 @@
             <ul v-bind:id = "section.section" >
                 <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterorder' >
                 <router-link 
-                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="group">
+                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber,id:chapter.id}}" class="group">
                     <p class = 'title'>{{chapter.title}}</p>
                     <p class = 'date'>{{chapter.uploaddate}}</p>
                 </router-link>
@@ -176,6 +168,7 @@
     flex-direction: column;
     align-self: center;
     height:fit-content;
+    padding:20px;
 }
 
 #description{
@@ -207,14 +200,16 @@
   }
   #inner{
       display:flex;
-      flex-direction:row;
+      flex-direction:column;
       width:100%;
       transition: all .2s ease;
-     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+      box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
       margin-top:20px;
+      border-radius:10px;
   }
   #cover{
-      background-color:var(--backgroundColor);
+    background-color:var(--backgroundColor);
+     padding:0px;
   }
   #image-border{
     max-height:313px;

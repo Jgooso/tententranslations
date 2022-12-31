@@ -48,6 +48,9 @@ def test():
 @app.route('/descriptorbution',methods=['GET'])
 def descriptor_distribution():
     return get_descriptor_distribution()
+@app.route('/uploadchapter',methods=['GET'])
+def upload_chapter():
+    return upload()
 @app.after_request
 def add_header(response):
     response.headers.add('Access-Control-Allow-Origin', '')
