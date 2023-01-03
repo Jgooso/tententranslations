@@ -49,17 +49,14 @@ export default{
     -webkit-touch-callout: none; 
 }
   #header-top{
-      height: 60px;
       align-items: center;
       justify-content:center;
-     
       display:flex;
       flex-direction:row;
       margin-bottom:20px;
-      border-bottom:2px solid black;
+      border-bottom:1px solid black;
   }
   #user-bar{
-      padding: 12px;
       background-color:var(--backgroundColor);
       z-index: 10; 
 
@@ -114,11 +111,9 @@ export default{
       transition: all .3s ease-in-out;
       overflow:hidden;
       text-align: center;
-      width:100px;
-      padding-left:10px;
-      padding-right:35px;
-      padding-top:15px;
-      height:90%;
+      padding:10px;
+      height:100%;
+      border-radius:5px;
   }
   .nav:hover{
     background-color:rgba(50,50,50,0.2)

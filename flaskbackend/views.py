@@ -29,7 +29,7 @@ def get_multiplenovels():
     order = request.args.get('order')
     if order == "views" or order == "length":
         order = order + ' DESC' 
-    get_multiple_novel_val = (identifier,tier,page)
+    get_multiple_novel_val = (tier,identifier,tier,page)
     #multiple_novel_sql
     get_multiple_novel_chapter_sql =    """
                                         SELECT chapternumber,uploaddate 
@@ -38,37 +38,40 @@ def get_multiplenovels():
                                         ORDER BY chapternumber+0 DESC LIMIT 2
                                     """
     if identifier != 'undefined':
-        get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,imageurl,SUM(chapters.views) as views,SUM(character_length(content)) as length
+        get_multiple_novel_sql = """ SELECT novels.novelid, novels.title, views.views as views,chapters.length,firstupload,lastupload
                                 FROM novels 
                                     INNER JOIN noveldescriptors 
-                                        ON novels.id = noveldescriptors.novelid 
-                                    LEFT JOIN (SELECT data.views,novelid,content,chapteractive FROM chapters 
-							                            LEFT JOIN data ON (SELECT data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE()))) AS chapters
-                                        ON novels.id = chapters.novelid
+                                        ON novels.novelid = noveldescriptors.novelid 
+                                    LEFT JOIN 
+				                        (SELECT chapters.novelid,SUM(character_length(content)) as length FROM chapters WHERE chapteractive >= %s GROUP BY novelid) AS chapters
+                                            ON chapters.novelid = novels.novelid
+			                        LEFT JOIN (SELECT SUM(views) as views,novelid FROM view_data WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE()) GROUP BY novelid) AS views
+				                            ON novels.novelid = views.novelid
                                     INNER JOIN identifiers
                                         ON noveldescriptors.descriptor = identifiers.id
                                 WHERE identifiers.descriptor = %s AND novels.novelactive >= %s
-                                GROUP BY novels.id
                                 ORDER BY """+order+"""
                                 LIMIT 12 OFFSET %s
                              """
         novelcursor.execute(get_multiple_novel_sql,get_multiple_novel_val)
     else:
-        get_multiple_novel_sql = """SELECT novels.id,novels.novelid,novels.title,imageurl, SUM(chapters.views) as views,SUM(character_length(content)) as length
-                                        FROM novels 
-                                            LEFT JOIN (SELECT data.views,novelid,content,chapteractive FROM chapters 
-							                            LEFT JOIN data ON (SELECT data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE()))) AS chapters
-                                                ON novels.id = chapters.novelid
-                                            WHERE novels.novelactive >= %s
-                                    GROUP BY novels.id
-                                    ORDER BY  """+order+"""
-                                    LIMIT 12 OFFSET %s
-                                """
-        novelcursor.execute(get_multiple_novel_sql,(tier,page))
+        get_multiple_novel_sql = """
+            SELECT novels.novelid, novels.title, views.views as views,chapters.length,firstupload,lastupload
+		        FROM novels 
+			        LEFT JOIN 
+				        (SELECT chapters.novelid,SUM(character_length(content)) as length FROM chapters WHERE chapteractive >= %s GROUP BY novelid) AS chapters
+                            ON chapters.novelid = novels.novelid
+			        LEFT JOIN (SELECT SUM(views) as views,novelid FROM view_data WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE()) GROUP BY novelid) AS views
+				            ON novels.novelid = views.novelid
+			    WHERE novels.novelactive >= %s
+                ORDER BY """+order+"""
+                LIMIT 12 OFFSET %s
+             """
+        novelcursor.execute(get_multiple_novel_sql,(tier,tier,page))
     novelData = novelcursor.fetchall()
     #Add chapters to novelData
     for novel in novelData:
-        get_multiple_novel_val = (tier,novel['id'])
+        get_multiple_novel_val = (tier,novel['novelid'])
         novelcursor.execute(get_multiple_novel_chapter_sql,get_multiple_novel_val)
         chapterResults = novelcursor.fetchall()
         for chapter in chapterResults:
@@ -90,13 +93,11 @@ def get_singlenovel():
     if request.method == 'GET':
         #Retrieve Novel Data
         
-        get_single_novel_sql =  """SELECT DISTINCT novels.id,novels.novelid,novels.title,alternativetitle,description,url,novelactive, SUM(chapters.views) as views,CEILING(SUM(character_length(content))/1800) as pages 
+        get_single_novel_sql =  """SELECT DISTINCT novels.id,novels.novelid,novels.title,alternativetitle,description,url,novelactive, views.views as views
 		                            FROM novels 
-			                            LEFT JOIN (SELECT data.views,novelid,content FROM chapters 
-							                            LEFT JOIN data ON data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters
-				                                    ON novels.id = chapters.novelid 
+			                            LEFT JOIN (SELECT SUM(views) as views,novelid FROM view_data WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE()) GROUP BY novelid) AS views
+				                            ON novels.novelid = views.novelid
 		                            WHERE novels.novelid = %s
-		                            GROUP BY novels.id
                                 """
         get_single_novel_val = (novel,)
         novelcursor.execute(get_single_novel_sql,get_single_novel_val)
@@ -108,11 +109,11 @@ def get_singlenovel():
 
         #Retrieve Chapters
         get_single_novel_chapter_sql = """
-                            SELECT title,novelid,uploaddate,chapternumber,section,id,chapterorder,chapteractive,chapteredited 
+                            SELECT title,novelid,uploaddate,chapternumber,section,chapterorder,chapteractive,chapteredited 
                                 FROM chapters WHERE novelid = %s AND chapteractive >= %s 
                                 ORDER BY chapterorder+0
                            """
-        get_chapter_list_val = (novelData['id'],tier)
+        get_chapter_list_val = (novel,tier)
         novelcursor.execute(get_single_novel_chapter_sql,get_chapter_list_val)
         chapter_list = novelcursor.fetchall()
        
@@ -122,7 +123,7 @@ def get_singlenovel():
                                     INNER JOIN identifiers 
                                         ON identifiers.id = noveldescriptors.descriptor 
                                 WHERE noveldescriptors.novelid = %s"""
-        get_single_novel_descriptor_val = (novelData['id'],)
+        get_single_novel_descriptor_val = (novel,)
         novelcursor.execute(get_single_novel_descriptor_sql,get_single_novel_descriptor_val)
         identifiers = novelcursor.fetchall()
         genres = []
@@ -198,12 +199,12 @@ def get_chapter():
     novel = request.args.get('novel')
     if request.method == 'GET':
         get_chapter_sql = """
-                        SELECT DISTINCT title,content,id 
+                        SELECT DISTINCT title,content
                             FROM chapters 
-                            WHERE novelid = (SELECT id from novels WHERE novelid = %s) and chapternumber = %s;
-                        UPDATE data set views = views + (SELECT chapteractive FROM chapters WHERE id = data.chapterid) WHERE date = CURDATE();
+                            WHERE novelid = %s and chapternumber = %s;
+                        UPDATE view_data set views = views + (SELECT DISTINCT chapteractive FROM chapters WHERE novelid = %s AND chapternumber = %s) WHERE date = CURDATE();
                       """
-        get_chapter_val = (novel,chapter)
+        get_chapter_val = (novel,chapter,novel,chapter)
         chapter_results = []
         for result in novelcursor.execute(get_chapter_sql,get_chapter_val,multi=True):
             if result.with_rows:
@@ -314,8 +315,8 @@ def get_home_page_novels():
                                     """
         home_page_popular_sql = """
                                 SELECT novels.id,novels.novelid,novels.title,imageurl,novelactive,description,sum(chapters.views) as views,ROW_NUMBER() OVER (ORDER BY sum(chapters.views) DESC) row_num,ANY_VALUE(genre.des) as genre
-                                FROM novels LEFT JOIN (SELECT data.views,novelid,content FROM chapters 
-							                            LEFT JOIN data ON data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters ON chapters.novelid = novels.id
+                                FROM novels LEFT JOIN (SELECT view_data.views,novelid,content FROM chapters 
+							                            LEFT JOIN view_data ON view_data.chapterid = id WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters ON chapters.novelid = novels.id
                                 LEFT JOIN (
                                         SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
                                             FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
@@ -409,7 +410,7 @@ def get_novels_page_count():
         if identifier != 'undefined':
             novelcursor.execute("""SELECT COUNT(novels.novelid) as count FROM novels 
                                     INNER JOIN noveldescriptors 
-                                        ON novels.id = noveldescriptors.novelid 
+                                        ON novels.novelid = noveldescriptors.novelid 
                                     INNER JOIN identifiers
                                         ON noveldescriptors.descriptor = identifiers.id
                                     WHERE novelactive >= %s AND 

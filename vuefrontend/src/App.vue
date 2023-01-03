@@ -85,7 +85,7 @@ export default {
             r.style.setProperty('--textColor', 'black')
             r.style.setProperty('--shadowColor', 'rgba(0,0,0,0.19)')
             r.style.setProperty('--borderColor', 'black')
-            r.style.setProperty('--styleColor', '#75147C')
+            r.style.setProperty('--styleColor', '#A837AF')
           }
 
         },
@@ -151,7 +151,7 @@ export default {
   }
   .view-header{
     grid-row:1;
-    grid-column: 1 / span 3;
+    grid-column: 1/span 3;
     height:fit-content;
     width:100%;
   }
@@ -170,6 +170,7 @@ export default {
       height:fit-content;
       border:none;
       min-height:1000px;
+      width:100%;
       /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
   }
   .view-border-two{
@@ -212,5 +213,6 @@ export default {
         grid-column: 1 / span 3;
         padding:10px;
     }
+
 }
 </style>

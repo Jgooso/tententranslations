@@ -159,7 +159,10 @@ import UtfBox from '../components/UtfBox'
    height:fit-content;
     transition: all .3s ease;
      /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset , 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
-     padding:10px;
+     padding:20px;
+     border-radius:20px;
+     padding-left:20px;
+     padding-right:0px;
  
 }
 #count{
@@ -175,12 +178,15 @@ import UtfBox from '../components/UtfBox'
     position:relative;
     vertical-align: middle;
     margin-bottom:-3px;
+    padding:10px;
     padding-bottom:10px;
     padding-top:4px;
     font-size:15px;
     min-width:75px;
     float:right;
     margin-right:30px;
+    border-radius:10px;
+  
 }
 .category{
     background:none;
@@ -225,11 +231,15 @@ input[type='button'].category:hover{
     width:150px;
     margin-right:30px;
     float:right;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) , 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius:10px;
 }
 #prev{
     width:150px;
     float:left;
     margin-left:30px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) , 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius:10px;
 
 }
 #pageNav{

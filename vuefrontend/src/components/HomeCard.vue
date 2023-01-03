@@ -73,13 +73,17 @@ export default{
     flex-direction:row;
     vertical-align: middle;
     width:100%;
+    border-radius:5px;
 }
 .chapter:hover{
     border: 1px solid purple;
     
 }
 #chapter-box{
-    width:50%;
+    border-radius:5px;
+    position:relative;
+    bottom:10px;
+    margin-top:auto;
 }
 .chapterNumber{
     border-radius:10px;
@@ -94,6 +98,7 @@ export default{
     margin-top:auto;
     margin-bottom:auto;
     text-decoration:none;
+    margin-right:0px;
     
 }
 #title{
@@ -112,11 +117,23 @@ export default{
 .date{
     color:rgb(146,146,146);
     font-size: 12px;
-    margin-left:5px;
     height:24px;
     line-height:24px;
     vertical-align: middle;
+    margin-top:auto;
+    margin-bottom:auto;
+    margin-left:0px;
+    margin-right:1px;
 
+}
+.chapter:hover .date{
+    margin-right:0px;
+    
+}
+.chapter:hover .chapterNumber{
+    width:40px;
+    margin-right:1px;
+    
 }
 .cover_image img{
      transition: all .2s ease;

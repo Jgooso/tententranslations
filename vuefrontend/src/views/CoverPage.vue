@@ -57,7 +57,7 @@
   <div id = "TableOfContents">
         <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;">
             <UtfBox shape = '&#xe047;'/>
-            <h3  id = "divider">Latest Chapters</h3>
+            <h3  id = "divider">Table Of Contents</h3>
             <button id = "switcher" @click ="sortToc">&#x21C5;</button>
         </div>
         <ul  id = 'tableofcontentList' ref='tableofcontentlist'>
@@ -205,7 +205,7 @@
       transition: all .2s ease;
       box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
       margin-top:20px;
-      border-radius:10px;
+      border-radius:25px;
   }
   #cover{
     background-color:var(--backgroundColor);
@@ -375,17 +375,20 @@ ul{
     flex-direction:row;
     border-bottom:1px solid lightgray;
     background:none;
-    min-height:45px;
+    min-height:35px;
     height:fit-content;
     position: relative;
-    padding-top:15px;
+    padding-top:8px;
     font-weight:300;
     vertical-align:center;
-    margin-top:2px;
+    margin-top:8px;
+    border-radius:5px;
+    border: 1px solid lightgray;
+    transition: all .1s ease;
     
 }
-#group:hover{
-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+.group:hover{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 #group:hover #title{
 color:var(--styleColor);
@@ -436,6 +439,7 @@ select{
 }
 .date{
    position:relative;
+   padding-left:10px;
 }
 .title{
     position:relative;

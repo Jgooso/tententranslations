@@ -54,9 +54,6 @@
 </script>
 
 <style>
-#chapter-font{
- 
-}
 button{
   border:none;
 }
@@ -69,7 +66,6 @@ button{
     font-weight:bold;
     margin-left:15px;
     line-height:18px;
-    height:30px;
     padding-top:6px;
 }
 #cover {

@@ -162,7 +162,6 @@ def download(data):#download novels from NCODE.SYOSETU
     #INSERT data into database
     novel_insert_sql =  """INSERT INTO novels(novelid,title,alternativetitle,url,description,novelactive) 
                                        VALUES(%s,%s,%s,%s,%s,%s);
-                          SELECT id FROM novels WHERE novelid = %s
                         """
     novel_insert_val = (
         novel_id,#novelid
@@ -171,36 +170,28 @@ def download(data):#download novels from NCODE.SYOSETU
         URL,#url
         description,#description
         0,#novelactive
-        novel_id#select id,
     )
     #execute sql and retriece id
-    for result in novelcursor.execute(novel_insert_sql,novel_insert_val,multi=True):
-            if result.with_rows:
-                novel_identifier = novelcursor.fetchone()[0]
-    
+    novelcursor.execute(novel_insert_sql,novel_insert_val)
     #Get list of all identifiers
     identifiers = genres + tags + [author,release,novelstatus,'uUnreleased']
     for d in identifiers:
         if(d == author):
             novelcursor.execute("REPLACE INTO identifiers (descriptor,type) VALUES (%s,%s)",(author,'authors'))
         descriptor_insert_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s"
-        descriptor_insert_val = (novel_identifier,d.strip())
-        print(d.strip())
+        descriptor_insert_val = (novel_id,d.strip())
         novelcursor.execute(descriptor_insert_sql,descriptor_insert_val)
-
 
     #Upload Chapters
     chapter_list = novel_obj.find(class_ = 'index_box').find_all(['a','div'])
-    processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_identifier)
+    processChapters(chapter_number=1,section=0,chapter_list=chapter_list,novel_id=novel_id,chaptercursor=novelcursor)
 
     #Upload IMAGE
     
     noveldb.commit()
     noveldb.close()
-def processChapters(chapter_number,section,novel_id,chapter_list):#Translates chapters and processes them to be easier to read
-    chapterdb = mysql.connector.connect(**config)
-    chaptercursor = chapterdb.cursor(buffered=True)
-    sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteractive,chapterorder,views) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+def processChapters(chapter_number,section,novel_id,chapter_list,chaptercursor):#Translates chapters and processes them to be easier to read
+    sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteredited,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     chapter_order = chapter_number+section
     for i in range(len(chapter_list)):
         print(chapter_number)
@@ -213,9 +204,9 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 section,#section
                  0,#chapternumber
                 None,#content
-                1,#active
+                0,#chapteredited
+                0,#chapteractive
                 chapter_order,#chapterorder
-                0,#views
             )
             chaptercursor.execute(sql,val)
         else:
@@ -251,15 +242,14 @@ def processChapters(chapter_number,section,novel_id,chapter_list):#Translates ch
                 section,#section
                 chapter_number,#chapternumber
                 content,#content
-                1,#chapteractive
+                0,#chapteredited
+                0,#chapteractive
                 chapter_order,#chapterorder
-                0,#views
 
             )
             chaptercursor.execute(sql,val)
             chapter_number += 1
         chapter_order += 1
-    chapterdb.close()
 def update():#Search for new chapters and download them to database
     noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True)
@@ -395,4 +385,3 @@ def upload_bot(novelcursor,novel):
     browser.close()
 noveldb = mysql.connector.connect(**config)
 novelcursor = noveldb.cursor(buffered=True)
-upload()

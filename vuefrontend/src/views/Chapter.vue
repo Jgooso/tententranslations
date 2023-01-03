@@ -1,7 +1,8 @@
 <template>
 <div id = 'chapter'>
     <div>
-        <h3 style = "font-size: 16px;" class='novel-title' v-html='novelData.title'/><!-- chapter number-->
+        <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="novel-title" v-html='novelData.title'/>
+        <!--<h3 style = "font-size: 16px" class='novel-title'/>-->
         <div id = 'control-bar'>
             <div class='control-buttons-container' selectable='false'>
              
@@ -29,7 +30,7 @@
             :previous='this.$route.params.chapter != 1'
             :next='this.$route.params.chapter<chapterList.length'
             v-on:move="moveChapters($event)"
-            id ='NavButtons'
+            style='margin:auto;float:center;position:relative;left:0px'
             />
     </div>
 </div>
@@ -114,7 +115,10 @@ min-height:1000px;
 
 }
 .novel-title{
-    text-decoration:underline;
+    color:var(--textColor);
+    font-style: italic;
+    font-weight:bold;
+    font-size:16px;
 }
 .novel-title:hover{
     color:var(--styleColor)
@@ -147,6 +151,7 @@ min-height:1000px;
 #control-bar{
     position:relative;
     width:100%;
+    right:0px;
 }
 .chapter-link{
     color:black;
@@ -177,7 +182,6 @@ min-height:1000px;
     width:180px;
     height:50px;
     padding:5px;
-    float:right;
 }
 
 .control-buttons-container{

@@ -113,7 +113,9 @@ input[type='password']{
     z-index:5;
     width:100%;
     height:100%;
-    background-color:rgba(0,0,0,0.5)
+    background-color:rgba(0,0,0,0.5);
+    top:0px;
+    left:0px;
 }
 @keyframes spin {
   0% { transform: rotate(0deg); }

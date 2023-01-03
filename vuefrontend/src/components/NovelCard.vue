@@ -55,6 +55,7 @@ export default{
     border-radius:10px;
     text-decoration:none;
 
+
 }
 .NovelCard:hover{
     text-decoration:none;
