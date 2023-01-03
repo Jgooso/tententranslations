@@ -172,10 +172,10 @@ def get_singlenovel():
         novelData = data['novelData']
         novelid = request.args.get('novel')
         post_single_novel_sql =  """
-                                UPDATE novels SET description = %s, title = %s, novelid = %s
-                                    WHERE id = %s;
+                                UPDATE novels SET description = %s, title = %s
+                                    WHERE novelid = %s;
                                  """
-        post_single_novel_val = (novelData['description'],novelData['title'],slugify(novelData['title']),novelid)
+        post_single_novel_val = (novelData['description'],novelData['title'],novelid)
         novelcursor.execute(post_single_novel_sql,post_single_novel_val)
         novelcursor.execute("DELETE FROM noveldescriptors WHERE novelid = %s",(novelid,))
         post_single_novel_descriptor_sql = "INSERT INTO noveldescriptors (novelid,descriptor) SELECT %s,id FROM identifiers WHERE descriptor = %s"
@@ -275,11 +275,11 @@ def get_noveltitles():
     novelcursor = noveldb.cursor(buffered=True,dictionary=True)
     if request.method == 'GET':
         novelcursor.execute("""
-                                SELECT title,novels.novelid,id,fully_edited FROM novels INNER JOIN
+                                SELECT title,novels.novelid,fully_edited FROM novels INNER JOIN
                                     (SELECT novelid,(CASE WHEN COUNT(chapteredited)=SUM(chapteredited) THEN 1 ELSE 0 END)as fully_edited
                                         FROM  chapters
                                         GROUP BY novelid) AS chapters 
-                                    ON novels.id = chapters.novelid
+                                    ON novels.novelid = chapters.novelid
                                     
                             """)
         novels = novelcursor.fetchall()

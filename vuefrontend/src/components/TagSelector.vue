@@ -44,7 +44,8 @@ import tagBox from '../components/TagBox'
         },
         removeTag(removetag){
             const index = this.selectedtags.indexOf(removetag)
-            this.selectedtags.splice(index,1)
+            this.selectedtags.splice(index-1,1)
+            console.log(this.selectedtags)
             document.getElementById(removetag).classList.add('unselected')
         },
         filterTag(){

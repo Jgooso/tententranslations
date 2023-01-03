@@ -206,7 +206,7 @@ export default{
                this.novelData.novelstatus=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('noveldescription').innerHTML
                this.novelData.title=document.getElementById('noveltitle').innerHTML
-               const url = '/novel/single?novel='+this.novelData.id
+               const url = '/novel/single?novel='+this.novelData.novelid
             getAPI.put(url,{
                    novelData:this.novelData,
                    tags:this.novelData.tags,
