@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div id = "MoveButton" v-else>
+    <div id = "MoveButton">
         <button v-if='previous' @click ="go(this.$route.params.chapter-1)">&#8592; Prev</button>
         <button v-if='next' @click ="go(parseInt(this.$route.params.chapter)+1)">Next &#8594;</button>
     </div>

@@ -89,8 +89,10 @@ def time_difference(date):
     minutes = int(seconds / 60)
     hours = int(minutes / 60)
     days = int(hours / 24)
-    if seconds < 60:
+    if seconds < 60 and seconds > 0:
         return str(int(seconds))+' seconds ago'
+    elif seconds < 0:
+        return 'unreleased'
     elif minutes < 60:
         if minutes == 1:
             return str(minutes)+' minute ago'
@@ -114,7 +116,9 @@ def remove_html_tags(text):
     text = text.replace('</br>','\n')
     text = text.replace('</ br>','\n')
     text = text.replace('<br/>','\n')
-    clean = re.compile('(<rp|<rt|<ru|</r|<r).*?(/rp>|/rt>|by>|b>)')
+    clean = re.compile('<p id=".*">')
+    re.sub(clean,'',text)
+    clean = re.compile('((<rp|<rt|<ru|</r|<r).*?(/rp>|/rt>|by>|b>))|')
     return re.sub(clean,'',text)
 
 def upload_image(image,url):
@@ -194,7 +198,6 @@ def processChapters(chapter_number,section,novel_id,chapter_list,chaptercursor):
     sql = "INSERT INTO chapters (novelid,title,section,chapternumber,content,chapteredited,chapteractive,chapterorder) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     chapter_order = chapter_number+section
     for i in range(len(chapter_list)):
-        print(chapter_number)
         current_chapter = chapter_list[i]
         if 'class' in str(current_chapter):
             section+=1
@@ -202,7 +205,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list,chaptercursor):
                 novel_id,#novelid
                 translate(current_chapter.text),#title
                 section,#section
-                 0,#chapternumber
+                0,#chapternumber
                 None,#content
                 0,#chapteredited
                 0,#chapteractive
@@ -213,7 +216,7 @@ def processChapters(chapter_number,section,novel_id,chapter_list,chaptercursor):
             chapter_obj = get_HTML('https://ncode.syosetu.com' + str(current_chapter['href']))
             chapter_title = translate(str(chapter_obj.find(class_ = 'novel_subtitle').text))
             content = ''
-            text = '   '+'   '.join([str(p)[str(p).index('>')+1:] for p in chapter_obj.find(id = 'novel_honbun').find_all("p")])
+            text = str(chapter_obj.find(id = 'novel_honbun'))[42:-6]
             #process text content
             text = remove_html_tags(text)
             #find good points of division
@@ -245,7 +248,6 @@ def processChapters(chapter_number,section,novel_id,chapter_list,chaptercursor):
                 0,#chapteredited
                 0,#chapteractive
                 chapter_order,#chapterorder
-
             )
             chaptercursor.execute(sql,val)
             chapter_number += 1
@@ -293,40 +295,14 @@ def update():#Search for new chapters and download them to database
             novelcursor.execute('UPDATE chapters SET views = 0')
     noveldb.commit()
     noveldb.close()
-def schedule_upload():
-    noveldb = mysql.connector.connect(**config)
-    novelcursor = noveldb.cursor(buffered=True)
-    novel_sql = """
-                    SELECT DISTINCT schedule.novelid 
-                        FROM Schedule 
-                    WHERE DATE(upload_date) = CURDATE() AND HOUR(upload_date) = HOUR(NOW());
-                    DELETE FROM schedule WHERE DATE(upload_date) = CURDATE() and HOUR(upload_date) = HOUR(NOW())
-                """
-    for result in novelcursor.execute(novel_sql,multi=True):
-         if result.with_rows:
-                novel = novelcursor.fetchone()[0]
-    upload(novel)
-def upload(novel):#change permissions for viewing of novels
+
+def schedule_upload(novel):#change permissions for viewing of novels
     noveldb = mysql.connector.connect(**config)
     novelcursor = noveldb.cursor(buffered=True)
     chapter_sql =  """
-                   UPDATE chapters SET chapteractive = 1, uploaddate = NOW()
-                   WHERE novelid = %s AND chapteractive = 0 ORDER BY chapterorder+0 LIMIT 1;
-                   UPDATE novels SET lastupload = NOW() WHERE novelid = %s;
+                   UPDATE chapters SET chapteractive = 1 WHERE DATE(uploaddate) = CURDATE() AND HOUR(uploaddate) = HOUR(NOW());
+                   UPDATE novels INNER JOIN chapters on novels.novelid = chapters.novelid SET lastupload = NOW() WHERE DATE(uploaddate) = CURDATE() AND HOUR(uploaddate) = HOUR(NOW());
                    """
-    check_chapter_sql="SELECT ISNULL(content) FROM chapters WHERE novelid = %s AND chapteractive = 0 LIMIT 1"
-    try:
-        i=1
-        print(novel)
-        check_chapter_val = (novel,)
-        chapter_val = (novel,novel)
-        novelcursor.execute(check_chapter_sql,check_chapter_val)
-        if novelcursor.fetchone()[0] == 0: i = 2
-        for x in range(i):
-            for result in novelcursor.execute(chapter_sql,chapter_val,multi=True):
-                pass
-    except TypeError:
-        pass
     #upload_bot(novelcursor=novelcursor,novel)
     noveldb.commit()
     noveldb.close()

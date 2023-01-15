@@ -85,6 +85,7 @@
             <td class = 'chapter-title'>Chapter Title</td>
             <td class = 'chapter-check-box' style='font-size:15px'>Edited</td>
             <td class = 'chapter-check-box' style='font-size:15px'>Uploaded</td>
+            <td style='font-size:15px'>Upload Date</td>
             </tr>
             <tr v-for='section in sectionList' style='display:flex;flex-direction:column'>
                 <p v-if='section.title' class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
@@ -93,13 +94,21 @@
                         <td class='chapter-title'>
                         <label>
                         {{chapter.title}}
-                        <input type='button'  class = 'chapter-list' value = chapter.chapternumber @click='displayChapter(chapter)'>
+                        <input type='button'  class = 'chapter-list' :value = 'chapter.chapternumber' @click='displayChapter(chapter)'>
                         </label>
                         </td>
                         <td v-if='chapter.chapteredited == 1' style='color:lightgreen;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>&#10003;</td>
                         <td v-else style='color:red;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>X</td>
                         <td v-if='chapter.chapteractive == 1' style='color:lightgreen;x' class = 'chapter-check-box'>&#10003;</td>
                         <td v-else style='color:red;' class = 'chapter-check-box'>X</td>
+                        <td>
+                            <input type = 'datetime-local' 
+                                    :id ='"date"+chapter.chapterorder'
+                                    :value='chapter.uploaddate' 
+                                    @change='changeupload(chapter)' 
+                                    min="2023-01-01T00:00"
+                                    style='width:fit-content;margin-right:20px;' >
+                        </td>
                     </tr>
                 </tr>
             </tr>
@@ -109,7 +118,7 @@
                 <input type='button' id ='back-button' @click='hideChapter()' >
             </label>
             <p v-else> Unsaved Changes</p>
-            <h3>Title</h3>
+            <h3 contenteditable ='True' id = 'chapter-title'>{{chapterTitle}}</h3>
                  <pre v-html='chapterContent' id = 'chapter-content' contenteditable='True'/>
         </div>
     </div>
@@ -190,7 +199,8 @@ export default{
           .catch(err => {
             console.log(err)
           })
-       
+            this.saved = true
+            this.hideChapter()
         },
         submit(){
             const loadingscreen = document.getElementById('loadingscreen')
@@ -242,13 +252,14 @@ export default{
             }
             if (e.ctrlKey && e.key === 's') {
                  this.currentChapter.content = document.getElementById('chapter-content').innerHTML
+                 this.currentChapter.title = document.getElementById('chapter-title').innerHTML
                  this.saved=true;
-                 getAPI.put('chapter?chapter='+this.currentChapter.id,{
+                 getAPI.put('chapter?novel='+this.currentChapter.novelid+'&chapter='+this.currentChapter.chapternumber,{
                      title:this.currentChapter.title,
                      content:this.currentChapter.content
                      })
                     .then(response => {
-                        console.log('sent')
+                        console.log(this.currentChapter)
                     })
                     .catch(err => {
                         console.log(err)
@@ -262,12 +273,13 @@ export default{
              document.getElementById('chapterEditor').style.width='100%';
             document.getElementById('table').style.width='0px';
             document.getElementById('chapter-content').addEventListener('keydown', this.save, false);
-            const url = '/chapter?chapter='+chapterItem.id
+            const url = '/chapter?novel='+chapterItem.novelid+'&chapter='+chapterItem.chapternumber
             getAPI.get(url)
             .then(response => {
                 console.log('Chapter API has recieved data')
-                this.chapterContent = response.data
+                this.chapterContent = response.data['content']
                 this.currentChapter = chapterItem
+                this.chapterTitle = response.data['title']
             })
             .catch(err => {
                 console.log(err)
@@ -293,12 +305,22 @@ export default{
                 chapter.chapteredited = 0
             }
             console.log(chapter)
-            const url = '/chaptereditchange?edit='+chapter.chapteredited+'&chapter='+chapter.id
+            const url = '/chaptereditchange?edit='+chapter.chapteredited+'&novel='+chapter.novelid+'&chapter='+chapter.chapterorder
             getAPI.put(url)
             .then(response => {
                 console.log('sent')
             })
             .catch(err => {
+                console.log(err)
+            })
+        },
+        changeupload(chapter){
+            const date = document.getElementById('date'+chapter.chapterorder).value
+            const url = '/chapteruploadchange?novel='+chapter.novelid+'&chapter='+chapter.chapterorder
+            console.log(date)
+            getAPI.put(url,{date:date}).then(response =>{
+                console.log('send')
+            }).catch(err =>{
                 console.log(err)
             })
         }
@@ -419,7 +441,7 @@ tr{
     margin-left:40px;
 }
 .chapter-title{
-    width:100%;
+    width:60%;
     text-overflow:ellipsis;
     margin:0px;
     padding-left:20px;

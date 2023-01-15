@@ -147,8 +147,12 @@ def get_singlenovel():
         novelData['novelstatus'] = novelstatus
         novelData['authors'] = author
         novelData['novelrelease'] = novelrelease
-        for chapter in chapter_list:
-            chapter['uploaddate'] = time_difference(chapter['uploaddate'])
+        if edit != 'True':
+            for chapter in chapter_list:
+                chapter['uploaddate'] = time_difference(chapter['uploaddate'])
+        elif chapter_list[0]['uploaddate'] != None:
+            for chapter in chapter_list:
+                chapter['uploaddate'] = chapter['uploaddate'].isoformat(sep='T',timespec='auto')
         #Editable get Genres and tags
         if(edit=='True'):
             novelcursor.execute('SELECT * FROM identifiers WHERE type = "tag" OR type = "genre"')
@@ -214,8 +218,8 @@ def get_chapter():
         return jsonify(chapter_results)
     if request.method == 'PUT':
         data = request.get_json()
-        put_chapter_sql = 'UPDATE chapters SET content = %s WHERE id = %s'
-        put_chapter_val = (data['content'],chapter)
+        put_chapter_sql = 'UPDATE chapters SET content = %s, title = %s WHERE novelid = %s and chapternumber = %s'
+        put_chapter_val = (data['content'],data['title'],novel,chapter)
         novelcursor.execute(put_chapter_sql,put_chapter_val)
         noveldb.commit()
         noveldb.close()
@@ -249,7 +253,7 @@ def get_schedules():
         times = [datetime.time(int(data[t][:2])) for t in data if 'time' in t]
         days_of_the_week = [int(data[w]) for w in data if 'day' in w]
         dates = []
-        novelcursor.execute('SELECT COUNT(content) as length FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE novels.novelid = %s',(novel,))
+        novelcursor.execute('SELECT COUNT(content) as length FROM chapters WHERE novelid = %s',(novel,))
         length = novelcursor.fetchone()['length']
         i = 0
         while len(dates) < length:
@@ -265,7 +269,17 @@ def get_schedules():
             i+=1
         for d in dates:
             d = d.astimezone(pytz.UTC)
-            novelcursor.execute("INSERT INTO schedule (upload_date,novelid) SELECT %s,id FROM novels WHERE novelid = %s",(d,novel))
+            date_sql = """
+                SET @a = (SELECT DISTINCT content IS NULL FROM chapters WHERE novelid = %s and uploaddate IS NULL LIMIT 1)+1;
+                PREPARE STMT FROM "UPDATE chapters SET uploaddate = %s
+	                WHERE novelid = %s and uploaddate IS NULL 
+	                ORDER BY chapterorder 
+	                LIMIT ?;";
+                    EXECUTE STMT USING @a; 
+            """
+            date_val = (novel,d,novel)
+            for result in novelcursor.execute(date_sql,date_val,multi=True):
+                continue
         noveldb.commit()
         noveldb.close()
         return data
@@ -475,11 +489,23 @@ def get_change_chapter_edit():
         noveldb = mysql.connector.connect(**config)
         novelcursor = noveldb.cursor(buffered=True,dictionary=True)
         edit = request.args.get('edit')
+        novel = request.args.get('novel')
         chapter = request.args.get('chapter')
-        novelcursor.execute("UPDATE chapters SET chapteredited = %s WHERE id = %s",(edit,chapter))
+        novelcursor.execute("UPDATE chapters SET chapteredited = %s WHERE novelid = %s and chapterorder = %s",(edit,novel,chapter))
         noveldb.commit()
         noveldb.close()
         return chapter
+def get_change_chapter_upload():
+    if request.method == 'PUT':
+        noveldb = mysql.connector.connect(**config)
+        novelcursor = noveldb.cursor(buffered=True,dictionary=True)
+        novel = request.args.get('novel')
+        chapter = request.args.get('chapter')
+        date = request.get_json()['date']
+        novelcursor.execute('UPDATE chapters SET uploaddate = %s WHERE novelid = %s and chapterorder = %s',(date,novel,chapter))
+        noveldb.commit()
+        noveldb.close()
+        return novel
 def convertToBinaryData(file):
     # Convert digital data to binary format
     binaryData = file.read()

@@ -51,6 +51,9 @@ def descriptor_distribution():
 @app.route('/uploadchapter',methods=['GET'])
 def upload_chapter():
     return upload()
+@app.route('/chapteruploadchange',methods = ['PUT'])
+def change_chapter_upload():
+    return get_change_chapter_upload()
 @app.after_request
 def add_header(response):
     response.headers.add('Access-Control-Allow-Origin', '')
