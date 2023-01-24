@@ -310,7 +310,8 @@
     flex-direction:row;
     border:none;
     background:none;
-    height:45px;
+    height:fit-content;
+    min-height:45px;
     position: relative;
     padding-top:15px;
     font-weight:300;
@@ -324,7 +325,7 @@
     padding:0;
     margin-left:50px;
     font-weight:bold;
-     background:none;
+    background:none;
     justify-content:center;
 }
 .expand{

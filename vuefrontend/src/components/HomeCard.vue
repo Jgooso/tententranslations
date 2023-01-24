@@ -76,7 +76,8 @@ export default{
     border-radius:5px;
 }
 .chapter:hover{
-    border: 1px solid purple;
+    /*border: 1px solid purple;*/
+    outline:1px solid purple;
     
 }
 #chapter-box{

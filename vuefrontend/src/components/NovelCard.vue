@@ -82,7 +82,8 @@ export default{
     border-radius:5px;
 }
 .chapter:hover{
-    border: 1px solid purple;
+    /*border: 1px solid purple;*/
+    outline:1px solid purple;
     
 }
 #chapter-box{
@@ -102,11 +103,7 @@ export default{
     text-decoration:none;
     
 }
-.chapter:hover .chapterNumber{
-   width:41px;
-   margin-right:1px;
-    
-}
+
 #title{
     font-weight:bold;
     color:var(--textColor);
