@@ -453,13 +453,13 @@ def get_dates():
         end_date = datetime.date(year, month, end_day) 
         delta = end_date - start_date   # returns timedelta
         calender = {'month':month_name,'weekday_start':(start_date.weekday()+1)%7,'days':{}}
-        get_schedule__sql = ('SELECT title,upload_date FROM schedule INNER JOIN novels ON novels.id = schedule.novelid WHERE upload_date BETWEEN %s AND %s')
+        get_schedule__sql = ('SELECT novels.title,uploaddate FROM chapters INNER JOIN novels ON novels.novelid = chapters.novelid WHERE uploaddate BETWEEN %s AND %s')
         get_schedule_val = (start_date,end_date)
         novelcursor.execute(get_schedule__sql,get_schedule_val)
         schedule_list = novelcursor.fetchall()
         schedule_bucket = {}
         for schedule in schedule_list:
-            day = schedule['upload_date'] - datetime.timedelta(minutes=offset)
+            day = schedule['uploaddate'] - datetime.timedelta(minutes=offset)
             if day.day not in schedule_bucket:
                 schedule_bucket[day.day] = []
             schedule_bucket[day.day].append({'novel':schedule['title'],'hour':day.hour})
