@@ -54,7 +54,7 @@ export default{
       display:flex;
       flex-direction:row;
       margin-bottom:20px;
-      border-bottom:1px solid black;
+      border-bottom:1px solid var(--borderColor);
   }
   #user-bar{
       background-color:var(--backgroundColor);

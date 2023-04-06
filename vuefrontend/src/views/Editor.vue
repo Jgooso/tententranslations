@@ -9,7 +9,7 @@
         </div>
     </div>
     <select id = 'novel-selector' @change="selectNovel()">
-        <option v-for='novel in novelList' :value='novel.novelid'>{{novel.title}}</option>
+        <option v-for='novel in novelList' :value='novel.novelid' >{{novel.title}} {{novel.completed_percentage*100}}%</option>
     </select>
     <!-- Novel Edit-->
     <!-- Novel Edit End-->
@@ -23,6 +23,10 @@
                     <tr>
                         <td>Author</td>
                         <td class="info">{{novelData.author}}</td>
+                    </tr>
+                    <tr>
+                        <td>URL</td>
+                        <td class="info"><a :href="novelData.url" class = 'selectable'>{{novelData.url}}</a></td>
                     </tr>
                     <tr>
                         <td>Genres</td>
@@ -70,7 +74,9 @@
                 id = 'tag-selector'
                 />
         </div>   
-    </div>    
+        <button style='background-color:red;font-weight:bold'>DELETE</button>  
+    </div>
+    
     <div id = "summary">
         <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
@@ -119,7 +125,7 @@
             </label>
             <p v-else> Unsaved Changes</p>
             <h3 contenteditable ='True' id = 'chapter-title'>{{chapterTitle}}</h3>
-                 <pre v-html='chapterContent' id = 'chapter-content' contenteditable='True'/>
+                 <textarea v-text='chapterContent' id = 'chapter-content'/>
         </div>
     </div>
     </div>
@@ -251,7 +257,7 @@ export default{
                 this.saved = false
             }
             if (e.ctrlKey && e.key === 's') {
-                 this.currentChapter.content = document.getElementById('chapter-content').innerHTML
+                 this.currentChapter.content = document.getElementById('chapter-content').value
                  this.currentChapter.title = document.getElementById('chapter-title').innerHTML
                  this.saved=true;
                  getAPI.put('chapter?novel='+this.currentChapter.novelid+'&chapter='+this.currentChapter.chapternumber,{
@@ -284,7 +290,6 @@ export default{
             .catch(err => {
                 console.log(err)
             })
-            console.log(document.getElementById('chapter-content').innerHTML)
         },
         hideChapter(){
             if(this.saved==true){
@@ -476,13 +481,14 @@ width:10%
     border:none;
     font-size:30px;
 }
-.chapter-content{
+#chapter-content{
     height:fit-content;
     width:100%;
+    font-family: sans-serif;
     white-space: pre-wrap;
-    font-weight:lighter;
-    overflow:hidden;
-    position:absolute;
+    font-weight: 100;
+    position:relative;
+    font-size:19px;
 }
 /*Chapter Editor Page End*/
 

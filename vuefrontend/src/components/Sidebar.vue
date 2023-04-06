@@ -45,7 +45,7 @@ export default{
 #sidebar{
     width:50%;
     max-width:300px;
-    background-color:var(--styleColor);
+    background-color:var(--backgroundColor);
     top:0;
     left:-300px;
     position:absolute;
@@ -55,9 +55,10 @@ export default{
     transition: all .3s ease-in-out;
     justify-content:center;
     padding-top:50px;
+    border-right:1px solid var(--borderColor);
 }
 h3{
-    color:white;
+    color:var(--textColor);
     font-weight:100;
     margin-top:100px;
     transition: all .3s ease-in-out;
@@ -78,7 +79,7 @@ h3:hover{
     opacity:0;
 }
 .nav{
-      color: white;
+       color:var(--textColor);
       max-width: 200px;
       font-size: 15px;
       position: relative;

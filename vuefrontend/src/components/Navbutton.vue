@@ -41,6 +41,7 @@
     margin-right: 2px;
     width:86px;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+    border: 1px solid var(--borderColor);
   }
   #MoveButton{
     position:absolute;

@@ -11,11 +11,11 @@
         </div>
 
         <div id = 'sortButtons'>
-            <input type='button' class = 'category' @click='sort("lastupload")' value = 'Latest' id = 'sort-lastupload'>
-            <input type ='button' class = 'category' @click='sort("title")' value = 'A-Z' id = 'sort-title'>
-            <input type ='button' class = 'category' @click='sort("length")' value = 'Length' id = 'sort-length'>
-            <input type ='button' class = 'category' @click='sort("views")' value = 'Trending' id = 'sort-views'>
-            <input type ='button' class = 'category' @click='sort("firstupload")' value = 'New' id = 'sort-firstupload'>
+            <input type='button' class = 'category selectable' style="border-left:1px solid var(--borderColor)" @click='sort("lastupload")' value = 'Latest' id = 'sort-lastupload'>
+            <input type ='button' class = 'category selectable' @click='sort("title")' value = 'A-Z' id = 'sort-title'>
+            <input type ='button' class = 'category selectable' @click='sort("length")' value = 'Length' id = 'sort-length'>
+            <input type ='button' class = 'category selectable' @click='sort("views")' value = 'Trending' id = 'sort-views'>
+            <input type ='button' class = 'category selectable' @click='sort("firstupload")' value = 'New' id = 'sort-firstupload'>
             <h6 id = 'pageNumber'>Page {{page}} of {{(pageCount)}}</h6>
         </div>
         
@@ -190,13 +190,20 @@ import UtfBox from '../components/UtfBox'
 }
 .category{
     background:none;
-    border:none;
+    border-bottom:none;
     color:gray;
     position:relative;
     margin-bottom:-3px;
     padding-bottom:10px;
     font-size:15px;
     min-width:75px;
+    
+}
+.selectable{
+    border:1px solid var(--borderColor);
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+    border-left:0px;
 }
 input[type='button'].category:hover{
     color:var(--styleColor);
@@ -220,11 +227,10 @@ input[type='button'].category:hover{
     border-bottom:4px solid var(--styleColor);
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     transition: all .3s ease;
-    border-top-left-radius:5px;
-    border-top-right-radius:5px;
+    
 }
 .navigationButton{
-    border:none;
+    border:1px solid var(--borderColor);
     background:none;
 }
 #next{

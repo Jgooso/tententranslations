@@ -23,6 +23,7 @@ export default{
             genres:[],
             tags:[],
             novelstatus:[],
+            uploadstatus:[],
         }
     },
         created(){
@@ -47,7 +48,6 @@ export default{
                 const text = bars[i].innerHTML
                 const length = parseInt(text.substring((text.indexOf(":")+1)))
                 bars[i].style.width = (10*length)+'px'
-                console.log(text.substring((text.indexOf(":")+1)))
             }
              }, 500);
         }

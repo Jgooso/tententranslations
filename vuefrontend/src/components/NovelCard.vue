@@ -50,7 +50,7 @@ export default{
     display:flex;
     flex-direction:column;
     padding:10px;
-    border:white 1px solid;
+    border:var(--borderColor) 1px solid;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     border-radius:10px;
     text-decoration:none;

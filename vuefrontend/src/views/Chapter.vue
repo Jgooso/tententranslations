@@ -191,6 +191,7 @@ min-height:1000px;
     border-radius:5px;
     width:180px;
     right:0px;
+    border: 1px solid var(--borderColor);
 }
 button.controlbuttons{
     border-radius:15px;

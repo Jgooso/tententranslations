@@ -105,6 +105,7 @@ export default {
       this.user = {'id':838383,'status':'a','fontsize':19,'tier':1}
     },
     mounted(){
+      //console.log(await ipify());
       /*
       let apiKey = '8ec778b9a4c4ba813db900bd2c328e6d9afbc4579c1c0d0ac13cc69c';
       getAPI.get(`https://api.ipdata.co?api-key=${apiKey}`)
@@ -118,7 +119,7 @@ export default {
             console.log(err)
           })
           */
-        }
+        },
       
 
     
@@ -178,7 +179,7 @@ export default {
     grid-column:3;
     border:none;
   }
-  .view-footer:{
+  .view-footer{
     grid-row: 3;
     grid-column: 1 / span 3;
   }

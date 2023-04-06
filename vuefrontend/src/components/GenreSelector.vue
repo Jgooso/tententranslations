@@ -1,6 +1,6 @@
 <template>
 <div id = 'genres'>
-        <label v-for='i in genres.length' :key = 'i'>
+        <label v-for='(n,i) in genres.length' :key = 'i'>
             <input type='checkbox' :value='genres[i]' 
                                 :name = '"genre"+i' class = 'genrecheckbox' :checked='selectedgenres.includes(genres[i])' @click='changeGenre(genres[i])'>{{genres[i]}}
         </label>

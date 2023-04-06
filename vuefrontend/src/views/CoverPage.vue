@@ -62,9 +62,9 @@
         </div>
         <ul  id = 'tableofcontentList' ref='tableofcontentlist'>
         <li v-for="section in sectionList" :key="section.section">
-            <button v-if='section.title' @click="trigger(section.section)" class = 'section'>
+            <button v-if='section.title' class = 'section'>
                 <h3 v-text='section.title'/>
-                <p class = "expand">-</p>
+                <!--<p class = "expand">-</p>-->
             </button>
             <br>
             <ul v-bind:id = "section.section" >
@@ -122,8 +122,8 @@
         },
        showMore(){
            //console.log('clicked')
-           document.getElementById('tableofcontentList').style.maxHeight="none";
-           document.getElementById('showMore').style.display='none'
+           //document.getElementById('tableofcontentList').style.maxHeight="none";
+           //document.getElementById('showMore').style.display='none'
        },
        
        
@@ -148,6 +148,7 @@
     transition: all .2s ease;
     margin-top:20px;
     padding:20px;
+    
  }
  .column1{
      grid-column:1 / span 1;
@@ -206,6 +207,7 @@
       box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
       margin-top:20px;
       border-radius:25px;
+      border: 1px solid var(--borderColor);
   }
   #cover{
     background-color:var(--backgroundColor);
@@ -256,6 +258,8 @@
       font-weight: bold;
       vertical-align: top;
       color:var(--textColor);
+      line-height: 20px;
+      vertical-align: bottom;
       
   }
   .info{
@@ -293,7 +297,7 @@
   
 #tableofcontentList{
     height:fit-content;
-    max-height:1000px;
+    /*max-height:1000px;*/
     overflow-y:hidden;
 }
 #showMore{
@@ -311,11 +315,11 @@
     border:none;
     background:none;
     height:fit-content;
-    min-height:45px;
+    /*min-height:45px;*/
     position: relative;
-    padding-top:15px;
-    font-weight:300;
-   
+    font-weight:bold;
+    height:30px;
+    font-size:20px;
 
 }
 #switcher{
@@ -358,33 +362,31 @@ ul{
     line-height:15px;
     color:gray;
     margin-right:10px;
+    padding:8px;
+    border-radius:5px;
 }
 .title{
-    padding-left:10px;
+    padding:8px;
     position:absolute;
     line-height:17px;
     left:5;
     font-size:17px;
+    border-radius:5px;
 }
-.group:hover .title{
-    color:var(--styleColor);
-    font-weight:bold;
-}
+
 .group{
     width:100%;
     display:flex;
     flex-direction:row;
-    border-bottom:1px solid lightgray;
     background:none;
     min-height:35px;
     height:fit-content;
     position: relative;
-    padding-top:8px;
     font-weight:300;
     vertical-align:center;
     margin-top:8px;
     border-radius:5px;
-    border: 1px solid lightgray;
+    border: 1px solid var(--borderColor);
     transition: all .1s ease;
     
 }
@@ -394,6 +396,7 @@ ul{
 #group:hover #title{
 color:var(--styleColor);
 font-weight:bold;
+
 }
 select{
     background:none;
