@@ -77,9 +77,9 @@ import NavButton from '../components/Navbutton'
         }
         },
         created(){
-                const chapter = this.$route.params
-                const url = '/chapter?novel='+chapter.title+'&chapter='+chapter.chapter
-                    getAPI.get(url)
+            const chapter = this.$route.params
+            const url = '/chapter?novel='+chapter.title+'&chapter='+chapter.chapter
+            getAPI.get(url)
                     .then(response => {
                     this.chapterContent = response.data['content']
                     this.chapterTitle = response.data['title']
@@ -89,6 +89,16 @@ import NavButton from '../components/Navbutton'
                     console.log(err)
                     }) 
             
+            
+  },
+  mounted(){
+      const v = document.getElementById('chapter-content')
+            if($cookies.get('font-size') == null){
+                $cookies.set('font-size','19px')
+                v.style.fontSize='19px'
+            }else{
+                v.style.fontSize = $cookies.get('font-size')
+            }
   }
             
                 

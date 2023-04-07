@@ -66,15 +66,16 @@ import NavButton from './Navbutton'
             
             
         },
-        mounted(){
+        created(){
             const v = document.getElementById('chapter-content')
             document.addEventListener('click', this.handleClick)
+            console.log('font')
             if($cookies.get('font-size') == null){
                 $cookies.set('font-size','19px')
                 v.style.fontSize='19px'
-            }else[
+            }else{
                 v.style.fontSize = $cookies.get('font-size')
-            ]
+            }
         }
     }
 </script>
