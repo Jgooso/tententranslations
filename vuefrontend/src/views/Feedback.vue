@@ -26,16 +26,13 @@ export default{
             this.page = this.page + change
             getAPI.get('/feedback?page='+this.page)
           .then(response => {
-            console.log('Post Novel has recieved data')
             this.feedback = response.data
-            console.log(this.feedback)
           })
           .catch(err => {
             console.log(err)
           })
         },
         deleteFeedback(id){
-            console.log(id)
             document.getElementById(id).style.display='none'
             getAPI.delete('/feedback?id='+id).then(response =>{
                 console.log('Deleted Feedback')

@@ -62,11 +62,9 @@ export default{
     created(){
         getAPI.get('/home?tier='+this.tier)
           .then(response => {
-            console.log('Post Novel has recieved data')
             this.popularNovels = response.data['popular']
             this.recentNovels = response.data['recent']
             this.latestNovels = response.data['latest']
-            console.log(this.popularNovels)
           })
           .catch(err => {
             console.log(err)

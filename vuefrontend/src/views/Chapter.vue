@@ -78,11 +78,9 @@ import NavButton from '../components/Navbutton'
         },
         created(){
                 const chapter = this.$route.params
-                console.log(chapter)
                 const url = '/chapter?novel='+chapter.title+'&chapter='+chapter.chapter
                     getAPI.get(url)
                     .then(response => {
-                    console.log('Chapter API has recieved data')
                     this.chapterContent = response.data['content']
                     this.chapterTitle = response.data['title']
                     //$cookies.set(response.data['id'],true)

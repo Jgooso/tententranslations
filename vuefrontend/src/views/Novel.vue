@@ -31,15 +31,12 @@
     const url = '/novel/single?novel='+this.$route.params.title+'&tier='+this.tier
             getAPI.get(url)
           .then(response => {
-            console.log('Post Novel has recieved data')
             this.novelData=response.data['Novel']
            const sections = response.data['Chapters'].filter(chapter => chapter.chapternumber == 0)
             if(sections.length > 0){
                 this.sectionList = sections
-                console.log(sections.length)
             }else{
                 this.sectionList = [{'section':0}]
-                console.log(this.sectionList)
             }
             this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapternumber != 0)
             this.isMounted=true

@@ -427,7 +427,7 @@ def get_novels_page_count():
                                         
                                 """,(tier,identifier))
         else:
-             novelcursor.execute("SELECT COUNT(novelid) as count FROM novels WHERE novelactive <= %s",(tier,) )
+             novelcursor.execute("SELECT COUNT(novelid) as count FROM novels WHERE novelactive >= %s",(tier,) )
         novel_count = (int(novelcursor.fetchone()['count']))
         page_count = ((novel_count)//12)+1
         noveldb.close()

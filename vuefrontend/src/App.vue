@@ -14,7 +14,7 @@
   />
   <div class = 'view-border-one bord'></div>
     <router-view
-      tier = 0
+      :tier = 'user.tier'
       class = 'view-content'
       v-on:switchmode='switchdarkmode()'
     />
@@ -63,7 +63,6 @@ export default {
         open_signin(){
           //this.$refs.signin.$refs.signin.style.display='block'
           this.switchdarkmode()
-          console.log('open')
         },
         close_signin(){
           this.$refs.signin.$refs.signin.style.display='none'
@@ -79,7 +78,6 @@ export default {
             r.style.setProperty('--shadowColor', 'rgba(255,255,255,0.19)')
             r.style.setProperty('--borderColor', 'white')
             r.style.setProperty('--styleColor', '#A837AF')
-            console.log('darkmode')
           }else{
             r.style.setProperty('--backgroundColor', 'white')
             r.style.setProperty('--textColor', 'black')
@@ -101,8 +99,10 @@ export default {
     },
     created(){
       this.setdarkmode()
-      console.log($cookies.keys())
-      this.user = {'id':838383,'status':'a','fontsize':19,'tier':1}
+      if($cookies.get('verified') == null){
+        $cookies.set('verified',1)
+      }
+      this.user = {'id':838383,'status':'a','fontsize':19,'tier':$cookies.get('verified')}
     },
     mounted(){
       //console.log(await ipify());

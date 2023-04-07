@@ -19,10 +19,8 @@ export default{
     methods:{
         submitFeedback(){
                 const feedback = document.getElementById('feedbackbox').value
-                console.log('posted')
                 getAPI.post('/feedback', {feedback:feedback})
                     .then(function (response) {
-                        console.log(response);
                        
                 }).catch(function (error) {
                     console.log(error);

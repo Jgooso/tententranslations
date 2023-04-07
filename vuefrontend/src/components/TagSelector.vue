@@ -32,20 +32,18 @@ import tagBox from '../components/TagBox'
         },
         methods:{
             addTag(tag){
-                console.log(tag)
             const tagbutton = document.getElementById(tag)
             tagbutton.classList.remove('unselected')
             const tagvalue = tag.replace(/[0-9]/g, '')
             if(!this.selectedtags.includes(tagvalue)){
                 this.selectedtags.push(tagvalue)
             }
-            console.log(this.selectedtags)
+
            
         },
         removeTag(removetag){
             const index = this.selectedtags.indexOf(removetag)
             this.selectedtags.splice(index-1,1)
-            console.log(this.selectedtags)
             document.getElementById(removetag).classList.add('unselected')
         },
         filterTag(){

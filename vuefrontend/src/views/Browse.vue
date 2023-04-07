@@ -66,12 +66,9 @@ import UtfBox from '../components/UtfBox'
                 identifier = identifier.replace(/&nbsp;/g,'|')
             }
         const url = '/novel/multiple?tier='+this.tier+'&identifier='+identifier+'&order='+this.attributesort+'&page='+this.page
-        console.log(identifier)
        getAPI.get(url)
           .then(response => {
-            console.log('Post API has recieved data')
             this.novelData=response.data
-            console.log(this.novelData[0])
           })
           .catch(err => {
             console.log(err)
@@ -84,7 +81,6 @@ import UtfBox from '../components/UtfBox'
                 selected[i].classList.remove('selected')
             }
             document.getElementById('sort-'+p).classList.add('selected')
-            console.log(p)
             this.getNovels(this.$route.params.identifier)
         },
         changePage(change){
@@ -94,8 +90,6 @@ import UtfBox from '../components/UtfBox'
         getPages(identifier){
             getAPI.get('/novels-page-count?tier='+this.tier+'&identifier='+identifier)
                 .then(response => {
-                    console.log('Post API has recieved data')
-                    console.log(response.data)
                     this.pageCount = response.data['page_count']
                     this.novelCount = response.data['novel_count']
                     this.getNovels(identifier)  
@@ -108,14 +102,12 @@ import UtfBox from '../components/UtfBox'
     },
     created(){
         var identifier = this.$route.params.identifier
-            console.log(identifier)
         this.getPages(identifier)
         this.$watch(
       () => this.$route.params,
       (toParams, previousParams) => {
         // react to route changes...
             var identifier = this.$route.params.identifier
-            console.log(identifier)
             if(identifier != undefined){
                 identifier = identifier.replace(/&nbsp;/g,'|')
             }

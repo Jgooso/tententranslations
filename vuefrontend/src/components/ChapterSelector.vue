@@ -69,14 +69,12 @@ import NavButton from './Navbutton'
         mounted(){
             const v = document.getElementById('chapter-content')
             document.addEventListener('click', this.handleClick)
-            try{
-                v.style.fontSize = $cookies.get('font-size')
-                console.log($cookies.get('font-size'))
-            }catch{
-                console.log('no cookies')
+            if($cookies.get('font-size') == null){
                 $cookies.set('font-size','19px')
                 v.style.fontSize='19px'
-            }
+            }else[
+                v.style.fontSize = $cookies.get('font-size')
+            ]
         }
     }
 </script>

@@ -13,7 +13,6 @@ export default{
     ],
     methods:{
         remove(){
-            console.log(this.tag)
             this.$emit('remove',this.tag)
         }
     }

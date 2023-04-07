@@ -30,7 +30,6 @@ export default{
             const url = '/descriptorbution'
             getAPI.get(url)
           .then(response => {
-            console.log('Post Novel has recieved data')
             this.novelrelease = response.data['novelrelease']
             this.genres = response.data['genre']
             this.tags = response.data['tag']

@@ -11,7 +11,7 @@
     <router-view
         :editable='true'
         id = 'editView'
-        v-if='verified'
+        v-if='verified == 0'
     />
     <div v-else id ='password-protection'>
         <label for='password'>Password:
@@ -35,10 +35,13 @@ export default{
         submit(){
             const pass = document.getElementById('manage-password-input').value
             if(pass == 'jeg4Novel'){
-                this.verified = true;
-                $cookies.set('verified',true)
+                this.verified = 0;
+                $cookies.set('verified',0)
             }
             
+        },
+        created(){
+            this.verified = $cookies.get('verified')
         }
     }
 }

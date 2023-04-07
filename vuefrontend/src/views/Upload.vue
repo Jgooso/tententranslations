@@ -180,7 +180,6 @@ methods:{
     created(){
         getAPI.get('/uploaddata')
           .then(response => {
-            console.log('Descriptor API has recieved data')
             this.genres = response.data['genres']
             this.tags = response.data['tags']
           })
