@@ -69,6 +69,7 @@ import UtfBox from '../components/UtfBox'
        getAPI.get(url)
           .then(response => {
             this.novelData=response.data
+            console.log(this.novelData[0])
           })
           .catch(err => {
             console.log(err)

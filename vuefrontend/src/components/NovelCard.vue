@@ -17,8 +17,8 @@
         </div>
     </router-link>
     <hr style='margin:0px'>
-    <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" style='text-decoration:none'>
-    <div class = 'chapter'>
+    <router-link v-if='novelData.secondChapter' :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" style='text-decoration:none'>
+    <div class = 'chapter' >
         <p v-text='novelData.secondChapter["chapternumber"]' class = 'chapterNumber'/>
         <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
     </div>

@@ -43,7 +43,8 @@ export default {
     darkmode:($cookies.get('darkmode')==='true'),
     testing:[],
     user: [],
-    url:'http://ipinfo.io/json'
+    url:'http://ipinfo.io/json',
+    status:1
     }
   },
   methods:{
@@ -99,10 +100,8 @@ export default {
     },
     created(){
       this.setdarkmode()
-      if($cookies.get('verified') == null){
-        $cookies.set('verified',1)
-      }
-      this.user = {'id':838383,'status':'a','fontsize':19,'tier':$cookies.get('verified')}
+      
+      this.user = {'id':838383,'status':'a','fontsize':19,'tier':this.status}
     },
     mounted(){
       //console.log(await ipify());

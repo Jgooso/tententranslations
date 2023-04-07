@@ -28,7 +28,7 @@ export default{
     name:'Manage',
     data(){
         return{
-            verified:$cookies.get('verified')
+            verified:1
         }
     },
     methods:{
@@ -36,13 +36,9 @@ export default{
             const pass = document.getElementById('manage-password-input').value
             if(pass == 'jeg4Novel'){
                 this.verified = 0;
-                $cookies.set('verified',0)
             }
             
         },
-        created(){
-            this.verified = $cookies.get('verified')
-        }
     }
 }
 </script>
