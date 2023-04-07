@@ -93,6 +93,7 @@ export default {
           this.setdarkmode()
           $cookies.set('darkmode',this.darkmode)
         },
+
     errorCaptured: function(err) {
       //this.$router.push({name:'errorPage'})
       
@@ -187,7 +188,19 @@ export default {
     min-height:1000px;
 
   }
-
+.fade-enter-active {
+  transition: opacity 1s ease-out;
+  transition-delay: 1s;
+}
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+.fade-move {
+  transition: transform 1s;
+}
   @media (max-width: 1200px){
      .view-content{
         width:92.5%;

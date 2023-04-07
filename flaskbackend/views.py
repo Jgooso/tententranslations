@@ -10,9 +10,9 @@ from upload import manual_upload
 from flask import jsonify, request
 import calendar
 #import matplotlib.pylab as plt
-from settings import Config
+from settings import DevConfig,ProdConfig
 #Setup
-config = Config.SQL_SETTINGS
+config = DevConfig.SQL_SETTINGS
 def get_multiplenovels():
     #Retrieve Data from Frontend
     noveldb = mysql.connector.connect(**config)
@@ -324,9 +324,9 @@ def get_home_page_novels():
                                         ORDER BY chapternumber+0 DESC LIMIT 2
                                     """
         home_page_popular_sql = """
-                                SELECT novels.id,novels.novelid,novels.title,imageurl,novelactive,description,sum(chapters.views) as views,ROW_NUMBER() OVER (ORDER BY sum(chapters.views) DESC) row_num,ANY_VALUE(genre.des) as genre
+                                SELECT novels.novelid,novels.title,novelactive,description,sum(chapters.views) as views,ROW_NUMBER() OVER (ORDER BY sum(chapters.views) DESC) row_num,ANY_VALUE(genre.des) as genre
                                 FROM novels LEFT JOIN (SELECT view_data.views,chapters.novelid,content FROM chapters 
-							                            LEFT JOIN view_data ON view_data.chapternumber = chapters.chapterorder and view_data.novelid = chapters.novelid WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters ON chapters.novelid = novels.id
+							                            LEFT JOIN view_data ON view_data.chapternumber = chapters.chapternumber and view_data.novelid = chapters.novelid WHERE MONTH(date) = MONTH(CURDATE()) AND YEAR(date) = YEAR(CURDATE())) AS chapters ON chapters.novelid = novels.novelid
                                 LEFT JOIN (
                                         SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
                                             FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
@@ -340,7 +340,7 @@ def get_home_page_novels():
                                     LIMIT 9;
                             """
         home_page_recent_sql =  """
-                                SELECT novels.id,title,novels.novelid,imageurl,ANY_VALUE(genre.des) AS genre,novelactive FROM novels 
+                                SELECT title,novels.novelid,ANY_VALUE(genre.des) AS genre,novelactive FROM novels 
                                     LEFT JOIN (
                                         SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
                                             FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id
@@ -354,7 +354,7 @@ def get_home_page_novels():
                                     LIMIT 7;
                             """
         home_page_latest_sql =  """
-                                SELECT novels.id,title,novels.novelid,imageurl,ANY_VALUE(genre.des) AS genre,novelactive FROM novels 
+                                SELECT title,novels.novelid,ANY_VALUE(genre.des) AS genre,novelactive FROM novels 
                                     LEFT JOIN (
                                         SELECT identifiers.descriptor AS des ,noveldescriptors.novelid AS nov
                                             FROM noveldescriptors INNER JOIN identifiers ON noveldescriptors.descriptor = identifiers.id

@@ -5,11 +5,11 @@ import re, requests
 #import language_tool_python
 from bs4 import BeautifulSoup
 from googletrans import Translator
-from settings import Config
+from settings import DevConfig,ProdConfig
 from datetime import datetime,date,timedelta
 #Basic intialializations
 translator = Translator()
-config = Config.SQL_SETTINGS
+config = DevConfig.SQL_SETTINGS
 #Commonly used Functions
 def translate(text):#Translate text
     return translator.translate(text).text

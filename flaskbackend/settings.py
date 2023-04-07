@@ -15,18 +15,26 @@ class Config(object):
     ],
     JWT_HEADER_TYPE = 'Token',
     #Access-Control-Allow-Origin: 'http://localhost:3000'
-    SQL_SETTINGS = {
-        'user': 'root',
-        'password': 'jeg4Iphone',
-        'host': '127.0.0.1',
-        'port': '3306',
-        'database': 'tententranslations',
-        'raise_on_warnings': True,}
+   
 
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'prod'
     DEBUG = False
+    SQL_SETTINGS = {
+        'user': 'root',
+        'password': 'jeg4Novel',
+        'host': 'localhost',
+        'port': '3306',
+        'database': 'tententranslations',
+        'raise_on_warnings': True,}
 class DevConfig(Config):
     ENV = 'dev'
     DEBUG = True
+    SQL_SETTINGS = {
+        'user': 'root',
+        'password': 'jeg4Iphone',
+        'host': 'localhost',
+        'port': '3306',
+        'database': 'tententranslations',
+        'raise_on_warnings': True,}

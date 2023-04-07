@@ -23,11 +23,13 @@
 
     <div class = "novelList">
         <div v-for='novel in novelData' :key = 'novel.title' id = 'novels'>
+        <Transition>
             <NovelCard 
                 :novelData='novel'
                 type="browse"
                 class = 'novelcard'
                 />
+        </Transition>
         </div>
     </div>
     <div id = 'pageNav'>
