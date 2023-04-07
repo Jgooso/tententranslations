@@ -54,6 +54,12 @@ def upload_chapter():
 @app.route('/chapteruploadchange',methods = ['PUT'])
 def change_chapter_upload():
     return get_change_chapter_upload()
+@app.route('/uploadchapter',methods = ['PUT'])
+def upload():
+    return uploadchapter()
+@app.route('/activatenovel',methods = ['PUT'])
+def activatenovel():
+    return novel_activation()
 @app.after_request
 def add_header(response):
     response.headers.add('Access-Control-Allow-Origin', '')

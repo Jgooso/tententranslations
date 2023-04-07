@@ -6,6 +6,7 @@ import mysql.connector
 import pytz
 #from PIL import Image
 from scripts import download, processView, time_difference
+from upload import manual_upload
 from flask import jsonify, request
 import calendar
 #import matplotlib.pylab as plt
@@ -103,7 +104,7 @@ def get_singlenovel():
         #Retrieve Chapters
         get_single_novel_chapter_sql = """
                             SELECT title,novelid,uploaddate,chapternumber,section,chapterorder,chapteractive,chapteredited 
-                                FROM chapters WHERE novelid = %s AND chapteractive >= %s 
+                                FROM chapters WHERE novelid = %s AND (chapteractive >= %s)
                                 ORDER BY chapterorder+0
                            """
         get_chapter_list_val = (novel,tier)
@@ -479,6 +480,11 @@ def testing():
 def get_database_size():
     if request.method == 'GET':
        pass
+def uploadchapter():
+    if request.method == 'POST':
+        novel = request.args.get('novel')
+        manual_upload(novel)
+        return 'posted'
 def get_change_chapter_edit():
     if request.method == 'PUT':
         noveldb = mysql.connector.connect(**config)
@@ -522,8 +528,18 @@ def get_novel_analytics():
         start_date = request.args.get('start')
         end_date = request.args.get('end')
         novel = request.args.get('novel')
-def upload():
+def novel_activation():
+    if request.method == 'PUT':
+        novelactive = request.args.get('active')
+        novel = request.args.get('novel')
+        noveldb = mysql.connector.connect(**config)
+        novelcursor = noveldb.cursor(buffered=True)
+        novelcursor.execute("UPDATE novels SET novelactive = %s WHERE novelid = %s",(novelactive,novel))
+        noveldb.commit()
+        noveldb.close()
+        return 'put'
+def uploadchapter():
     if request.method == 'PUT':
         novel = request.args.get('novel')
-        upload(novel)
+        manual_upload(novel)
         return novel

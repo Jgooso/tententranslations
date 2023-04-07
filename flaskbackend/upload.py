@@ -10,12 +10,37 @@ def schedule_upload():#change permissions for viewing of novels
     novelcursor = noveldb.cursor(buffered=True)
     chapter_sql =  """
                    UPDATE chapters SET chapteractive = 1 WHERE DATE(uploaddate) = CURDATE() AND HOUR(uploaddate) = HOUR(NOW());
-                   UPDATE novels INNER JOIN chapters on novels.novelid = chapters.novelid SET lastupload = NOW() WHERE DATE(uploaddate) = CURDATE() AND HOUR(uploaddate) = HOUR(NOW());
+                   UPDATE novels INNER JOIN chapters on novels.novelid = chapters.novelid SET lastupload = NOW(),novelactive = 1 WHERE DATE(uploaddate) = CURDATE() AND HOUR(uploaddate) = HOUR(NOW());
+                   SELECT novelid,section FROM chapters WHERE DATE(uploaddate) = CURDATE() AND HOUR(uploaddate) = HOUR(NOW())
                    """
-    #upload_bot(novelcursor=novelcursor,novel)
+    for result in novelcursor.execute(chapter_sql,multi=True):
+            if result.with_rows:
+                chapter_val = novelcursor.fetchall()
+    print(chapter_val)
+    for ch in chapter_val:
+        novelcursor.execute("UPDATE chapters SET chapteractive = 1 WHERE novelid = %s AND section = %s AND chapternumber = 0",ch)
+     #upload_bot(novelcursor=novelcursor,novel)
     noveldb.commit()
     noveldb.close()
-
+def manual_upload(novel):
+    noveldb = mysql.connector.connect(**config)
+    novelcursor = noveldb.cursor(buffered=True)
+    get_chapter_sql = "SELECT chapternumber FROM chapters WHERE novelid = %s and chapteractive = 0"
+    get_chapter_val = (novel,)
+    novelcursor.execute(get_chapter_sql,get_chapter_val)
+    if(novelcursor.fetchone()[0] == 0):
+        limit = 2
+    else:
+        limit = 1
+    chapter_sql ="""
+            UPDATE chapters SET chapteractive = 1 WHERE novelid = %s AND chapteractive = 0 LIMIT %s;
+            UPDATE novels SET lastupload = NOW(),novelactive = 1 WHERE novelid = %s;
+            """
+    chapter_val = (novel,limit,novel)
+    for result in novelcursor.execute(chapter_sql,chapter_val,multi=True):
+        continue
+    noveldb.commit()
+    noveldb.close()
 def upload_bot(novelcursor,novel):
     novelcursor.execute("SELECT novels.title,novels.novelid,chapters.chapternumber FROM chapters INNER JOIN novels ON chapters.novelid = novels.id WHERE chapteractive = 1 and novels.id = %s ORDER BY chapternumber+0 DESC LIMIT 1",(novel,))
     chapter = novelcursor.fetchone()

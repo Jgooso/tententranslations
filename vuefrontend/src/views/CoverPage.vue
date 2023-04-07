@@ -129,8 +129,8 @@
        
     },
     created(){
-        this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1))
-        this.sectionList.sort((a,b) =>(a.section > b.section ? -1:1))
+        this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1));
+        this.sectionList.sort((a,b) =>(a.section > b.section ? -1:1));
     },
   }
 </script>

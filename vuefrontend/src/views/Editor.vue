@@ -76,7 +76,7 @@
         </div>   
         <button style='background-color:red;font-weight:bold'>DELETE</button>  
     </div>
-    
+    <button @click='uploadchapter()'>Uploadchapter</button>
     <div id = "summary">
         <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
@@ -173,10 +173,20 @@ export default{
             }else if(open == 1){
                 confirmationBox.style.display = 'none'
             }else if(open == 2){
-                if(this.novelData.novelactive == 1){this.novelData.novelactive=0}
-                else{this.novelData.novelactive=1}
+                if(this.novelData.novelactive == 1){
+                    this.novelData.novelactive=0
+                }
+                else{
+                    this.novelData.novelactive=1
+                }
                 confirmationBox.style.display = 'none'
-            }
+                getAPI.put('/activatenovel?novel='+this.novelData.novelid+'&active='+this.novelData.novelactive).then(response => {
+                console.log('sent')
+                 })
+                    .catch(err => {
+                    console.log(err)
+                })
+                }
         },
         selectNovel(a){
             if(a){
@@ -326,6 +336,13 @@ export default{
             getAPI.put(url,{date:date}).then(response =>{
                 console.log('send')
             }).catch(err =>{
+                console.log(err)
+            })
+        },
+        uploadchapter(){
+            getAPI.put('/uploadchapter?novel='+this.novelData.novelid).then(response=>{
+                console.log('send')
+            }).catch(err=>{
                 console.log(err)
             })
         }
