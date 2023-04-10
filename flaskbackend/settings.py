@@ -11,10 +11,11 @@ class Config(object):
     CORS_ORIGIN_WHITELIST = [
         'http://10.140.104.120:8080',
         'http://35.239.107.34',
-        'http://tententranslation.com'
+        'http://tententranslation.com',
+        'http://localhost:8080'
     ],
     JWT_HEADER_TYPE = 'Token',
-    #Access-Control-Allow-Origin: 'http://localhost:3000'
+    #Access-Control-Allow-Origin: 'tententranslation.com'
    
 
 class ProdConfig(Config):
