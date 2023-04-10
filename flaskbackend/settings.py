@@ -10,8 +10,7 @@ class Config(object):
     JWT_AUTH_HEADER_PREFIX = 'Token'
     CORS_ORIGIN_WHITELIST = [
         'http://10.140.104.120:8080',
-        'http://10.128.0.2:8080',
-        '35.239.107.34',
+        'http://35.239.107.34',
         'http://tententranslation.com'
     ],
     JWT_HEADER_TYPE = 'Token',

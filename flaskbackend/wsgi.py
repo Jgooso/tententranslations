@@ -6,7 +6,6 @@ from views import *
 app = create_app(ProdConfig)
 
 @app.route('/novel/multiple', methods = ['GET'])
-@cross_origin()
 def multiplenovels():
     return get_multiplenovels()
 @app.route('/novel/single', methods = ['GET','POST','PUT','DELETE'])
