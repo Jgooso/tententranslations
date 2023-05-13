@@ -14,4 +14,3 @@ def create_app(config_objct=ProdConfig):
     
     return app
 
-

@@ -4,7 +4,7 @@ from settings import ProdConfig,DevConfig
 from flask import Flask, render_template
 from flask_cors import CORS,cross_origin
 from views import get_multiplenovels,get_singlenovel,get_chapter,get_genres_and_tags,get_schedules,get_noveltitles,get_user,get_home_page_novels,get_feedback,get_novels_page_count,get_dates,get_change_chapter_edit,get_descriptor_distribution,get_change_chapter_upload,uploadchapter,novel_activation
-app = create_app(DevConfig)
+app = create_app(ProdConfig)
 @app.route('/novel/multiple', methods = ['GET'])
 def multiplenovels():
     return get_multiplenovels()
