@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0,'/var/www/html/tententranslations')
 
-with open('/home/tententranslation/.local/share/virtualenvs/tententranslations-iIwyEgeb/bin/activate_this.py') as file_:
+with open('/home/tententranslation/.local/share/virtualenvs/tententranslations-iIwyEgeb/bin/activate_this.py','r') as file_:
     exec(file_.read(),dict(__file__='/home/tententranslation/.local/share/virtualenvs/tententranslations-iIwyEgeb/bin/activate_this.py'))
 
-from wsgi import app as application
+from scripts.wsgi import app as application

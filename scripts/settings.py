@@ -22,7 +22,7 @@ class ProdConfig(Config):
     ENV = 'prod'
     DEBUG = False
     SQL_SETTINGS = {
-        'user': 'root',
+        'user': 'tententranslation',
         'password': 'jeg4Novel',
         'host': 'localhost',
         'port': '3306',
