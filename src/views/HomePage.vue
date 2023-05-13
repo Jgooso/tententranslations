@@ -60,7 +60,7 @@ export default{
         }
     },
     created(){
-        axios.get('http://tententranslation.com/home?tier='+this.tier)
+        axios.get(`http://tententranslation.com/home?tier=${this.tier}`)
           .then(response => {
             this.popularNovels = response.data['popular']
             this.recentNovels = response.data['recent']

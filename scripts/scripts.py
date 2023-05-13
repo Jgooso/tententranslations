@@ -5,7 +5,7 @@ import re, requests
 #import language_tool_python
 from bs4 import BeautifulSoup
 from googletrans import Translator
-from settings import DevConfig,ProdConfig
+from scripts.settings import DevConfig,ProdConfig
 from datetime import datetime,date,timedelta
 #Basic intialializations
 translator = Translator()

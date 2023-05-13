@@ -5,12 +5,12 @@ import mysql.connector
 #import json
 import pytz
 #from PIL import Image
-from scripts import download, processView, time_difference
-from upload import manual_upload
+from scripts.scripts import download, processView, time_difference
+from scripts.upload import manual_upload
 from flask import jsonify, request
 import calendar
 #import matplotlib.pylab as plt
-from settings import DevConfig,ProdConfig
+from scripts.settings import DevConfig,ProdConfig
 #Setup
 config = DevConfig.SQL_SETTINGS
 def get_multiplenovels():

@@ -1,9 +1,9 @@
-from app import create_app
+from scripts.app import create_app
 #from scripts.views import get_change_chapter_edit, get_change_chapter_upload, get_dates, get_descriptor_distribution, get_novels_page_count, novel_activation
-from settings import ProdConfig,DevConfig
+from scripts.settings import ProdConfig,DevConfig
 from flask import Flask, render_template
 from flask_cors import CORS,cross_origin
-from views import get_multiplenovels,get_singlenovel,get_chapter,get_genres_and_tags,get_schedules,get_noveltitles,get_user,get_home_page_novels,get_feedback,get_novels_page_count,get_dates,get_change_chapter_edit,get_descriptor_distribution,get_change_chapter_upload,uploadchapter,novel_activation
+from scripts.views import get_multiplenovels,get_singlenovel,get_chapter,get_genres_and_tags,get_schedules,get_noveltitles,get_user,get_home_page_novels,get_feedback,get_novels_page_count,get_dates,get_change_chapter_edit,get_descriptor_distribution,get_change_chapter_upload,uploadchapter,novel_activation
 app = create_app(ProdConfig)
 @app.route('/novel/multiple', methods = ['GET'])
 def multiplenovels():
@@ -72,3 +72,4 @@ def add_header(response):
     return response
 if __name__ == "__main__":
     app.run()
+

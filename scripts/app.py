@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from settings import ProdConfig, DevConfig
-
+from scripts.settings import ProdConfig, DevConfig
 
 
 
@@ -13,4 +12,3 @@ def create_app(config_objct=ProdConfig):
     CORS(app, resources={r'*':{'origins':['*']}})
     
     return app
-
