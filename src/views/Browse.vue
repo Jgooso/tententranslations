@@ -91,7 +91,7 @@ import axios from 'axios'
             this.getNovels(this.$route.params.identifier)
         },
         getPages(identifier){
-            axios.get('http://127.0.0.1:5000/novels-page-count?tier='+this.tier+'&identifier='+identifier)
+            axios.get(`http://tententranslation.com/novels-page-count?tier=${this.tier}&identifier=${identifier}`)
                 .then(response => {
                     this.pageCount = response.data['page_count']
                     this.novelCount = response.data['novel_count']
