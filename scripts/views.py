@@ -198,10 +198,10 @@ def get_chapter():
     novel = request.args.get('novel')
     if request.method == 'GET':
         get_chapter_sql = """
+                        UPDATE view_data set views = views + (SELECT DISTINCT chapteractive FROM chapters WHERE novelid = %s AND chapternumber = %s) WHERE date = CURDATE();
                         SELECT DISTINCT title,content
                             FROM chapters 
                             WHERE novelid = %s and chapternumber = %s;
-                        UPDATE view_data set views = views + (SELECT DISTINCT chapteractive FROM chapters WHERE novelid = %s AND chapternumber = %s) WHERE date = CURDATE();
                       """
         get_chapter_val = (novel,chapter,novel,chapter)
         chapter_results = []

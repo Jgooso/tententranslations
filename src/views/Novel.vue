@@ -28,7 +28,7 @@
       'tier'
     ],
     created () {
-    const url = `http://tententranslation.com/novel/single?novel${this.$route.params.title}&tier=${this.tier}`
+    const url = `http://tententranslation.com/novel/single?novel=${this.$route.params.title}&tier=${this.tier}`
             axios.get(url)
           .then(response => {
             this.novelData=response.data['Novel']
