@@ -1,5 +1,8 @@
 <template>
-    <div id = "box"><h3 id = "star" v-html = 'shape'></h3><h3 id = "point">&#9670;</h3></div>
+    <div id = "box">
+        <h3 id = "star" class = "utf-shape" v-html = 'shape'/>
+        <h3 id = "point" class = "utf-shape">&#9670;</h3>
+    </div>
 </template>
 <script>
     export default{
@@ -11,7 +14,7 @@
 </script>
 <style scoped>
 
-h3{
+.utf-shape{
     font-size:18px;
     padding:0;
     margin:0;

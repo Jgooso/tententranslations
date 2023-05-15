@@ -1,49 +1,41 @@
 <template>
 <div id = 'chapter'>
-    <div>
-        <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid,chapter:chapter.chapternumber}}" class="novel-title" v-html='novelData.title'/>
-        <!--<h3 style = "font-size: 16px" class='novel-title'/>-->
-        <div id = 'control-bar'>
-            <div class='control-buttons-container' selectable='false'>
-             
-                <button class = 'controlbuttons' @click='changeFontSize(1)'>&#65291;</button>
-                <button class = 'controlbuttons' @click='changeFontSize(-1)'>&#65293;</button>
-                  <!--
-                <button class = 'controlbuttons'><font-awesome-icon icon="fa-solid fa-bookmark" /></button>-->
-                <button class = 'controlbuttons' @click='switchdarkmode()'>&#9680;</button> 
-             
-            </div>
+    <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" class="novel-title" v-html='novelData.title'/>
+    <div id = 'control-bar'>
+        <div class='control-buttons-container' selectable='false'>
+            <button class = 'controlbuttons' @click='changeFontSize(1)'>&#65291;</button>
+            <button class = 'controlbuttons' @click='changeFontSize(-1)'>&#65293;</button>
+            <button class = 'controlbuttons' @click='switchdarkmode()'>&#9680;</button> 
+        </div>
         <br><br>
         <div  id = "navigation">
-    <NavButton 
-            :previous='this.$route.params.chapter != 1'
-            :next='this.$route.params.chapter<chapterList.length'
-            v-on:move="moveChapters($event)"
-            id ='NavButtons'
+            <NavButton 
+                :previous='this.$route.params.chapter != 1'
+                :next='this.$route.params.chapter<chapterList.length'
+                v-on:move="moveChapters($event)"
+                id ='NavButtons'
             />
-       
-</div>
-       </div>
-            <h1 style='font-size:20px;'>{{chapterTitle}}</h1>
-          <pre v-html = 'chapterContent' id = 'chapter-content'/>
-          <NavButton 
-            :previous='this.$route.params.chapter != 1'
-            :next='this.$route.params.chapter<chapterList.length'
-            v-on:move="moveChapters($event)"
-            style='margin:auto;float:center;position:relative;left:0px'
-            />
+        </div>
     </div>
+    <!--CHAPTER DEPENDENT-->
+    <h1 style='font-size:20px;'>{{chapterTitle}}</h1>
+    <pre v-html = 'chapterContent' id = 'chapter-content'/>
+    <!--CHAPTER DEPENDENT-->
+    <NavButton 
+        :previous='this.$route.params.chapter != 1'
+        :next='this.$route.params.chapter<chapterList.length'
+        v-on:move="moveChapters($event)"
+        style='margin:auto;float:center;position:relative;left:0px'
+    />
 </div>
 </template>
 <script>
-import ChapterSelector from '../components/ChapterSelector'
 import KoFiButton from '../components/KoFiButton'
 import NavButton from '../components/Navbutton'
 import axios from 'axios'
     export default{
         name: 'Chapter',
         components:{
-            ChapterSelector,
             KoFiButton,
             NavButton
         },props:[
@@ -89,6 +81,7 @@ import axios from 'axios'
             
   },
   mounted(){
+      /*
       const v = document.getElementById('chapter-content')
             if($cookies.get('font-size') == null){
                 $cookies.set('font-size','19px')
@@ -96,12 +89,9 @@ import axios from 'axios'
             }else{
                 v.style.fontSize = $cookies.get('font-size')
             }
+            */
   }
-            
-                
-                
-            
-        
+  
     }
 </script>
 <style scoped>
