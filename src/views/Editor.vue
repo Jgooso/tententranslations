@@ -140,7 +140,6 @@
 import axios from 'axios'
 import GenreSelector from '../components/GenreSelector'
 import TagSelector from '../components/TagSelector'
-import ChapterSelector from '../components/ChapterSelector'
 import UtfBox from '../components/UtfBox'
 export default{
     data (){
@@ -162,7 +161,6 @@ export default{
     components:{
         GenreSelector,
         TagSelector,
-        ChapterSelector,
         UtfBox
     },
     methods:{
