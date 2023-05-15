@@ -1,32 +1,14 @@
 <template>
-    <header>
-    <div id="header-top">
+    <header id = "header">
             <router-link :to = "{name: 'homePage'}" id = 'home-button'>TenTenTranslations</router-link>
-            <div id = "header-navigation">
-                <router-link :to = "{name: 'Browse'}" class='nav' style="text-decoration:none;">Browse</router-link>
-                <router-link :to = "{name: 'aboutPage'}" class='nav' style="text-decoration:none;">About</router-link>
-                <router-link :to = "{name: 'contactPage'}" class='nav' style="text-decoration:none;">Contact</router-link>
-                <router-link :to = "{name: 'uploadPage'}" class='nav' v-if='status.includes("Moderator")'>Manage</router-link>
+            <div id = "header-navigation-bar">
+                <router-link :to = "{name: 'Browse'}" class='header-nav' style="text-decoration:none;">Browse</router-link>
+                <router-link :to = "{name: 'aboutPage'}" class='header-nav' style="text-decoration:none;">About</router-link>
+                <router-link :to = "{name: 'contactPage'}" class='header-nav' style="text-decoration:none;">Contact</router-link>
+                <router-link :to = "{name: 'uploadPage'}" class='header-nav' v-if='status.includes("Moderator")'>Manage</router-link>
                 <KoFiButton id = 'KoFi' v-else/>
-                <!--<router-link :to = "{name: 'Browse'}" id = 'search'><i class="bi bi-search"></i></router-link>-->
                 <div class="menu-btn"  @click='$emit("changesidebar")' ref = 'menubutton'><div class="menu-btn__burger" ></div></div>
             </div>
-    </div>
- 
-    <!--
-        <div id = "user-bar">
-            <button @click='$emit("signin")' class = 'sign-btn'> Sign-in </button>
-            <button @click='$emit("signup")' class = 'sign-btn'> Sign-up </button>
-        </div>
-        <div id = "user-controls">
-            <p>Hi {{user}}</p>
-            <p id = 'user-dropdown'>Text</p>
-            <div class = 'user-dropdown-box'>
-                <button class = 'user-dropdown-box-button'>User Settings</button>
-                <button class = 'user-dropdown-box-button'>Log out</button>
-            </div>
-    </div>
--->
     </header>
 </template>
 
@@ -48,7 +30,7 @@ export default{
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
 }
-  #header-top{
+  #header{
       align-items: center;
       justify-content:center;
       display:flex;
@@ -56,24 +38,7 @@ export default{
       margin-bottom:20px;
       border-bottom:1px solid var(--borderColor);
   }
-  #user-bar{
-      background-color:var(--backgroundColor);
-      z-index: 10; 
-
-  }
-  .sign-btn{
-          height: 35px;
-          width: 85px;
-          border-radius: 40px;
-          border: 2px solid rgb(107,107,107);
-          background-color: white;
-          font-size: 15px;
-          font-weight: bold;
-          color: rgb(107,107,107);
-          margin-left: 5px;
-          
-      }
-    #header-navigation{
+    #header-navigation-bar{
         height:100%;
         display:flex;
         align-items:center;
@@ -82,14 +47,6 @@ export default{
         height:100%;
         align-items:center;
     }
-    /*
-    button:hover{
-        background-color:black;
-        color:white;
-        transition: all .2s ease;
-        -webkit-transition: all .22s ease;
-    }
-    */
     #home-button{
       background:none;
       width:fit-content;
@@ -102,7 +59,7 @@ export default{
       float:left;
       margin-left:20px;
     }
-  .nav{
+  .header-nav{
       color: var(--textColor);
       font-weight:bold;
       margin-left: 35px;
@@ -115,7 +72,7 @@ export default{
       height:100%;
       border-radius:5px;
   }
-  .nav:hover{
+  .header-nav:hover{
     background-color:rgba(50,50,50,0.2)
 
   }
@@ -123,33 +80,6 @@ export default{
     width:200px;
     margin-left:35px;
   }
-  #search{
-      margin-left:25px;
-      width:35px;
-      height:35px;
-      border-radius:20px;
-      background-color:white;
-      padding-top:4px;
-      padding-left:9px;
-      position: absolute;
-      right:70px;
-      color:var(--styleColor);
-  }
-  .content{
-      display: flex;
-      position:relative;
-      
-  }
-  p{
-      font-size: 50px;
-      color:white;
-      margin-left: 35px;
-      display:none;
-  }
-img{
-  height:60px;
-   overflow:hidden;
-}
 
 .menu-btn {
   display:none;
@@ -205,11 +135,7 @@ img{
   display:none;
 }
 @media (max-width: 950px) {
-    .content{
-        display: flex;
-        flex-direction: row;
-    }
-    .nav{
+    .header-nav{
         width:0;  
          transition: all .3s ease-in-out;
          display:none;

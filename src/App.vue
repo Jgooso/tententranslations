@@ -5,13 +5,17 @@
      v-on:closesignin='close_signin()'
      />
     <SignIn ref = 'signin'/>
-  <Header ref='header'
-   v-on:changesidebar='changesidebar()'
-   v-on:signin='open_signin()'
-   v-on:signup='signup()'
-   :status='user.status'
-   class = 'view-header'
-  />
+  <header id = "header" class = 'view-header'>
+            <router-link :to = "{name: 'homePage'}" id = 'home-button'>TenTenTranslations</router-link>
+            <div id = "header-navigation-bar">
+                <router-link :to = "{name: 'Browse'}" class='header-nav' style="text-decoration:none;">Browse</router-link>
+                <router-link :to = "{name: 'aboutPage'}" class='header-nav' style="text-decoration:none;">About</router-link>
+                <router-link :to = "{name: 'contactPage'}" class='header-nav' style="text-decoration:none;">Contact</router-link>
+                <router-link :to = "{name: 'uploadPage'}" class='header-nav' v-if='user.tier == 0'>Manage</router-link>
+                <KoFiButton id = 'KoFi' v-else/>
+                <div class="menu-btn"  @click='changesidebar()' id = 'menubutton'><div class="menu-btn__burger" ></div></div>
+            </div>
+    </header>
   <div class = 'view-border-one bord'></div>
     <router-view
       :tier = 'user.tier'
@@ -24,19 +28,14 @@
 </template>
 
 <script>
-import Header from './components/Header'
 import Footer from './components/Footer'
 import sidebar from './components/Sidebar'
-import SignIn from './components/SignIn'
-import { getAPI } from './axios-api'
+//import SignIn from './components/SignIn'
 export default {
-  
   name: 'App',
   components:{
-    Header,
     Footer,
-    sidebar,
-    SignIn
+    sidebar
   },
   data(){
     return{
@@ -49,7 +48,7 @@ export default {
   },
   methods:{
         changesidebar(){
-          const menuBtn = this.$refs.header.$refs.menubutton;
+          const menuBtn = getElementById("menubutton");
           if(this.$refs.sidemenu.$refs.sidebar.style.left=='0px'){
             this.$refs.sidemenu.$refs.sidebar.style.left='-300px';
             this.$refs.sidemenu.$refs.shade.style.opacity='0';
@@ -60,16 +59,6 @@ export default {
             menuBtn.classList.add('open');
           }
           
-        },
-        open_signin(){
-          //this.$refs.signin.$refs.signin.style.display='block'
-          this.switchdarkmode()
-        },
-        close_signin(){
-          this.$refs.signin.$refs.signin.style.display='none'
-        },
-        signup(){
-           this.$refs.signin.$refs.signin.style.display='block'
         },
         setdarkmode(){
           var r = document.querySelector(':root');
@@ -101,7 +90,6 @@ export default {
     },
     created(){
       this.setdarkmode()
-      
       this.user = {'id':838383,'status':'a','fontsize':19,'tier':this.status}
     },
     mounted(){
@@ -123,106 +111,3 @@ export default {
   }
 </script>
 
-<style>
-:root{
-  --styleColor: #75147C;
-  --backgroundColor: #FFFFFF;
-  --textColor: #000000;
-  --shadowColor: rgba(0,0,0,0.19);
-  --borderColor:black;
-}
-*{
-  font:Arial, Helvetica;
-  color:var(--textColor);
-}
-[v-cloak] { display: none }
-#app{
-  display:grid;
-  padding:0px;
-  gap:0;
-}
-  body {
-    margin: 0;
-    padding: 0;
-    background-color:var(--backgroundColor)!important;
-    
-  }
-  .view-header{
-    grid-row:1;
-    grid-column: 1/span 3;
-    height:fit-content;
-    width:100%;
-  }
-  .view-border-one{
-   grid-row:2;
-   grid-column:1;
-   border:none;
-  }
-  .view-content{
-      grid-row:2;
-      grid-column:2;
-      margin:auto;
-      max-width:1200px;
-      min-width:1000px;
-      padding:20px;
-      height:fit-content;
-      border:none;
-      min-height:1000px;
-      width:100%;
-      /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
-  }
-  .view-border-two{
-    grid-row:2;
-    grid-column:3;
-    border:none;
-  }
-  .view-footer{
-    grid-row: 3;
-    grid-column: 1 / span 3;
-  }
-  .bord{
-    height:100%;
-    margin:0px;
-    width:100%;
-    border:none;
-    min-height:1000px;
-
-  }
-.fade-enter-active {
-  transition: opacity 1s ease-out;
-  transition-delay: 1s;
-}
-.fade-enter {
-  opacity: 0;
-}
-.fade-enter-to {
-  opacity: 1;
-}
-.fade-move {
-  transition: transform 1s;
-}
-  @media (max-width: 1200px){
-     .view-content{
-        width:92.5%;
-         transition: all .3s ease;
-         min-width:0px;
-     }
-     .border{
-       display:none;
-     }
-  }
-
-@media (max-width: 775px) {
-    .view-content{
-        display: flex;
-        flex-direction: column;
-        margin-top: 30px;
-        /*margin: auto;*/
-        transition: all .3s ease;
-        width:100%;
-        grid-column: 1 / span 3;
-        padding:10px;
-    }
-
-}
-</style>
