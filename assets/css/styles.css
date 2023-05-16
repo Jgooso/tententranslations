@@ -1,0 +1,11 @@
+:root{
+  --styleColor: #75147C;
+  --backgroundColor: #FFFFFF;
+  --textColor: #000000;
+  --shadowColor: rgba(0,0,0,0.19);
+  --borderColor:black;
+}
+*{
+  font:Arial, Helvetica;
+  color:var(--textColor);
+}
