@@ -1,12 +1,6 @@
 <template>
 <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" style="text-decoration:none">
 <div id = 'HomeCard' >
-    <!--
-    <div  class = "cover_image"  @click='goTo(novelData.id)'>
-        <img :src="novelData.imageurl" v-if='novelData.imageurl'/>
-        <span class='overlay'></span>
-    </div>
-    -->
     <p v-text='novelData.title' id = 'title' />
     <div id = 'chapter-box'>
     <p id = "recent-chapters">Recent Chapters</p>
@@ -104,6 +98,7 @@ export default{
 }
 #title{
     font-weight:bold;
+    font-size:17px;
     color:var(--textColor);
     text-decoration:none;
     display: -webkit-box;

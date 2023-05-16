@@ -96,6 +96,7 @@ export default{
 }
 #title{
     font-weight:bold;
+    font-size:17px;
     color:var(--textColor);
     text-decoration:none;
     height:fit-content;
