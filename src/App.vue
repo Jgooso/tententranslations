@@ -339,9 +339,6 @@ export default {
     text-decoration: none;
     transition: all .3s ease;
   }
-  *{
-
-}
 #sidemenu{
      position:absolute;
      width:100%;
