@@ -27,7 +27,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes:routes,
-  mode:'history'
+  mode:'hash'
 })
 router.resolve({
   name: 'not-found',

@@ -81,7 +81,7 @@ import axios from 'axios'
             
   },
   mounted(){
-      /*
+      
       const v = document.getElementById('chapter-content')
             if($cookies.get('font-size') == null){
                 $cookies.set('font-size','19px')
@@ -89,7 +89,7 @@ import axios from 'axios'
             }else{
                 v.style.fontSize = $cookies.get('font-size')
             }
-            */
+            
   }
   
     }
