@@ -115,5 +115,5 @@ export default {
         },
   }
 </script>
-<style src = '../assets/css/app.css'</style>
+<style src = '../assets/css/app.css'></style>
 
