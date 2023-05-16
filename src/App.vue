@@ -1,9 +1,15 @@
 <template>
   <div id="app" v-cloak>
-    <sidebar ref='sidemenu'
-    v-on:changesidebar='changesidebar()'
-    v-on:closesignin='close_signin()'
-  />
+   <div id = 'sidemenu'>
+    <div id = 'sidebar' ref='sidebar'>
+      <h3 @click='swap()' id = 'close-sidebar-button'>&#9587;</h3>
+      <router-link :to = "{name: 'Browse'}" class='sidebar-nav'  @click.native='changesidebar()' style="text-decoration:none;">Browse</router-link>
+      <router-link :to = "{name: 'aboutPage'}" class='sidebar-nav' @click.native='changesidebar()' style="text-decoration:none;">About</router-link>
+      <router-link :to = "{name: 'contactPage'}" class='sidebar-nav' @click.native='changesidebar()' style="text-decoration:none;">Contact</router-link>
+      <KoFiButton class = 'nav' id = 'KoFi-sidebar'/>
+    </div>
+    <div id ='shade' @click='changesidebar()' ref='shade'/>
+  </div>
   <SignIn ref = 'signin'/>
   <header id = "header" class = 'view-header'>
     <router-link :to = "{name: 'homePage'}" id = 'home-button'>TenTenTranslations</router-link>
@@ -16,13 +22,16 @@
       <div class="menu-btn"  @click='changesidebar()' id = 'menubutton'><div class="menu-btn__burger" ></div></div>
     </div>
   </header>
-  <div class = 'view-border-one bord'></div>
+ 
+  <div class = 'view-border-one bord'/>
+   <!--CENTER CONTENT-->
     <router-view
       :tier = 'user.tier'
       class = 'view-content'
       v-on:switchmode='switchdarkmode()'
     />
-  <div class = 'view-border-two bord'></div>
+    <!--CENTER CONTENT END-->
+  <div class = 'view-border-two bord'/>
   <footer id = "footer" class = 'view-footer'>
     <div id = "footer-navigation">
       <router-link :to = "{name: 'aboutPage'}" class='footer-nav'>About</router-link>
@@ -35,13 +44,8 @@
 </template>
 
 <script>
-import sidebar from './components/Sidebar'
-//import SignIn from './components/SignIn'
 export default {
   name: 'App',
-  components:{
-    sidebar
-  },
   data(){
     return{
     darkmode:($cookies.get('darkmode')=='true'),
@@ -53,7 +57,7 @@ export default {
   },
   methods:{
         changesidebar(){
-          const menuBtn = getElementById("menubutton");
+          const menuBtn = document.getElementById("menubutton");
           if(this.$refs.sidemenu.$refs.sidebar.style.left=='0px'){
             this.$refs.sidemenu.$refs.sidebar.style.left='-300px';
             this.$refs.sidemenu.$refs.shade.style.opacity='0';
@@ -115,5 +119,4 @@ export default {
         },
   }
 </script>
-<style scoped src = '../assets/css/app.css'></style>
 
