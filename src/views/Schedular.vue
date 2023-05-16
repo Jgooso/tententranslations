@@ -7,15 +7,14 @@
         <label>&gt;<input type = button class = 'navigation-button' @click='change_month(-1)'></label>
     </div>
     <div id = 'calender'>
-        <div class = 'weekday' v-for='(day,v) in daysoftheWeek'>
-        {{day}}
-        </div>
+        <div class = 'weekday' v-for='(day,v) in daysoftheWeek' v-html = 'day'/>
         <div v-for='n in start_date' class='cell other' v-text='24+n'/>
         <div class = 'cell' v-for='(date,k) in dates' :key = 'date' @click.right='print(date,$event)'>
-            <p style='color:var(--borderColor);align:right'>{{k}}</p>
-        <div v-for='d in date' class = 'novel'>
-            <p class='novel-title' v-html='d.novel'/>
-            <p class='hour' v-html = 'd.hour + ":00"'/>
+            <p style='color:var(--borderColor);align:right' v-html = 'k'/>
+            <div v-for='d in date' class = 'novel'>
+                <p class='novel-title' v-html='d.novel'/>
+                <p class='hour' v-html = 'd.hour + ":00"'/>
+            </div>
         </div>
     </div>
     <!--SCHEDULE CREATOR-->

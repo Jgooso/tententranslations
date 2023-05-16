@@ -19,6 +19,7 @@
             />
         </div>
     </div>
+    </div>
     <div class = 'divide'>
         <UtfBox shape = '&#x2B24;'/><h3 id = "divider">New Projects</h3>
     </div>
