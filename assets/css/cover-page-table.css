@@ -1,0 +1,136 @@
+#TableOfContents{
+    width: 100%;
+    margin:auto;
+    vertical-align:center;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none; 
+    border:none;
+}
+
+#tableofcontentList{
+    height:fit-content;
+    /*max-height:1000px;*/
+    overflow-y:hidden;
+}
+#showMore{
+    margin-left:auto;
+    margin-right:auto;
+    width:fit-content;
+    font-weight:bold;
+    background:none;
+}
+
+.section{
+    width:100%;
+    display:flex;
+    flex-direction:row;
+    border:none;
+    background:none;
+    height:fit-content;
+    /*min-height:45px;*/
+    position: relative;
+    font-weight:bold;
+    height:30px;
+    font-size:20px;
+
+}
+#switcher{
+    width:30px;
+    height:30px;
+    font-size:18px;
+    padding:0;
+    margin-left:50px;
+    font-weight:bold;
+    background:none;
+    justify-content:center;
+}
+.expand{
+    position:absolute;
+    right:0;
+    background-color:lightgray;
+    height:25px;
+    width:25px;
+    vertical-align:center;
+    line-height:25px;
+    font-size:20px;
+    font-weight:lighter;
+    
+}
+.full-section{
+     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+button:hover{
+    color:var(--styleColor);
+}
+ul{
+    list-style: none;
+    padding: 0px;
+}
+.date{
+    font-size:12px;
+    position:absolute;
+    right:0;
+    font-style:italic;
+    line-height:15px;
+    color:gray;
+    margin-right:10px;
+    padding:8px;
+    border-radius:5px;
+}
+.title{
+    padding:8px;
+    position:absolute;
+    line-height:17px;
+    left:5;
+    font-size:17px;
+    border-radius:5px;
+}
+
+.group{
+    width:100%;
+    display:flex;
+    flex-direction:row;
+    background:none;
+    min-height:35px;
+    height:fit-content;
+    position: relative;
+    font-weight:300;
+    vertical-align:center;
+    margin-top:8px;
+    border-radius:5px;
+    border: 1px solid var(--borderColor);
+    transition: all .1s ease;
+    
+}
+.group:hover{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+#group:hover #title{
+color:var(--styleColor);
+font-weight:bold;
+
+}
+select{
+    background:none;
+    border:none;
+    -webkit-appearance: none;
+}
+@media (max-width: 1200px){
+    #TableOfContents{
+        width:100%; 
+     }
+ }
+@media (max-width: 775px) {
+    .group{
+        flex-direction:column;
+    }
+    .date{
+       position:relative;
+       padding-left:10px;
+    }
+    .title{
+        position:relative;
+        margin-bottom:10px;
+    }
+}

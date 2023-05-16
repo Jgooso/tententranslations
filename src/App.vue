@@ -144,6 +144,9 @@ export default {
     padding: 0;
     background-color:var(--backgroundColor)!important;    
   }
+  button{
+  border:none;
+}
   .view-header{
     grid-row:1;
     grid-column: 1/span 3;

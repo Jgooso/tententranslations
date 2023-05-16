@@ -50,33 +50,3 @@
   }
 </script>
 
-<style>
-button{
-  border:none;
-}
-#chapter{
-     display: flex;
-     flex-direction:column;
-}
-#divider{
-    font-size:18px;
-    font-weight:bold;
-    margin-left:15px;
-    line-height:18px;
-    padding-top:6px;
-}
-#cover {
-    width: 100%;
-    height: fit-content;
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(236, 237, 239);
-    margin-top:0;
-    padding-bottom:35px;
-    min-height:500px;
-    padding-left:20px;
-    padding-right:20px;
-  }
-
-</style>
-

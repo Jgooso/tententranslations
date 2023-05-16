@@ -1,11 +1,5 @@
 <template>
 <div :class = 'type'>
-    <!--
-    <div  class = "cover_image"  @click='goTo(novelData.id)'>
-        <img :src="novelData.imageurl" v-if='novelData.imageurl'/>
-        <span class='overlay'></span>
-    </div>
-    -->
     <div id = 'rank'>{{novelData.row_num}}</div>
     <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
     <div v-if='type=="main"'>
@@ -74,11 +68,6 @@ export default{
     text-align:center;
     padding:1px;
 }
-.cover_image{
-    overflow:hidden;
-    width:100%;
-   
-}
 .chapter{
     width:100%;
     height:fit-content;
@@ -143,32 +132,6 @@ export default{
 #general-genre:hover{
     color:var(--styleColor);
     transition: all .2s ease;
-}
-.cover_image img{
-     transition: all .2s ease;
-     width:100%;
-}
-.cover_image:hover img{
-    transform:scale(1.1);
-    
-}
-.cover_image:hover{
-    color:rgba(250,250,250,0.5);
-    z-index: 4;
-}
-span.overlay {
-background: rgba(0,0,0,0.2);
-display: none;
-height: 100%;
-width: 100%;
-position: relative;
-bottom: 100%;
-margin-top: 0px;
-}
-.cover_image:hover span.overlay {
-display:block;
-
-
 }
 #description{
     overflow:hidden;

@@ -6,7 +6,7 @@
         <p id = "noveltitle" v-text='novelData.title'/>
         <div id = "inner">
             <img id = "image-border" :src="novelData.imageurl" v-if='novelData.imageurl'>
-                <div id = "novel-test">
+                <div id = "novel-cover">
                     <div class = 'column1 label'>Views</div>
                     <div class = 'column2 info ' v-text='novelData.views'/>
                     <div class = 'column1 label'>Alternative</div>
@@ -78,7 +78,6 @@
             </ul>
         </li>
         </ul>
-        <button @click='showMore()' id = 'showMore' v-if='chapterList.length+sectionList.length > 25'>Show More &#9662;</button>
     </div>
 </div>
 </template>
@@ -112,14 +111,7 @@
         sortToc(){
             this.chapterList.reverse()
             this.sectionList.reverse()
-        },
-       showMore(){
-           //console.log('clicked')
-           //document.getElementById('tableofcontentList').style.maxHeight="none";
-           //document.getElementById('showMore').style.display='none'
-       },
-       
-       
+        }
     },
     created(){
         this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1));
@@ -128,329 +120,18 @@
   }
 </script>
 <style scoped>
+@import '../../assets/css/cover-page-cover.css';
+@import '../../assets/css/cover-page-summary.css';
+@import '../../assets/css/cover-page-table.css';
  *{
     font-weight:300;
  } 
- #novel-test{
-    display:grid;
-    grid-template-columns: 7.5% 60% 10% 10%;
-    align-self:center;
-    column-gap:20px;
-    row-gap:10px;
-    width:100%;
-    transition: all .2s ease;
-    margin-top:20px;
-    padding:20px;
-    
- }
- .column1{
-     grid-column:1 / span 1;
- }
- .column2{
-     grid-column:2 / span 1
- }
- .column3{
-     grid-column:3/ span 1;
- }
- .column4{
-     grid-column:4/ span 1
- }
-#summary{
-    width: 100%;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    height:fit-content;
-    padding:20px;
-}
-
-#description{
-    width:100%;
-    font-size: 14px;
-    color:rgb(136,136,136);
-    height:fit-content;
-}
-#TableOfContents{
-    width: 100%;
-    margin:auto;
-    vertical-align:center;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none; 
-    border:none;
-}
- a{
-      color:rgb(139, 139, 139);
-      font-size: 12px;
-      text-decoration:none;
-  }
-  a:hover{
-      color:var(--styleColor)
-  }
-  #navigator{
-      margin-bottom:30px;
-      margin-top: 30px;
-  }
-  #inner{
-      display:flex;
-      flex-direction:column;
-      width:100%;
-      transition: all .2s ease;
-      box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
-      margin-top:20px;
-      border-radius:25px;
-      border: 1px solid var(--borderColor);
-  }
-  #cover{
-    background-color:var(--backgroundColor);
-     padding:0px;
-  }
-  #image-border{
-    max-height:313px;
-    background-color: var(--backgroundColor));
-    float:left;
-    padding-left: 15px;
-    padding-right:15px;
-    margin-right:30px;
-    transition: all .2s ease;
-}
-  #noveltitle{
-      color: var(--styleColor);
-      font-size: 20px;
-      margin-bottom: 25px;
-      line-height:20px;
-      height:fit-content;
-      margin-top:30px;
-      font-weight:bold;
-      font-family: 'Times New Roman', serif;
-      
-  }
- #pageSuper{
-     font-size:11px;
-     vertical-align: sub;
-     color:blue;
- }
- #disclaimer{
-     font-size:13px;
-     display:none;
-     position:absolute;
- }
- #pageSuper:hover + #disclaimer{
-     display:block;
- }
-  #novel-information{
-      background-color: rgba(250, 250, 250, 0.8);
-      padding:20px;
-      width: 100%;
-      height:fit-content;
-      display: flex;
-      flex-direction: column;
-  }
-  .label{
-      font-weight: bold;
-      vertical-align: top;
-      color:var(--textColor);
-      line-height: 20px;
-      vertical-align: bottom;
-      
-  }
-  .info{
-      font-weight:normal;
-      line-height: 20px;
-      vertical-align: bottom;
-      color:rgb(136,136,136);
-      font-size:14px;
-
-  }
-  .selectable{
-      font-size:14px;
-      color:var(--textColor);
-  }
-  a:hover { 
-    color: var(--styleColor);
-    transition: all .2s ease;
-  }
-  .comma-list {
-  display: inline;
-}
-.comma-list li {
-  display: inline;
-}
-.selectable:hover {
-  color:var(--styleColor);
-  text-decoration:none;
-}
-.comma-list li::after {
-  content: ", ";
-}
-.comma-list li:last-child::after {
-    content: "";
-}
-  
-#tableofcontentList{
-    height:fit-content;
-    /*max-height:1000px;*/
-    overflow-y:hidden;
-}
-#showMore{
-    margin-left:auto;
-    margin-right:auto;
-    width:fit-content;
-    font-weight:bold;
-    background:none;
-}
-
-.section{
-    width:100%;
-    display:flex;
-    flex-direction:row;
-    border:none;
-    background:none;
-    height:fit-content;
-    /*min-height:45px;*/
-    position: relative;
-    font-weight:bold;
-    height:30px;
-    font-size:20px;
-
-}
-#switcher{
-    width:30px;
-    height:30px;
+#divider{
     font-size:18px;
-    padding:0;
-    margin-left:50px;
     font-weight:bold;
-    background:none;
-    justify-content:center;
+    margin-left:15px;
+    line-height:18px;
+    padding-top:6px;
 }
-.expand{
-    position:absolute;
-    right:0;
-    background-color:lightgray;
-    height:25px;
-    width:25px;
-    vertical-align:center;
-    line-height:25px;
-    font-size:20px;
-    font-weight:lighter;
-    
-}
-.full-section{
-     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-button:hover{
-    color:var(--styleColor);
-}
-ul{
-    list-style: none;
-    padding: 0px;
-}
-.date{
-    font-size:12px;
-    position:absolute;
-    right:0;
-    font-style:italic;
-    line-height:15px;
-    color:gray;
-    margin-right:10px;
-    padding:8px;
-    border-radius:5px;
-}
-.title{
-    padding:8px;
-    position:absolute;
-    line-height:17px;
-    left:5;
-    font-size:17px;
-    border-radius:5px;
-}
-
-.group{
-    width:100%;
-    display:flex;
-    flex-direction:row;
-    background:none;
-    min-height:35px;
-    height:fit-content;
-    position: relative;
-    font-weight:300;
-    vertical-align:center;
-    margin-top:8px;
-    border-radius:5px;
-    border: 1px solid var(--borderColor);
-    transition: all .1s ease;
-    
-}
-.group:hover{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-#group:hover #title{
-color:var(--styleColor);
-font-weight:bold;
-
-}
-select{
-    background:none;
-    border:none;
-    -webkit-appearance: none;
-}
-@media (max-width: 1200px){
-      #buttons{
-        margin: auto;
-     }
-     #TableOfContents{
-         width:100%; 
-      }
-  }
-  @media (max-width:1000px) {
-    #image-border{
-        padding: 0px;
-        height:fit-content;
-    }
-    #data{
-      flex-direction:column;
-      transition: all .3s ease;
-    }
-  }
-  @media (max-width: 775px) {
-    /* CSS that should be displayed if width is equal to or less than 800px goes here */
-    #image-border{
-        margin:auto;
-        margin-bottom: 20px;
-    }
-    #inner{
-        flex-direction:column;
-    }
-    #novel-test{
-        display:flex;
-        flex-direction:column;
-    }
-    #noveltitle{
-        margin-bottom: 0px;
-    }
-
-.group{
-    flex-direction:column;
-}
-.date{
-   position:relative;
-   padding-left:10px;
-}
-.title{
-    position:relative;
-    margin-bottom:10px;
-}
-  }
-  @media (max-width:675px) {
-    #image-border{
-        padding: 15px;
-        width: 220px;
-        height: 305px;
-        
-        
-    }
-  }
 </style>
 

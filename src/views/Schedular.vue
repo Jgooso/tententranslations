@@ -1,42 +1,40 @@
 <template>
 <body v-if='dates[8]'>
-<h1>
-{{month_name}}, {{year}}
-</h1>
-<div id = 'navigator'>
-<label>&lt;<input type = button class = 'navigation-button' @click='change_month(1)'></label>
-<label>Today<input type = button class = 'navigation-button' @click='change_month("today")'></label>
-<label>&gt;<input type = button class = 'navigation-button' @click='change_month(-1)'></label>
-</div>
-<div id = 'calender'>
-    <div class = 'weekday' v-for='(day,v) in daysoftheWeek'>
-    {{day}}
+    <h1>{{month_name}}, {{year}}</h1>
+    <div id = 'navigator'>
+        <label>&lt;<input type = button class = 'navigation-button' @click='change_month(1)'></label>
+        <label>Today<input type = button class = 'navigation-button' @click='change_month("today")'></label>
+        <label>&gt;<input type = button class = 'navigation-button' @click='change_month(-1)'></label>
     </div>
-    <div v-for='n in start_date' class='cell other' v-text='24+n'/>
-    <div class = 'cell' v-for='(date,k) in dates' :key = 'date' @click.right='print(date,$event)'>
-       <p style='color:var(--borderColor);align:right'>{{
-           k
-           }}
-       </p>
-       <div v-for='d in date' class = 'novel'><p class='novel-title'>{{d.novel}}</p><p class='hour'>{{d.hour}}:00</p></div>
+    <div id = 'calender'>
+        <div class = 'weekday' v-for='(day,v) in daysoftheWeek'>
+        {{day}}
+        </div>
+        <div v-for='n in start_date' class='cell other' v-text='24+n'/>
+        <div class = 'cell' v-for='(date,k) in dates' :key = 'date' @click.right='print(date,$event)'>
+            <p style='color:var(--borderColor);align:right'>{{k}}</p>
+        <div v-for='d in date' class = 'novel'>
+            <p class='novel-title' v-html='d.novel'/>
+            <p class='hour' v-html = 'd.hour + ":00"'/>
+        </div>
     </div>
-</div>
-<form id = 'scheduleCreator' method='formSubmit'>
-<h6>Novel</h6>
-<select id = 'novel-selector' name = 'novel' form = 'scheduleCreator'>
-<option v-for='novel in novels' :value='novel.novelid'>{{novel.title}}</option>
-</select>
-<h6>Start Date</h6>
-<input type="date" id="start" name="upload-start"
-       min="2022-01-01" max="2030-12-31">
-<h6>Upload Times</h6>
-<input type="time" :name='"time"+t'
-       min="08:00" max="20:00" v-for='t in times'>
-<input type = 'button' style = 'background:none;border:none,border:1px solid black; height:30px; width:30px;' @click='this.times++' value = '+'>
-<h6>Days of the Week</h6>
-<label v-for='i in daysoftheWeek.length' style='width:100px;'>{{daysoftheWeek[i-1]}}<input type = 'checkbox' :name = 'daysoftheWeek[i-1]' :value = 'i-1'></label>
-</form>
-<button @click='formSubmit()'>a</button>
+    <!--SCHEDULE CREATOR-->
+    <form id = 'scheduleCreator' method='formSubmit'>
+        <h6>Novel</h6>
+        <select id = 'novel-selector' name = 'novel' form = 'scheduleCreator'>
+            <option v-for='novel in novels' :value='novel.novelid'>{{novel.title}}</option>
+        </select>
+        <h6>Start Date</h6>
+        <input type="date" id="start" name="upload-start"
+            min="2022-01-01" max="2030-12-31">
+        <h6>Upload Times</h6>
+        <input type="time" :name='"time"+t'
+            min="08:00" max="20:00" v-for='t in times'>
+        <input type = 'button' style = 'background:none;border:none,border:1px solid black; height:30px; width:30px;' @click='this.times++' value = '+'>
+        <h6>Days of the Week</h6>
+        <label v-for='i in daysoftheWeek.length' style='width:100px;'>{{daysoftheWeek[i-1]}}<input type = 'checkbox' :name = 'daysoftheWeek[i-1]' :value = 'i-1'></label>
+    </form>
+    <button @click='formSubmit()'>a</button>
 </body>
 </template>
 
