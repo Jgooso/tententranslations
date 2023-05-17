@@ -1,5 +1,5 @@
 <template>
-    <div class = 'content'>
+    <div>
         <br>
         <h2>Contact Us</h2>
         <hr>

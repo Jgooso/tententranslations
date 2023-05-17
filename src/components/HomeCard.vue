@@ -1,24 +1,24 @@
 <template>
 <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" style="text-decoration:none">
-<div id = 'HomeCard' >
-    <p v-text='novelData.title' id = 'title' />
-    <div id = 'chapter-box'>
-    <p id = "recent-chapters">Recent Chapters</p>
-    <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" style='text-decoration:none'>
-        <div class = 'chapter'> 
-            <p v-text='novelData.firstChapter["chapternumber"]' class = 'chapterNumber'/>
-            <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
+    <div id = 'HomeCard' >
+        <p v-text='novelData.title' id = 'title' />
+        <div id = 'chapter-box'>
+            <p id = "recent-chapters">Recent Chapters</p>
+            <router-link :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.firstChapter['chapternumber']}}" style='text-decoration:none'>
+                <div class = 'chapter'> 
+                    <p v-text='novelData.firstChapter["chapternumber"]' class = 'chapterNumber'/>
+                    <p class = 'date' v-text = "novelData.firstChapter['uploaddate']"/>
+                </div>
+            </router-link>
+            <hr style='margin:0px'>
+            <router-link v-if='novelData.secondChapter' :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" style='text-decoration:none'>
+                <div class = 'chapter'>
+                    <p v-text='novelData.secondChapter["chapternumber"]' class = 'chapterNumber'/>
+                    <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
+                </div>
+            </router-link>
         </div>
-    </router-link>
-    <hr style='margin:0px'>
-    <router-link v-if='novelData.secondChapter' :to = "{name: 'chapterPage', params:{title:novelData.novelid, chapter:novelData.secondChapter['chapternumber']}}" style='text-decoration:none'>
-    <div class = 'chapter'>
-        <p v-text='novelData.secondChapter["chapternumber"]' class = 'chapterNumber'/>
-        <p class = 'date' v-text = "novelData.secondChapter['uploaddate']"/>
     </div>
-    </router-link>
-    </div>
-</div>
 </router-link>
 </template>
 
@@ -58,21 +58,18 @@ export default{
 }
 .cover_image{
     overflow:hidden;
-    width:100%;
-   
+    width:100%; 
 }
 .chapter{
     height:40px;
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
     vertical-align: middle;
     width:100%;
     border-radius:5px;
 }
 .chapter:hover{
-    /*border: 1px solid purple;*/
-    outline:1px solid purple;
-    
+    outline:1px solid purple;   
 }
 #chapter-box{
     border-radius:5px;

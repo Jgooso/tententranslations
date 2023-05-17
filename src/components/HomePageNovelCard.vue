@@ -1,13 +1,13 @@
 <template>
 <div :class = 'type'>
-    <div id = 'rank'>{{novelData.row_num}}</div>
+    <div id = 'rank' v-html = 'novelData.row_num'/>
     <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" v-text='novelData.title' id = 'title'/>
     <div v-if='type=="main"'>
-    <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:novelData.genre}}" v-text='novelData.genre' id = 'main-genre'/>
-    <p v-html='novelData.description' id="description"/>
-    <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" id = 'continue'>Continue Reading</router-link>
+        <router-link :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:novelData.genre}}" v-text='novelData.genre' id = 'main-genre'/>
+        <p v-html='novelData.description' id="description"/>
+        <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" id = 'continue'>Continue Reading</router-link>
     </div>
-     <router-link v-else :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:novelData.genre}}" v-text='novelData.genre' id = 'general-genre'/>
+    <router-link v-else :to = "{name: 'explorePage', params:{browsetype:'novel-genres',identifier:novelData.genre}}" v-text='novelData.genre' id = 'general-genre'/>
 </div>
 
 </template>

@@ -16,7 +16,6 @@
     height: fit-content;
     display: flex;
     flex-direction: column;
-    background-color: rgb(236, 237, 239);
     margin-top:0;
     min-height:500px;
 }
