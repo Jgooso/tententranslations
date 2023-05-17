@@ -69,7 +69,6 @@ export default{
             this.popularNovels = response.data['popular']
             this.recentNovels = response.data['recent']
             this.latestNovels = response.data['latest']
-            console.log(response)
           })
           .catch(err => {
             console.log(err)

@@ -1,16 +1,15 @@
 <template>
   <div id="app" v-cloak>
    <div id = 'sidemenu'>
-    <div id = 'sidebar' ref='sidebar'>
+    <div id = 'sidebar'>
       <h3 @click='swap()' id = 'close-sidebar-button'>&#9587;</h3>
       <router-link :to = "{name: 'Browse'}" class='sidebar-nav'  @click.native='changesidebar()' style="text-decoration:none;">Browse</router-link>
       <router-link :to = "{name: 'aboutPage'}" class='sidebar-nav' @click.native='changesidebar()' style="text-decoration:none;">About</router-link>
       <router-link :to = "{name: 'contactPage'}" class='sidebar-nav' @click.native='changesidebar()' style="text-decoration:none;">Contact</router-link>
       <KoFiButton class = 'nav' id = 'KoFi-sidebar'/>
     </div>
-    <div id ='shade' @click='changesidebar()' ref='shade'/>
+    <div id ='shade' @click='changesidebar()'/><!--SHADE THE COVERS BACKGROUND AND REMOVES SIDEBAR WHEN CLICKED-->
   </div>
-  <SignIn ref = 'signin'/>
   <header id = "header" class = 'view-header'>
     <router-link :to = "{name: 'homePage'}" id = 'home-button'>TenTenTranslations</router-link>
     <div id = "header-navigation-bar">
@@ -23,15 +22,16 @@
     </div>
   </header>
  
-  <div class = 'view-border-one bord'/>
-   <!--CENTER CONTENT-->
+  <div class = 'view-border-one border'/><!--LEFT BORDER  PADDING-->
+  <!--CENTER CONTENT-->
     <router-view
       :tier = 'user.tier'
       class = 'view-content'
       v-on:switchmode='switchdarkmode()'
     />
-    <!--CENTER CONTENT END-->
-  <div class = 'view-border-two bord'/>
+   <!--CENTER CONTENT END-->
+  <div class = 'view-border-two border'/><!--RIGHT BORDER  PADDING-->
+
   <footer id = "footer" class = 'view-footer'>
     <div id = "footer-navigation">
       <router-link :to = "{name: 'aboutPage'}" class='footer-nav'>About</router-link>
@@ -48,27 +48,30 @@ export default {
   name: 'App',
   data(){
     return{
-    darkmode:($cookies.get('darkmode')=='true'),
-    testing:[],
-    user: [],
-    url:'http://ipinfo.io/json',
-    status:1
+      darkmode:($cookies.get('darkmode')=='true'),//WHETHER OR NOT IN DARK MODE
+      user: [],//USER INFO
+      url:'http://ipinfo.io/json',//FOR LOCATION TRACKING WHEN IMPLEMENTED TODO
+      status:1//TIER AS A USER; SET TO ONE FOR NOW TODO
     }
   },
   methods:{
+        /* OPENS AND CLOSES THE SIDEBAR*/
         changesidebar(){
           const menuBtn = document.getElementById("menubutton");
-          if(this.$refs.sidemenu.$refs.sidebar.style.left=='0px'){
-            this.$refs.sidemenu.$refs.sidebar.style.left='-300px';
-            this.$refs.sidemenu.$refs.shade.style.opacity='0';
+          const sidebar = document.getElementById("sidebar");
+          const shade = document.getElementByID("shade");
+          if(sidebar.style.left=='0px'){
+            sidebar.style.left='-300px';
+            shade.style.opacity='0';
             menuBtn.classList.remove('open');
           }else{
-            this.$refs.sidemenu.$refs.sidebar.style.left='0px';
-            this.$refs.sidemenu.$refs.shade.style.opacity='0.5';
+            sidebar.style.left='0px';
+            shade.style.opacity='0.5';
             menuBtn.classList.add('open');
           }
           
         },
+        /*SETS DARKMODE WHEN FIRST CREATED*/
         setdarkmode(){
           var r = document.querySelector(':root');
           if(this.darkmode){
@@ -86,16 +89,12 @@ export default {
           }
 
         },
+        /* SWITCHES BEWTWEEN LIGHT AND DARKMODE*/
         switchdarkmode(){
           this.darkmode=!this.darkmode
           this.setdarkmode()
           $cookies.set('darkmode',this.darkmode)
         },
-
-    errorCaptured: function(err) {
-      //this.$router.push({name:'errorPage'})
-      
-    },
     },
     created(){
       this.setdarkmode()
@@ -179,7 +178,7 @@ export default {
     grid-row: 3;
     grid-column: 1 / span 3;
   }
-  .bord{
+  .border{
     height:100%;
     margin:0px;
     width:100%;
@@ -433,17 +432,16 @@ export default {
       transition: all .2s ease-in-out;
     }
   }
-      @media (max-width: 1200px){
-         .view-content{
-            width:92.5%;
-             transition: all .3s ease;
-             min-width:0px;
-         }
-         .border{
-           display:none;
-         }
-      }
-    
+  @media (max-width: 1200px){
+    .view-content{
+      width:92.5%;
+      transition: all .3s ease;
+      min-width:0px;
+    }
+    .border{
+      display:none;
+    }
+  }
     @media (max-width: 775px) {
         .view-content{
             display: flex;

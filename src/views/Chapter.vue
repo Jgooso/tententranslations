@@ -97,6 +97,8 @@ import axios from 'axios'
 <style scoped>
 #chapter{
     width:100%;
+    display: flex;
+    flex-direction:column;
 }
 #chapter-content{
 font-family: sans-serif;

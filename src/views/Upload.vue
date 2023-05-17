@@ -1,65 +1,60 @@
 <template>
 <div id = 'download'>
-
-     <h1 id = "noveltitle">Lorem Ipsum</h1>
+    <h1 id = "noveltitle">Lorem Ipsum</h1>
     <form id = 'upload' method='postData'>
-   <div id = "novel-test">
-                    <div class = 'column1 label'>Views</div>
-                    <div class = 'column2 unselectable'>0</div>
-                    <div class = 'column1 label'>Alternative</div>
-                    <div class = 'column2 unselectable'>ロレム・イプサム</div>
-                    <div class = 'column1 label'>Raw</div>
-                    <div class = 'column2 info' ><input type = "url" id = 'urltextbox' name = 'url' maxlength="34" style='border:none;' placeholder='Enter novel URL'></div>
-                    <div class = 'column1 label'>Author</div>
-                    <div class = 'column2 info' >Author-san</div>
-                    <div class = 'column1 label'>Genres</div>
-                    <div class = 'column2 info' >
-                        <div @click='showGenres()' class='info' v-if='selectedgenres.length>0'>
-                            <ul class='comma-list'>
-                                <li v-for='genre in selectedgenres' :key='genre' v-html='genre'>
-                                </li>
-                            </ul>
-                    </div>
-                        <div v-else style='color:red'  @click='showGenres()' class='info'>Select Genres</div>
-                    </div>
-                    <div class = 'column1 label'>Tags</div>
-                    <div class = 'column2 info' >
-                        <div @click='showTags()' class='info'  v-if='selectedtags.length>0'>
-                            <ul class='comma-list'>
-                                <li v-for='tag in selectedtags' :key='tag'  v-html='tag'>
-                                </li>
-                            </ul>
-                        </div>
-                        <div v-else style='color:red'  @click='showTags()' class='info'>Select Tags</div>
-                        <TagSelector
-                            :tags='tags'
-                            :selectedtags='selectedtags'
-                            id = 'tag-selector'
-                        />
-                    </div>
-                    <div class = 'column3 label' style='grid-row:1/span 1'>Release</div>
-                    <div class = 'column4 unselectable' style='grid-row:1/span 1'>20XX</div>
-                    <div class = 'column3 label' style='grid-row:2/span 1'>Status</div>
-                    <div class = 'column4 unselectable' style='grid-row:2/span 1'>Unreleased</div>
-                    <div class = 'column3 label' style='grid-row:3/span 1'>Novel</div>
-                    <div class = 'column4 info' style='grid-row:3/span 1'>
-                        <select id = 'completedEdit' placeholder='SELECT' style='color:red;' onfocus='this.style.color="rgb(136,136,136)"' form = 'upload' name = 'novelstatus'>
-                            <option value="" disabled selected>Select your option</option>
-                            <option value = 'Ongoing'>Ongoing</option>
-                            <option value = 'Completed'>Completed</option>
-                            <option value = 'On Hold'>On Hold</option>
-                            <option value = 'Dropped'>Dropped</option>
-                        </select>
-                    </div>
-    </div>
-    <div id = 'genre-selector'>
+        <div id = "novel-test">
+            <div class = 'column1 label'>Views</div>
+            <div class = 'column2 unselectable'>0</div>
+            <div class = 'column1 label'>Alternative</div>
+            <div class = 'column2 unselectable'>ロレム・イプサム</div>
+            <div class = 'column1 label'>Raw</div>
+            <div class = 'column2 info' ><input type = "url" id = 'urltextbox' name = 'url' maxlength="34" style='border:none;' placeholder='Enter novel URL'></div>
+            <div class = 'column1 label'>Author</div>
+            <div class = 'column2 info' >Author-san</div>
+            <div class = 'column1 label'>Genres</div>
+            <div class = 'column2 info'>
+                <div @click='showGenres()' class='info' v-if='selectedgenres.length>0'>
+                    <ul class='comma-list'>
+                        <li v-for='genre in selectedgenres' :key='genre' v-html='genre'/>
+                    </ul>
+                </div>
+                <div v-else style='color:red'  @click='showGenres()' class='info'>Select Genres</div>
+            </div>
+            <div class = 'column1 label'>Tags</div>
+            <div class = 'column2 info'>
+                <div @click='showTags()' class='info'  v-if='selectedtags.length>0'>
+                    <ul class='comma-list'>
+                        <li v-for='tag in selectedtags' :key='tag'  v-html='tag'/>
+                    </ul>
+                </div>
+                 <div v-else style='color:red'  @click='showTags()' class='info'>Select Tags</div>
+                    <TagSelector
+                        :tags='tags'
+                        :selectedtags='selectedtags'
+                        id = 'tag-selector'
+                    />
+                </div>
+                <div class = 'column3 label' style='grid-row:1/span 1'>Release</div>
+                <div class = 'column4 unselectable' style='grid-row:1/span 1'>20XX</div>
+                <div class = 'column3 label' style='grid-row:2/span 1'>Status</div>
+                <div class = 'column4 unselectable' style='grid-row:2/span 1'>Unreleased</div>
+                <div class = 'column3 label' style='grid-row:3/span 1'>Novel</div>
+                <div class = 'column4 info' style='grid-row:3/span 1'>
+                    <select id = 'completedEdit' placeholder='SELECT' style='color:red;' onfocus='this.style.color="rgb(136,136,136)"' form = 'upload' name = 'novelstatus'>
+                        <option value="" disabled selected>Select your option</option>
+                        <option value = 'Ongoing'>Ongoing</option>
+                        <option value = 'Completed'>Completed</option>
+                        <option value = 'On Hold'>On Hold</option>
+                        <option value = 'Dropped'>Dropped</option>
+                    </select>
+                </div>
+        </div>
+        <div id = 'genre-selector'>
              <GenreSelector
                 :genres='genres'
                 :selectedgenres='selectedgenres'
-                
                 />
         </div>
-        
     </form>
     <div id = "summary">
         <div>
@@ -68,7 +63,6 @@
         </div>
     </div>
     <button @click='postData()' style='width:100%;margin-top:30px;'>Submit</button>
-
 </div>
 </template>
 <script>
@@ -142,9 +136,7 @@ methods:{
             .catch((err) => {
                 console.log(err);
             })
-            */
-
-            
+            */ 
         },
         showGenres(){
             var genre_selector = document.getElementById('genre-selector')

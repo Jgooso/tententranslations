@@ -41,9 +41,9 @@ def dates():
 @app.route('/chaptereditchange',methods=['PUT'])
 def change_chapter_edit():
     return get_change_chapter_edit()
-@app.route('/test',methods=['GET','POST'])
-def test():
-    return testing()
+#@app.route('/test',methods=['GET','POST'])
+#def test():
+#    return testing()
 @app.route('/descriptorbution',methods=['GET'])
 def descriptor_distribution():
     return get_descriptor_distribution()
