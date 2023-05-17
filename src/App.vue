@@ -183,6 +183,7 @@ export default {
     margin:0px;
     width:100%;
     border:none;
+    outline:none;
     min-height:1000px;
   }
   .fade-enter-active {
@@ -390,7 +391,7 @@ export default {
    opacity:0;
 }
 .sidebar-nav{
-      color:var(--textColor);
+    .ccolor:var(--textColor);
      max-width: 200px;
      font-size: 15px;
      position: relative;
@@ -444,8 +445,6 @@ export default {
   }
     @media (max-width: 775px) {
         .view-content{
-            display: flex;
-            flex-direction: column;
             margin-top: 30px;
             /*margin: auto;*/
             transition: all .3s ease;

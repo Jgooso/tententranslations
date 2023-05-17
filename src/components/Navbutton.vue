@@ -44,6 +44,8 @@
   #MoveButton{
     position:absolute;
     right:0px;
+    display:flex;
+    flex-direction:row;
   }
   button:hover {
     transform: scale(0.98);

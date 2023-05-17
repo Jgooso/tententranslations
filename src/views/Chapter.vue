@@ -2,28 +2,26 @@
 <div id = 'chapter'>
     <router-link :to = "{name: 'coverPage', params:{title:novelData.novelid}}" class="novel-title" v-html='novelData.title'/>
     <div id = 'control-bar'>
-        <div class='control-buttons-container' selectable='false'>
+        <div id='control-buttons-container' selectable='false'>
             <button class = 'controlbuttons' @click='changeFontSize(1)'>&#65291;</button>
             <button class = 'controlbuttons' @click='changeFontSize(-1)'>&#65293;</button>
             <button class = 'controlbuttons' @click='switchdarkmode()'>&#9680;</button> 
         </div>
         <br><br>
-        <div  id = "navigation">
-            <NavButton 
-                :previous='this.$route.params.chapter != 1'
-                :next='this.$route.params.chapter<chapterList.length'
-                v-on:move="moveChapters($event)"
-                id ='NavButtons'
-            />
-        </div>
+        <NavButton 
+            :previous='this.chapter.chapter != 1'
+            :next='this.chapter.chapter<chapterList.length'
+            v-on:move="moveChapters($event)"
+            id ='NavButtons'
+        />
     </div>
     <!--CHAPTER DEPENDENT-->
     <h1 style='font-size:20px;'>{{chapterTitle}}</h1>
     <pre v-html = 'chapterContent' id = 'chapter-content'/>
     <!--CHAPTER DEPENDENT-->
     <NavButton 
-        :previous='this.$route.params.chapter != 1'
-        :next='this.$route.params.chapter<chapterList.length'
+        :previous='this.chapter.chapter != 1'
+        :next='this.chapter.chapter<chapterList.length'
         v-on:move="moveChapters($event)"
         style='margin:auto;float:center;position:relative;left:0px'
     />
@@ -172,8 +170,7 @@ min-height:1000px;
     height:50px;
     padding:5px;
 }
-
-.control-buttons-container{
+#control-buttons-container{
     position:absolute;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
     padding:5px;
