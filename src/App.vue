@@ -205,6 +205,7 @@ export default {
     display:flex;
     flex-direction:row;
     margin-bottom:20px;
+    border: 5px solid black;
     border-bottom:1px solid var(--borderColor);
     user-select: none;
     -webkit-user-select: none;
@@ -415,7 +416,6 @@ export default {
       width:92.5%;
       transition: all .3s ease;
       min-width:0px;
-      background-color:red;
     }
     .bord{
       display:none;
@@ -424,15 +424,15 @@ export default {
   
   @media (max-width: 950px) {
       .header-nav{
-          width:0;  
-           transition: all .3s ease-in-out;
-           display:none;
+        width:0;  
+        transition: all .3s ease-in-out;
+        display:none;
       }
       .menu-btn{
-          right:10px;
-          position:absolute;
-          transition: all .2s ease-in-out;
-          display: flex;
+        right:10px;
+        position:absolute;
+        transition: all .2s ease-in-out;
+        display: flex;
       }
       #header-navigation{
         width:0px;
@@ -455,9 +455,7 @@ export default {
             /*margin: auto;*/
             transition: all .3s ease;
             width:100%;
-            grid-column: 1 / span 3;
             padding:10px;
-            background-color:blue;
         }
     
     }
