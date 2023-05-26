@@ -210,6 +210,7 @@ export default {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
+    height:50px;
   }
   #header-navigation-bar{
     height:100%;
@@ -217,7 +218,6 @@ export default {
     align-items:center;
     margin-left: 35px;
     width:800px;
-    height:100%;
     align-items:center;
   }
   #home-button{
