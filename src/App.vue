@@ -205,7 +205,6 @@ export default {
     display:flex;
     flex-direction:row;
     margin-bottom:20px;
-    border: 5px solid black;
     border-bottom:1px solid var(--borderColor);
     user-select: none;
     -webkit-user-select: none;
