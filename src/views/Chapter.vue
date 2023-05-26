@@ -65,8 +65,8 @@ import axios from 'axios'
         }
         },
         created(){
-            const chapter = this.$route.params
-            const url = `http://tententranslation.com/chapter?novel=${chapter.title}&chapter=${chapter.chapter}`
+            this.chapter = this.$route.params
+            const url = `http://tententranslation.com/chapter?novel=${this.chapter.title}&chapter=${this.chapter.chapter}`
             axios.get(url)
                     .then(response => {
                     this.chapterContent = response.data['content']
@@ -75,6 +75,7 @@ import axios from 'axios'
                     .catch(err => {
                     console.log(err)
                     }) 
+        
             
             
   },
