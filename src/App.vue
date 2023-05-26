@@ -2,7 +2,7 @@
   <div id="app">
    <div id = 'sidemenu'>
     <div id = 'sidebar'>
-      <h3 @click='swap()' id = 'close-sidebar-button'>&#9587;</h3>
+      <h3 @click='changesidebar()' id = 'close-sidebar-button'>&#9587;</h3>
       <router-link :to = "{name: 'Browse'}" class='sidebar-nav'  @click.native='changesidebar()' style="text-decoration:none;">Browse</router-link>
       <router-link :to = "{name: 'aboutPage'}" class='sidebar-nav' @click.native='changesidebar()' style="text-decoration:none;">About</router-link>
       <router-link :to = "{name: 'contactPage'}" class='sidebar-nav' @click.native='changesidebar()' style="text-decoration:none;">Contact</router-link>
@@ -391,16 +391,16 @@ export default {
    opacity:0;
 }
 .sidebar-nav{
-    .ccolor:var(--textColor);
-     max-width: 200px;
-     font-size: 15px;
-     position: relative;
-     height:75px;
-     border-bottom: 1px solid rgba(127, 127, 127, .5);
-     margin:auto;
-     font-weight:300;
-     vertical-align: middle;
-     line-height:75px;
+    color:var(--textColor);
+    max-width: 200px;
+    font-size: 15px;
+    position: relative;
+    height:75px;
+    border-bottom: 1px solid rgba(127, 127, 127, .5);
+    margin:auto;
+    font-weight:300;
+    vertical-align: middle;
+    line-height:75px;
  }
  #KoFi-sidebar{
      margin-top:20px;
