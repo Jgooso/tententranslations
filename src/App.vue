@@ -59,7 +59,7 @@ export default {
         changesidebar(){
           const menuBtn = document.getElementById("menubutton");
           const sidebar = document.getElementById("sidebar");
-          const shade = document.getElementByID("shade");
+          const shade = document.getElementById("shade");
           if(sidebar.style.left=='0px'){
             sidebar.style.left='-300px';
             shade.style.opacity='0';
