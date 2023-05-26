@@ -407,10 +407,14 @@ export default {
  }
    
  @media (max-width: 1200px){
+    #app{
+      display:flex;
+      flex-direction:column;
+    }
     .view-content{
       width:92.5%;
       transition: all .3s ease;
-      min-width:875px;
+      min-width:0px;
       background-color:red;
     }
     .bord{
