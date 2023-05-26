@@ -361,7 +361,7 @@ export default {
    height:100%;
    z-index:10;
    display:flex;
-   flex-direction:row;
+   flex-direction:column;
    pointer-events: auto;
    transition: all .3s ease-in-out;
    justify-content:center;
