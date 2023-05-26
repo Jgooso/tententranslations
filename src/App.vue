@@ -22,7 +22,7 @@
     </div>
   </header>
  
-  <div class = 'view-border-one border'/><!--LEFT BORDER  PADDING-->
+  <div class = 'view-border-one bord'/><!--LEFT BORDER  PADDING-->
   <!--CENTER CONTENT-->
     <router-view
       :tier = 'user.tier'
@@ -30,7 +30,7 @@
       v-on:switchmode='switchdarkmode()'
     />
    <!--CENTER CONTENT END-->
-  <div class = 'view-border-two border'/><!--RIGHT BORDER  PADDING-->
+  <div class = 'view-border-two bord'/><!--RIGHT BORDER  PADDING-->
 
   <footer id = "footer" class = 'view-footer'>
     <div id = "footer-navigation">
@@ -178,7 +178,7 @@ export default {
     grid-row: 3;
     grid-column: 1 / span 3;
   }
-  .border{
+  .bord{
     height:100%;
     margin:0px;
     width:100%;
@@ -342,6 +342,7 @@ export default {
     text-decoration: none;
     transition: all .3s ease;
   }
+  /*FOOTER CSS END*/
 #sidemenu{
      position:absolute;
      width:100%;
@@ -405,7 +406,19 @@ export default {
  #KoFi-sidebar{
      margin-top:20px;
  }
-    /*FOOTER CSS END*/
+   
+ @media (max-width: 1200px){
+    .view-content{
+      width:92.5%;
+      transition: all .3s ease;
+      min-width:0px;
+      background-color:red;
+    }
+    .bord{
+      display:none;
+    }
+  }
+  
   @media (max-width: 950px) {
       .header-nav{
           width:0;  
@@ -433,16 +446,6 @@ export default {
       transition: all .2s ease-in-out;
     }
   }
-  @media (max-width: 1200px){
-    .view-content{
-      width:92.5%;
-      transition: all .3s ease;
-      min-width:0px;
-    }
-    .border{
-      display:none;
-    }
-  }
     @media (max-width: 775px) {
         .view-content{
             margin-top: 30px;
@@ -451,6 +454,7 @@ export default {
             width:100%;
             grid-column: 1 / span 3;
             padding:10px;
+            background-color:blue;
         }
     
     }
