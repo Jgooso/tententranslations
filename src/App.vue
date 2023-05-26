@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-cloak>
+  <div id="app">
    <div id = 'sidemenu'>
     <div id = 'sidebar'>
       <h3 @click='swap()' id = 'close-sidebar-button'>&#9587;</h3>
@@ -132,7 +132,6 @@ export default {
     color:var(--textColor);
     
   }
-  [v-cloak] { display: none }
   #app{
     display:grid;
     padding:0px;
@@ -411,7 +410,7 @@ export default {
     .view-content{
       width:92.5%;
       transition: all .3s ease;
-      min-width:0px;
+      min-width:875px;
       background-color:red;
     }
     .bord{
@@ -441,10 +440,10 @@ export default {
         margin-left:0px;
       }
       #KoFi{
-      width:0px;
-      display:none;
-      transition: all .2s ease-in-out;
-    }
+        width:0px;
+        display:none;
+        transition: all .2s ease-in-out;
+      }
   }
     @media (max-width: 775px) {
         .view-content{
