@@ -345,7 +345,7 @@ export default{
             })
         },
         resetschedule(){
-            axsios.put(`http://tententranslation.com/resetschedule!novel=${this.novelData.novelid}`).then(response=>{
+            axios.put(`http://tententranslation.com/resetschedule?novel=${this.novelData.novelid}`).then(response=>{
                 console.log('send')
             }).catch(err=>{
                 console.log(err)
