@@ -235,7 +235,7 @@ export default{
                this.novelData.novelstatus=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('noveldescription').innerHTML
                this.novelData.title=document.getElementById('noveltitle').innerHTML
-               this.novelData.novelrelease = parseInt(document.getElementById('releaseDate').innerHTML)
+               this.novelData.novelrelease = document.getElementById('releaseDate').innerHTML
                const url = `http://tententranslation.com/novel/single?novel=${this.novelData.novelid}`
             axios.put(url,{
                    novelData:this.novelData,
