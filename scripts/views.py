@@ -549,5 +549,7 @@ def put_resetschedule():
         novel = request.args.get('novel')
         noveldb = mysql.connector.connect(**config)
         novelcursor = noveldb.cursor(buffered=True)
-        novelcursor.execute("UPDATE chapters SET uploaddate = NULL WHERE novelid = %s",(novel))
+        novelcursor.execute("UPDATE chapters SET uploaddate = NULL WHERE novelid = %s",(novel,))
+        noveldb.commit()
+        noveldb.close()
         return novel
