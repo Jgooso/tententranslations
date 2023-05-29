@@ -544,3 +544,10 @@ def uploadchapter():
         novel = request.args.get('novel')
         manual_upload(novel)
         return novel
+def put_resetschedule():
+    if request.method == 'PUT':
+        novel = request.args.get('novel')
+        noveldb = mysql.connector.connect(**config)
+        novelcursor = noveldb.cursor(buffered=True)
+        novelcursor.execute("UPDATE chapters SET uploaddate = NULL WHERE novelid = %s",(novel))
+        return novel

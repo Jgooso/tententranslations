@@ -1,9 +1,8 @@
-from scripts.app import create_app
-#from scripts.views import get_change_chapter_edit, get_change_chapter_upload, get_dates, get_descriptor_distribution, get_novels_page_count, novel_activation
-from scripts.settings import ProdConfig,DevConfig
 from flask import Flask, render_template
 from flask_cors import CORS,cross_origin
-from scripts.views import get_multiplenovels,get_singlenovel,get_chapter,get_genres_and_tags,get_schedules,get_noveltitles,get_user,get_home_page_novels,get_feedback,get_novels_page_count,get_dates,get_change_chapter_edit,get_descriptor_distribution,get_change_chapter_upload,uploadchapter,novel_activation
+from scripts.app import create_app
+from scripts.settings import ProdConfig,DevConfig
+from scripts.views import *
 app = create_app(ProdConfig)
 @app.route('/novel/multiple', methods = ['GET'])
 def multiplenovels():
@@ -59,6 +58,9 @@ def upload():
 @app.route('/activatenovel',methods = ['PUT'])
 def activatenovel():
     return novel_activation()
+@app.route('/resetschedule',methods=['PUT'])
+def resetschedule():
+    return put_resetschedule()
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):

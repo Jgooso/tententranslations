@@ -76,7 +76,8 @@
         </div>   
         <button style='background-color:red;font-weight:bold'>DELETE</button>  
     </div>
-    <button @click='uploadchapter()'>Uploadchapter</button>
+    <button @click='uploadchapter()'>Upload chapter</button>
+    <button @click='resetschedule()'>Reset Schedule</button>
     <div id = "summary">
         <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
@@ -338,6 +339,13 @@ export default{
         },
         uploadchapter(){
             axios.put(`http://tententranslation.com/uploadchapter?novel=${this.novelData.novelid}`).then(response=>{
+                console.log('send')
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        resetschedule(){
+            axsios.put(`http://tententranslation.com/resetschedule!novel=${this.novelData.novelid}`).then(response=>{
                 console.log('send')
             }).catch(err=>{
                 console.log(err)
