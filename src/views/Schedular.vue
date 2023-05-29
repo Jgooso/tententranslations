@@ -96,7 +96,7 @@ export default{
         },
         get_calender(month,year){
         const diff = new Date().getTimezoneOffset()
-        getAPI.get(`http://tententranslation.com/dates?offset=${diff}&month=${month}&year=${year}`)
+        axios.get(`http://tententranslation.com/dates?offset=${diff}&month=${month}&year=${year}`)
           .then(response => {
             console.log('Chapter API has recieved data')
             this.dates = response.data['days']
