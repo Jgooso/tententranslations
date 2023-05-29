@@ -122,6 +122,10 @@ def get_singlenovel():
         identifiers = novelcursor.fetchall()
         genres = []
         tags = []
+        novelrelease = 0
+        uploadstatus = 'nCompleted'
+        novelstatus = 'uUnreleased'
+        author = 'no author yet'
         for descriptor in identifiers:
             if descriptor['type'] == 'genre':
                 genres.append(descriptor['descriptor'])

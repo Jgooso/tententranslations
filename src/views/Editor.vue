@@ -39,6 +39,10 @@
                 </table>
                 <table>
                     <tr>
+                        <td>Release Date</td>
+                        <td class = "info" contenteditable='true' id = 'releaseDate'>{{novelData.novelrelease}}</td>
+                    </tr>
+                    <tr>
                         <td>Raw Status</td>
                         <td class="info">
                                 <select id = 'completedEdit' :selected='value=novelData.novelstatus'>
@@ -231,6 +235,7 @@ export default{
                this.novelData.novelstatus=document.getElementById('completedEdit').value
                this.novelData.description=document.getElementById('noveldescription').innerHTML
                this.novelData.title=document.getElementById('noveltitle').innerHTML
+               this.novelData.novelrelease = parseInt(document.getElementById('novelRelease').innerHTML)
                const url = `http://tententranslation.com/novel/single?novel=${this.novelData.novelid}`
             axios.put(url,{
                    novelData:this.novelData,
