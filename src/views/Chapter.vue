@@ -38,7 +38,7 @@ import axios from 'axios'
             NavButton
         },props:[
         'novelData',
-        'chapterList'
+        'chapterList',
         ],data(){
             return{
                 chapter:[],

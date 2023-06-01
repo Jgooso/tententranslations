@@ -85,6 +85,9 @@ export default{
         TagSelector,
         UtfBox
     },
+    props:[
+        'url'
+    ],
 methods:{
         postData(){
             const loadingscreen = document.getElementById('loadingscreen')
@@ -97,7 +100,7 @@ methods:{
             }catch{
                 console.log('no file')
             }
-            axios.post('http://tententranslation.com/novel/single',formData, {headers: {"Content-Type": "multipart/form-data"}}).then((res) => {
+            axios.post(`http://${url}/novel/single`,formData, {headers: {"Content-Type": "multipart/form-data"}}).then((res) => {
                 console.log(res);
                 loadingscreen.style.display = 'none'
             })
@@ -158,7 +161,7 @@ methods:{
         },
     },
     created(){
-        getAPI.get('http://tententranslation.com/uploaddata')
+        getAPI.get(`http://${url}/uploaddata`)
           .then(response => {
             this.genres = response.data['genres']
             this.tags = response.data['tags']

@@ -209,10 +209,11 @@ def get_chapter():
                       """
         chapter_val = (novel,chapter)
         chapter_results = []
-        update_chapter_views_sql = " UPDATE view_data set views = views + (SELECT DISTINCT chapteractive FROM chapters WHERE novelid = %s AND chapternumber = %s) WHERE date = CURDATE();"
+        update_chapter_views_sql = " UPDATE view_data set views = views + (SELECT DISTINCT chapteractive FROM chapters WHERE novelid = %s AND chapternumber = %s) WHERE date = CURDATE() AND novelid = %s and chapternumber = %s;"
+        update_chapter_views_val = (novel,chapter,novel,chapter)
         novelcursor.execute(get_chapter_sql,chapter_val)
         chapter_results = novelcursor.fetchone()
-        novelcursor.execute(update_chapter_views_sql,chapter_val)
+        novelcursor.execute(update_chapter_views_sql,update_chapter_views_val)
         noveldb.commit()
         noveldb.close()
         return jsonify(chapter_results)
