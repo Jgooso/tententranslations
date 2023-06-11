@@ -51,7 +51,6 @@
 </div>
 
   <!--SUMMARY-->
-  
     <br>
  <!--TABLE OF CONTENTS-->
   <div id = "TableOfContents">
@@ -93,7 +92,8 @@
         'novelData',
         'sectionList',
         'chapterList',
-        'tier'
+        'tier',
+        'timezoneOffset'
     ],data(){
         return{
         editable:false

@@ -38,6 +38,6 @@ export default{
     background-color:var(--backgroundColor);
     border-radius:5px;
     width:100%;
-    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
+    border: 1px solid black;
 }
 </style>

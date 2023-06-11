@@ -511,7 +511,8 @@ def get_change_chapter_upload():
         novelcursor = noveldb.cursor(buffered=True,dictionary=True)
         novel = request.args.get('novel')
         chapter = request.args.get('chapter')
-        date = request.get_json()['date']
+        offset = request.args.get('offset')
+        date = request.get_json()['date'] + offset
         novelcursor.execute('UPDATE chapters SET uploaddate = %s WHERE novelid = %s and chapterorder = %s',(date,novel,chapter))
         noveldb.commit()
         noveldb.close()

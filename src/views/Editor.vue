@@ -335,7 +335,7 @@ export default{
         },
         changeupload(chapter){
             const date = document.getElementById('date'+chapter.chapterorder).value
-            const url = `http://tententranslation.com/chapteruploadchange?novel=${chapter.novelid}&chapter=${chapter.chapterorder}`
+            const url = `http://tententranslation.com/chapteruploadchange?offset=${timezoneOffset}&novel=${chapter.novelid}&chapter=${chapter.chapterorder}`
             axios.put(url,{date:date}).then(response =>{
                 console.log('send')
             }).catch(err =>{
@@ -520,9 +520,6 @@ width:10%
 /*Chapter Editor Page End*/
 
 /*Chapter Editor End*/
-
-
-
 .comma-list {
   display: inline;
   margin-left:0px;
@@ -544,7 +541,6 @@ width:10%
         width:350px;
     }
 }
-
 /*Novel Editor*/
 #noveltitle{
       color: var(--styleColor);

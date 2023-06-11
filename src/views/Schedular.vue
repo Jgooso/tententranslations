@@ -13,7 +13,7 @@
             <p style='color:var(--borderColor);align:right' v-html = 'k'/>
             <div v-for='d in date' class = 'novel'>
                 <p class='novel-title' v-html='d.novel'/>
-                <p class='hour' v-html = 'd.hour + ":00"'/>
+                <p class='hour' v-html = '(d.hour+timezoneOffset/60) + ":00"'/>
             </div>
         </div>
     </div>
@@ -56,7 +56,8 @@ export default{
         }
     },
     props:[
-        'schedule'
+        'schedule',
+        'timezoneOffset'
     ],
 
     methods:{
@@ -95,8 +96,7 @@ export default{
             
         },
         get_calender(month,year){
-        const diff = new Date().getTimezoneOffset()
-        axios.get(`http://tententranslation.com/dates?offset=${diff}&month=${month}&year=${year}`)
+        axios.get(`http://tententranslation.com/dates?offset=${this.timezoneOffset}&month=${month}&year=${year}`)
           .then(response => {
             console.log('Chapter API has recieved data')
             this.dates = response.data['days']

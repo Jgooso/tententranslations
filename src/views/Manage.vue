@@ -12,6 +12,7 @@
         :editable='true'
         id = 'editView'
         v-if='verified == 0'
+        :timezoneOffset = 'timezoneOffset'
     />
     <div v-else id ='password-protection'>
         <label for='password'>Password:
@@ -30,6 +31,9 @@ export default{
             verified:1
         }
     },
+    props:[
+        'timezoneOffset'
+    ],
     methods:{
         submit(){
             const pass = document.getElementById('manage-password-input').value

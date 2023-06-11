@@ -28,6 +28,7 @@
       :tier = 'user.tier'
       class = 'view-content'
       v-on:switchmode='switchdarkmode()'
+      :timezoneOffset='timezoneDiff'
     />
    <!--CENTER CONTENT END-->
   <div class = 'view-border-two bord'/><!--RIGHT BORDER  PADDING-->
@@ -44,6 +45,7 @@
 </template>
 
 <script>
+import KoFiButton from './components/KoFiButton'
 export default {
   name: 'App',
   data(){
@@ -51,9 +53,13 @@ export default {
       darkmode:($cookies.get('darkmode')=='true'),//WHETHER OR NOT IN DARK MODE
       user: [],//USER INFO
       url:'http://ipinfo.io/json',//FOR LOCATION TRACKING WHEN IMPLEMENTED TODO
-      status:1//TIER AS A USER; SET TO ONE FOR NOW TODO
+      status:1,//TIER AS A USER; SET TO ONE FOR NOW TODO
+      timezoneDiff:[]
       
     }
+  },
+  components:{
+    KoFiButton
   },
   methods:{
         /* OPENS AND CLOSES THE SIDEBAR*/
@@ -100,6 +106,7 @@ export default {
     created(){
       this.setdarkmode()
       this.user = {'id':838383,'status':'a','fontsize':19,'tier':this.status}
+      this.timezoneDiff = new Date().getTimezoneOffset()
     },
     mounted(){
       //console.log(await ipify());
@@ -406,6 +413,7 @@ export default {
     line-height:75px;
  }
  #KoFi-sidebar{
+     margin:auto;
      margin-top:20px;
  }
    
@@ -446,9 +454,7 @@ export default {
         margin-left:0px;
       }
       #KoFi{
-        width:0px;
         display:none;
-        transition: all .2s ease-in-out;
       }
   }
     @media (max-width: 775px) {
