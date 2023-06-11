@@ -36,6 +36,8 @@ export default{
 }
 #feedback-submit-button{
     background-color:var(--backgroundColor);
-    border:var(--borderColor) 1px solid;
+    border-radius:5px;
+    width:100%;
+    box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
 }
 </style>

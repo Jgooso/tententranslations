@@ -28,7 +28,6 @@
       :tier = 'user.tier'
       class = 'view-content'
       v-on:switchmode='switchdarkmode()'
-      :url='flask_url'
     />
    <!--CENTER CONTENT END-->
   <div class = 'view-border-two bord'/><!--RIGHT BORDER  PADDING-->
@@ -52,8 +51,8 @@ export default {
       darkmode:($cookies.get('darkmode')=='true'),//WHETHER OR NOT IN DARK MODE
       user: [],//USER INFO
       url:'http://ipinfo.io/json',//FOR LOCATION TRACKING WHEN IMPLEMENTED TODO
-      status:1,//TIER AS A USER; SET TO ONE FOR NOW TODO
-      flask_url:''
+      status:1//TIER AS A USER; SET TO ONE FOR NOW TODO
+      
     }
   },
   methods:{
@@ -101,8 +100,6 @@ export default {
     created(){
       this.setdarkmode()
       this.user = {'id':838383,'status':'a','fontsize':19,'tier':this.status}
-      //flask_url = 'tententranslation.com'
-      flask_url = '127.0.0.1:5000'
     },
     mounted(){
       //console.log(await ipify());

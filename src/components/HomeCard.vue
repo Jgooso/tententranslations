@@ -47,8 +47,6 @@ export default{
     padding:10px;
     border-radius:5px;
     box-shadow: 0 4px 8px 0 var(--shadowColor), 0 6px 20px 0 var(--shadowColor);
-
-
 }
 #HomeCard:hover{
     box-shadow: 0 4px 8px 0 var(--styleColor), 0 6px 20px 0 var(--styleColor);
@@ -56,29 +54,24 @@ export default{
 .home{
     width:100px;;
 }
-.cover_image{
-    overflow:hidden;
-    width:100%; 
-}
 .chapter{
     height:40px;
     display:flex;
     flex-direction:column;
     vertical-align: middle;
     width:100%;
-    border-radius:5px;
+    border-radius:10px;
 }
 .chapter:hover{
-    outline:1px solid purple;   
+    outline:1px solid purple;    
 }
 #chapter-box{
     border-radius:5px;
     position:relative;
     bottom:10px;
-    margin-top:auto;
+    margin-bottom:auto;
 }
 .chapterNumber{
-    border-radius:10px;
     text-align:center;
     font-size:15px;
     line-height:12px;
@@ -102,10 +95,7 @@ export default{
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-#title:hover{
-    color:var(--styleColor);
-     transition: all .3s ease;
+    height:40%;
 }
 .date{
     color:rgb(146,146,146);
@@ -115,45 +105,11 @@ export default{
     vertical-align: middle;
     margin-top:auto;
     margin-bottom:auto;
-    margin-left:0px;
+    margin-left:7px;
     margin-right:1px;
 
 }
-.chapter:hover .date{
-    margin-right:0px;
-    
-}
-.chapter:hover .chapterNumber{
-    width:40px;
-    margin-right:1px;
-    
-}
-.cover_image img{
-     transition: all .2s ease;
-     width:100%;
-}
-.cover_image:hover img{
-    transform:scale(1.1);
-    
-}
-.cover_image:hover{
-    color:rgba(250,250,250,0.5);
-    z-index: 4;
-}
-span.overlay {
-background: rgba(0,0,0,0.2);
-display: none;
-height: 100%;
-width: 100%;
-position: relative;
-bottom: 100%;
-margin-top: 0px;
-}
-.cover_image:hover span.overlay {
-display:block;
 
-
-}
 @media (max-width: 775px) {
     #HomeCard{
         margin-left:0px;

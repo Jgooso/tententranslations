@@ -6,7 +6,6 @@
       :sectionList='sectionList'
       :tier='tier'
       :key='$route.params.chapter'
-      :url='url'
       v-on:switchmode='$emit("switchmode")'
     />
 </div>
@@ -26,12 +25,11 @@
         }
     },
     props:[
-      'tier',
-      'url'
+      'tier'
     ],
     created () {
-    const get_url = `http://${url}/novel/single?novel=${this.$route.params.title}&tier=${this.tier}`
-            axios.get(get_url)
+    const url = `http://tententranslation.com/novel/single?novel=${this.$route.params.title}&tier=${this.tier}`
+            axios.get(url)
           .then(response => {
             this.novelData=response.data['Novel']
            const sections = response.data['Chapters'].filter(chapter => chapter.chapternumber == 0)

@@ -7,7 +7,7 @@ import pytz
 #from PIL import Image
 from scripts.scripts import download, processView, time_difference
 from scripts.upload import manual_upload
-from flask import jsonify, request
+from flask import jsonify, request, abort
 import calendar
 #import matplotlib.pylab as plt
 from scripts.settings import DevConfig,ProdConfig
@@ -203,7 +203,7 @@ def get_chapter():
     if request.method == 'GET':
         get_chapter_sql = """
                        
-                        SELECT DISTINCT title,content
+                        SELECT DISTINCT title,content,chapteractive
                             FROM chapters 
                             WHERE novelid = %s and chapternumber = %s;
                       """
@@ -213,6 +213,9 @@ def get_chapter():
         update_chapter_views_val = (novel,chapter,novel,chapter)
         novelcursor.execute(get_chapter_sql,chapter_val)
         chapter_results = novelcursor.fetchone()
+        print(chapter_results['chapteractive'])
+        if(chapter_results['chapteractive'] < 1):
+            abort(404)
         novelcursor.execute(update_chapter_views_sql,update_chapter_views_val)
         noveldb.commit()
         noveldb.close()
@@ -541,6 +544,7 @@ def novel_activation():
         noveldb = mysql.connector.connect(**config)
         novelcursor = noveldb.cursor(buffered=True)
         novelcursor.execute("UPDATE novels SET novelactive = %s WHERE novelid = %s",(novelactive,novel))
+        novelcursor.execute("UPDATE noveldescriptors SET descriptor = " )
         noveldb.commit()
         noveldb.close()
         return 'put'
