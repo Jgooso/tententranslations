@@ -3,7 +3,7 @@ from flask_cors import CORS,cross_origin
 from scripts.app import create_app
 from scripts.settings import ProdConfig,DevConfig
 from scripts.views import *
-app = create_app(ProdConfig)
+app = create_app(DevConfig)
 @app.route('/novel/multiple', methods = ['GET'])
 def multiplenovels():
     return get_multiplenovels()

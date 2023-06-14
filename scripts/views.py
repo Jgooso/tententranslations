@@ -12,7 +12,7 @@ import calendar
 #import matplotlib.pylab as plt
 from scripts.settings import DevConfig,ProdConfig
 #Setup
-config = ProdConfig.SQL_SETTINGS
+config = DevConfig.SQL_SETTINGS
 def get_multiplenovels():
     #Retrieve Data from Frontend
     noveldb = mysql.connector.connect(**config)
@@ -213,9 +213,6 @@ def get_chapter():
         update_chapter_views_val = (novel,chapter,novel,chapter)
         novelcursor.execute(get_chapter_sql,chapter_val)
         chapter_results = novelcursor.fetchone()
-        print(chapter_results['chapteractive'])
-        if(chapter_results['chapteractive'] < 1):
-            abort(404)
         novelcursor.execute(update_chapter_views_sql,update_chapter_views_val)
         noveldb.commit()
         noveldb.close()

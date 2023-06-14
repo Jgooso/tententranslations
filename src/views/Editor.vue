@@ -80,8 +80,8 @@
         </div>   
         <button style='background-color:red;font-weight:bold'>DELETE</button>  
     </div>
-    <button @click='uploadchapter()'>Upload chapter</button>
-    <button @click='resetschedule()'>Reset Schedule</button>
+    <button @click='uploadchapter()' id = 'upload-button'>Upload chapter</button>
+    <button @click='resetschedule()' id = 'reset-button'>Reset Schedule</button>
     <div id = "summary">
         <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
@@ -422,7 +422,23 @@ tr{
     border: 1px solid black;
     width:100%;
 }
-
+#reset-button{
+    background-color:var(--backgroundColor);
+    color:var(--textColor);
+    border:1px solid black;
+    width:100%;
+    border-radius:5px;
+    height:30px;
+    margin-top:15px;
+}
+#upload-button{
+    background-color:var(--backgroundColor);
+    color:var(--textColor);
+    border:1px solid black;
+    width:100%;
+    border-radius:5px;
+    height:30px;
+}
 
 /*Chapter Editor*/
 

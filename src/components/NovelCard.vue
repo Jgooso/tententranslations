@@ -54,7 +54,7 @@ export default{
 .NovelCard:hover{
     text-decoration:none;
     transition: all .2s ease;
-    box-shadow: 0 8px 16px 0 purple, 0 12px 40px 0 purple;
+    box-shadow: 0 4px 8px 0 var(--styleColor), 0 6px 20px 0 var(--styleColor);
 }
 #recent-chapters{
     font-size:14px;
@@ -68,12 +68,12 @@ export default{
     display:flex;
     flex-direction:row;
     vertical-align: middle;
-    border-radius:5px;
+    border-radius:10px;
+    -webkit-border-radius:10px;
+    overflow:hidden;
 }
 .chapter:hover{
-    /*border: 1px solid purple;*/
-    outline:1px solid purple;
-    
+    outline:1px solid var(--styleColor);
 }
 #chapter-box{
     width:70%;
@@ -90,6 +90,7 @@ export default{
     margin-top:auto;
     margin-bottom:auto;
     text-decoration:none;
+    overflow:hidden;
     
 }
 
@@ -114,6 +115,7 @@ export default{
     vertical-align: middle;
     margin-top:auto;
     margin-bottom:auto;
+    overflow:hidden;
 
 }
 

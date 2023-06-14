@@ -151,13 +151,13 @@ import axios from 'axios'
    grid-template-columns: auto auto auto auto;
    margin:auto;
    height:fit-content;
+   min-height:900px;
     transition: all .3s ease;
      /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset , 0 6px 20px 0 rgba(0, 0, 0, 0.19) inset;*/
      padding:20px;
      border-radius:20px;
      padding-left:20px;
      padding-right:0px;
- 
 }
 #count{
     width:275px;

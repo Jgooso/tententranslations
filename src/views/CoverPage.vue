@@ -61,11 +61,7 @@
         </div>
         <ul  id = 'tableofcontentList' ref='tableofcontentlist'>
         <li v-for="section in sectionList" :key="section.section">
-            <button v-if='section.title' class = 'section'>
-                <h3 v-text='section.title'/>
-                <!--<p class = "expand">-</p>-->
-            </button>
-            <br>
+            <h3  v-if='section.title' class = 'section' v-text='section.title' />
             <ul v-bind:id = "section.section" >
                 <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterorder' >
                 <router-link 
@@ -114,8 +110,8 @@
         }
     },
     created(){
-        this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? -1:1));
-        this.sectionList.sort((a,b) =>(a.section > b.section ? -1:1));
+        this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? 1:-1));
+        this.sectionList.sort((a,b) =>(a.section > b.section ? 1:-1));
     },
   }
 </script>
@@ -283,6 +279,7 @@ a:hover {
     -webkit-user-select: none;
     -webkit-touch-callout: none; 
     border:none;
+    overflow:hidden;
 }
 
 #tableofcontentList{
@@ -292,17 +289,17 @@ a:hover {
 }
 
 .section{
-    width:100%;
-    display:flex;
-    flex-direction:row;
+    width:fit-content;
     border:none;
     background:none;
-    height:fit-content;
-    /*min-height:45px;*/
     position: relative;
     font-weight:bold;
-    height:30px;
     font-size:20px;
+    margin-top:20px;
+    border: 3px solid black;
+    padding: 5px;
+    border-radius:10px;
+    
 
 }
 #switcher{
@@ -358,7 +355,7 @@ ul{
 }
 
 .group{
-    width:100%;
+    width:99%;
     display:flex;
     flex-direction:row;
     background:none;
@@ -369,8 +366,9 @@ ul{
     vertical-align:center;
     margin-top:8px;
     border-radius:5px;
-    border: 1px solid var(--borderColor);
+    /*border: 1px solid var(--borderColor);*/
     transition: all .1s ease;
+    margin-left:5px;
     
 }
 .group:hover{

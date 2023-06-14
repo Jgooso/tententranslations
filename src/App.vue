@@ -253,7 +253,8 @@ export default {
     border-radius:5px;
   }
   .header-nav:hover{
-    background-color:rgba(50,50,50,0.2)
+    background-color:rgba(50,50,50,0.2);
+    color: var(--textColor);
   }
   #KoFi{
     width:200px;
