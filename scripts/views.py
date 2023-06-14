@@ -214,6 +214,7 @@ def get_chapter():
         novelcursor.execute(get_chapter_sql,chapter_val)
         chapter_results = novelcursor.fetchone()
         novelcursor.execute(update_chapter_views_sql,update_chapter_views_val)
+        print('working')
         noveldb.commit()
         noveldb.close()
         return jsonify(chapter_results)
