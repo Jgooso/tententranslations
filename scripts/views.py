@@ -12,7 +12,7 @@ import calendar
 #import matplotlib.pylab as plt
 from scripts.settings import DevConfig,ProdConfig
 #Setup
-config = DevConfig.SQL_SETTINGS
+config = ProdConfig.SQL_SETTINGS
 def get_multiplenovels():
     #Retrieve Data from Frontend
     noveldb = mysql.connector.connect(**config)

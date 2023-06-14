@@ -4,7 +4,7 @@ from scripts.settings import ProdConfig, DevConfig
 
 
 
-def create_app(config_objct=DevConfig):
+def create_app(config_objct=ProdConfig):
     app = Flask(__name__,
             static_folder = "../static",
             template_folder = "../template")

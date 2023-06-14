@@ -9,7 +9,7 @@ from scripts.settings import DevConfig,ProdConfig
 from datetime import datetime,date,timedelta
 #Basic intialializations
 translator = Translator()
-config = DevConfig.SQL_SETTINGS
+config = ProdConfig.SQL_SETTINGS
 #Commonly used Functions
 def translate(text):#Translate text
     return translator.translate(text).text
