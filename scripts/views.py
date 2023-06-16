@@ -571,4 +571,4 @@ def get_viewership():
         views = novelcursor.fetchall()
         noveldb.commit()
         noveldb.close()
-        return views
+        return jsonify(views)
