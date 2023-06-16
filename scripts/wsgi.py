@@ -61,6 +61,9 @@ def activatenovel():
 @app.route('/resetschedule',methods=['PUT'])
 def resetschedule():
     return put_resetschedule()
+@app.route('/views',methods=['GET'])
+def views():
+    return get_viewership()
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):

@@ -7,6 +7,7 @@
         <router-link :to = "{name: 'editPage'}" class='manage-nav'>Edit</router-link>
         <router-link :to = "{name: 'feedbackPage'}" class='manage-nav'>Feedback</router-link>
         <router-link :to = "{name: 'descriptorPage'}" class='manage-nav'>Descriptors</router-link>
+        <router-link :to = "{name: 'viewPage'}" class='manage-nav'>Views</router-link>
     </div>
     <router-view
         :editable='true'

@@ -12,6 +12,7 @@ const routes = [
   {path:'/:browsetype/:identifier/',name: 'explorePage',component: ()=> import('@/views/Browse.vue')},
   {path:'/about',name: 'aboutPage',component: ()=> import('@/views/About.vue')},
   {path:'/contact',name: 'contactPage',component: ()=> import('@/views/Contact.vue')},
+  {path:'/views',name: 'viewPage',component: ()=> import('@/views/Views.vue')},
   {path:'/manage',
     children:[
       {path:'upload',name:'uploadPage',component: ()=> import('@/views/Upload')},

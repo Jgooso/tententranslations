@@ -561,3 +561,14 @@ def put_resetschedule():
         noveldb.commit()
         noveldb.close()
         return novel
+def get_viewership():
+    if request.method == 'GET':
+        novel = request.args.get('novel')
+        month = request.args.get('month')
+        noveldb = mysql.connector.connect(**config)
+        novelcursor = noveldb.cursor(buffered=True)
+        novelcursor.execute("SELECT * FROM view_data WHERE novelid = %s AND MONTH(date) = month(CURDATE())")
+        views = novelcursor.fetchall()
+        noveldb.commit()
+        noveldb.close()
+        return views
