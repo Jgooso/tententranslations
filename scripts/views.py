@@ -567,7 +567,7 @@ def get_viewership():
         month = request.args.get('month')
         noveldb = mysql.connector.connect(**config)
         novelcursor = noveldb.cursor(buffered=True)
-        novelcursor.execute("SELECT * FROM view_data WHERE novelid = %s AND MONTH(date) = month(CURDATE())")
+        novelcursor.execute("SELECT * FROM view_data WHERE novelid = %s AND MONTH(date) = month(CURDATE())",(novel,))
         views = novelcursor.fetchall()
         noveldb.commit()
         noveldb.close()
