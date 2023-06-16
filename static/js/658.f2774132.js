@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkvuefrontend"]=self["webpackChunkvuefrontend"]||[]).push([[658],{658:function(e,t,n){n.r(t),n.d(t,{default:function(){return c}});var a=n(3577);function r(e,t,n,r,o,s){return(0,a.zw)(o.data)}var o={name:"Views",data(){return{novel:[],data:[]}},created(){this.novel="JVJSF6F",axios.get(`http://tententranslation.com/views?novel=${this.novel}`).then((e=>{this.data=e})).catch((e=>{console.log(e)}))}},s=n(3744);const u=(0,s.Z)(o,[["render",r]]);var c=u}}]);
-//# sourceMappingURL=658.f2774132.js.map
