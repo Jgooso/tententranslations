@@ -61,13 +61,13 @@
         </div>
         <ul  id = 'tableofcontentList' ref='tableofcontentlist'>
         <li v-for="section in sectionList" :key="section.section">
-            <h3  v-if='section.title' class = 'section' v-text='section.title' />
+            <h3  v-if='section.chapter_title' class = 'section' v-text='section.chapter_title' />
             <ul v-bind:id = "section.section" >
-                <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapterorder' >
+                <li v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key='chapter.chapter_order' >
                 <router-link 
-                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapternumber,id:chapter.id}}" class="group">
-                    <p class = 'title'>{{chapter.title}}</p>
-                    <p class = 'date'>{{chapter.uploaddate}}</p>
+                    :to = "{name: 'chapterPage', params:{title:novelData.novelid,chapter:chapter.chapter_number}}" class="group">
+                    <p class = 'title'>{{chapter.chapter_title}}</p>
+                    <p class = 'date'>{{chapter.upload_date}}</p>
                 </router-link>
                 </li>
             </ul>
@@ -110,7 +110,7 @@
         }
     },
     created(){
-        this.chapterList.sort((a,b) =>(a.chapternumber > b.chapternumber ? 1:-1));
+        this.chapterList.sort((a,b) =>(a.chapter_number > b.chapter_number ? 1:-1));
         this.sectionList.sort((a,b) =>(a.section > b.section ? 1:-1));
     },
   }

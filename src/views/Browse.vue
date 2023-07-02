@@ -1,40 +1,34 @@
 <template>
 <div id = 'Browse' >
-
     <h1 id = 'sortCategory' v-html='this.$route.params.identifier ? this.$route.params.identifier : "All Novels"'/>
-
-    <header id = 'top'>
+    <div id = 'top'>
         <div id = 'count'>
             <UtfBox shape = '&#9733;'/>
-            <p id = 'resultCount'>{{novelCount}} RESULTS</p>
+            <p id = 'resultCount'/>
             <label class = 'category'> Order By</label>
         </div>
-
         <div id = 'sortButtons'>
-            <input type='button' class = 'category selectable' style="border-left:1px solid var(--borderColor)" @click='sort("lastupload")' value = 'Latest' id = 'sort-lastupload'>
+            <input type='button' class = 'category selectable' style="border-left:1px solid var(--borderColor)" @click='sort("latest_upload")' value = 'Latest' id = 'sort-lastupload'>
             <input type ='button' class = 'category selectable' @click='sort("title")' value = 'A-Z' id = 'sort-title'>
             <input type ='button' class = 'category selectable' @click='sort("length")' value = 'Length' id = 'sort-length'>
             <input type ='button' class = 'category selectable' @click='sort("views")' value = 'Trending' id = 'sort-views'>
-            <input type ='button' class = 'category selectable' @click='sort("firstupload")' value = 'New' id = 'sort-firstupload'>
+            <input type ='button' class = 'category selectable' @click='sort("first_upload")' value = 'New' id = 'sort-firstupload'>
             <h6 id = 'pageNumber'>Page {{page}} of {{(pageCount)}}</h6>
-        </div>
-        
-    </header>
+        </div> 
+    </div>
 
     <div class = "novelList">
         <div v-for='novel in novelData' :key = 'novel.title' id = 'novels'>
-        <Transition>
             <NovelCard 
                 :novelData='novel'
                 type="browse"
                 class = 'novelcard'
                 />
-        </Transition>
         </div>
     </div>
     <div id = 'pageNav'>
-    <button v-if='page > 1' class = 'navigationButton'  id = 'prev' @click='changePage(-1)'>&#8592;Previous Page</button>
-    <button v-if='page < pageCount' class = 'navigationButton' id = 'next' @click='changePage(1)'>Next Page&#8594;</button>
+        <button v-if='page > 1' class = 'navigationButton'  id = 'prev' @click='changePage(-1)'>&#8592;Previous Page</button>
+        <button v-if='page < pageCount' class = 'navigationButton' id = 'next' @click='changePage(1)'>Next Page&#8594;</button>
     </div>
 </div>
 </template>
@@ -53,10 +47,9 @@ import axios from 'axios'
             return{
             novelData:[],
             chapterList:[],
-            attributesort:'lastupload',
+            attributesort:'latest_upload',
             page:1,
             pageCount:0,
-            novelCount:0,
             }
         },
         props:[
@@ -67,7 +60,7 @@ import axios from 'axios'
             if(identifier != undefined){
                 identifier = identifier.replace(/&nbsp;/g,'|')
             }
-        const url = (`http://tententranslation.com/novel/multiple?tier=${this.tier}&identifier=${identifier}&order=${this.attributesort}&page=${this.page}`)
+        const url = (`http://127.0.0.1:5000/novel/multiple?tier=${this.tier}&identifier=${identifier}&order=${this.attributesort}&page=${this.page}`)
         axios.get(url)
           .then(response => {
             this.novelData=response.data
@@ -93,8 +86,8 @@ import axios from 'axios'
             axios.get(`http://tententranslation.com/novels-page-count?tier=${this.tier}&identifier=${identifier}`)
                 .then(response => {
                     this.pageCount = response.data['page_count']
-                    this.novelCount = response.data['novel_count']
-                    this.getNovels(identifier)  
+                    this.getNovels(identifier)
+                    document.getElementById('resultCount').innerHTML = `${response.data['novel_count']} RESULTS`  
                 })
                 .catch(err => {
                     console.log(err)

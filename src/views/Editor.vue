@@ -57,12 +57,6 @@
                         <td>Novel Active</td>
                         <td><button @click='confirm(0)'>{{novelData.novelactive==0 ? 'Activate Novel' : "Deactivate Novel"}}</button></td>
                     </tr>
-                    <!--
-                    <tr>
-                        <td>Pages<span id = 'pageSuper'>(Approx.)</span><p id = 'disclaimer'>~1800 characters/360 words per Page</p></td>
-                        <td class="info"><p>{{novelData.pages}}</p></td>
-                    </tr>
-                    -->
                 </table>
              </div>
              <div id = 'genre-selector'>
@@ -78,10 +72,10 @@
                 id = 'tag-selector'
                 />
         </div>   
-        <button style='background-color:red;font-weight:bold'>DELETE</button>  
     </div>
     <button @click='uploadchapter()' id = 'upload-button'>Upload chapter</button>
     <button @click='resetschedule()' id = 'reset-button'>Reset Schedule</button>
+    <button @click='deletenovel()' id = 'delete-button'>DELETE</button>  
     <div id = "summary">
         <div v-if='novelData.title'>
            <div style = "display:flex;flex-direction:row;border-bottom:2px lightgray solid;height:30px;"><UtfBox shape = '&#9733;'/><h3 id = "divider">SUMMARY</h3></div><br>
@@ -99,23 +93,23 @@
             <td style='font-size:15px'>Upload Date</td>
             </tr>
             <tr v-for='section in sectionList' style='display:flex;flex-direction:column'>
-                <p v-if='section.title' class='section' v-html='section.title' :id ='"section"+section.section' contenteditable='True'/>
+                <p v-if='section.chapter_title' class='section' v-html='section.chapter_title' :id ='"section"+section.section' contenteditable='True'/>
                 <tr style='width:100%'>
-                    <tr v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key="chapter.chapternumber" class='table-list' :id='"chapter"+chapter.chapternumber'>
+                    <tr v-for="chapter in chapterList.filter(chapter=>chapter.section==section.section)" :key="chapter.chapter_number" class='table-list' :id='"chapter"+chapter.chapter_number'>
                         <td class='chapter-title'>
                         <label>
-                        {{chapter.title}}
-                        <input type='button'  class = 'chapter-list' :value = 'chapter.chapternumber' @click='displayChapter(chapter)'>
+                        {{chapter.chapter_title}}
+                        <input type='button'  class = 'chapter-list' :value = 'chapter.chapter_number' @click='displayChapter(chapter)'>
                         </label>
                         </td>
-                        <td v-if='chapter.chapteredited == 1' style='color:lightgreen;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>&#10003;</td>
+                        <td v-if='chapter.chapter_edited == 1' style='color:lightgreen;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>&#10003;</td>
                         <td v-else style='color:red;' class = 'chapter-check-box edited-check' @click='chapteredit(chapter)'>X</td>
-                        <td v-if='chapter.chapteractive == 1' style='color:lightgreen;x' class = 'chapter-check-box'>&#10003;</td>
+                        <td v-if='chapter.chapter_actived == 1' style='color:lightgreen;x' class = 'chapter-check-box'>&#10003;</td>
                         <td v-else style='color:red;' class = 'chapter-check-box'>X</td>
                         <td>
                             <input type = 'datetime-local' 
-                                    :id ='"date"+chapter.chapterorder'
-                                    :value='chapter.uploaddate' 
+                                    :id ='"date"+chapter.chapter_order'
+                                    :value='chapter.upload_date' 
                                     @change='changeupload(chapter)' 
                                     min="2023-01-01T00:00"
                                     style='width:fit-content;margin-right:20px;' >
@@ -183,7 +177,7 @@ export default{
                     this.novelData.novelactive=1
                 }
                 confirmationBox.style.display = 'none'
-                axios.put(`http://tententranslation.com/activatenovel?novel=${this.novelData.novelid}'&active=${this.novelData.novelactive}`).then(response => {
+                axios.put(`http://127.0.0.1:5000/activatenovel?novel=${this.novelData.novelid}'&active=${this.novelData.novelactive}`).then(response => {
                 console.log('sent')
                  })
                     .catch(err => {
@@ -197,18 +191,18 @@ export default{
             }else{
                 this.selectednovel = document.getElementById("novel-selector").value
             }
-            const url = `http://tententranslation.com/novel/single?novel=${this.selectednovel}&tier=0&edit=True`
+            const url = `http://127.0.0.1:5000/novel/single?novel=${this.selectednovel}&tier=0&edit=True`
             axios.get(url)
           .then(response => {
             console.log('Post Novel has recieved data')
             this.novelData=response.data['Novel']
-            const sections = response.data['Chapters'].filter(chapter => chapter.chapternumber == 0)
+            const sections = response.data['Chapters'].filter(chapter => chapter.chapter_number == 0)
             if(sections.length > 0){
                 this.sectionList = sections
             }else{
                 this.sectionList = [{'section':0}]
             }
-            this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapternumber != 0)
+            this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapter_number != 0)
             this.genres = response.data['Genres']
             this.tags = response.data['Tags']
             this.currentChapter = null
@@ -236,11 +230,16 @@ export default{
                this.novelData.description=document.getElementById('noveldescription').innerHTML
                this.novelData.title=document.getElementById('noveltitle').innerHTML
                this.novelData.novelrelease = document.getElementById('releaseDate').innerHTML
-               const url = `http://tententranslation.com/novel/single?novel=${this.novelData.novelid}`
+               const url = `http://127.0.0.1:5000/novel/single?novel=${this.novelData.novelid}`
             axios.put(url,{
-                   novelData:this.novelData,
-                   tags:this.novelData.tags,
-                   genres:selectedGenres,
+                title:this.novelData.title,
+                description:this.novelData.description,
+                novelrelease:this.novelData.novelrelease,
+                novelstatus:this.novelData.novelstatus,
+                tag:this.novelData.tags,
+                genre:selectedGenres,
+                   
+                   
                }).then(function (response) {
                     console.log(response);
                     loadingscreen.style.display='none'
@@ -274,7 +273,7 @@ export default{
                  this.currentChapter.content = document.getElementById('chapter-content').value
                  this.currentChapter.title = document.getElementById('chapter-title').innerHTML
                  this.saved=true;
-                 axios.put(`http://tententranslation.com/chapter?novel=${this.currentChapter.novelid}&chapter=${this.currentChapter.chapternumber}`,{
+                 axios.put(`http://127.0.0.1:5000/chapter?novel=${this.currentChapter.novelid}&chapter=${this.currentChapter.chapternumber}`,{
                      title:this.currentChapter.title,
                      content:this.currentChapter.content
                      })
@@ -293,7 +292,7 @@ export default{
              document.getElementById('chapterEditor').style.width='100%';
             document.getElementById('table').style.width='0px';
             document.getElementById('chapter-content').addEventListener('keydown', this.save, false);
-            const url = `http://tententranslation.com/chapter?novel=${chapterItem.novelid}&chapter=${chapterItem.chapternumber}`
+            const url = `http://127.0.0.1:5000/chapter?novel=${chapterItem.novelid}&chapter=${chapterItem.chapter_number}`
             axios.get(url)
             .then(response => {
                 console.log('Chapter API has recieved data')
@@ -324,7 +323,7 @@ export default{
                 chapter.chapteredited = 0
             }
             console.log(chapter)
-            const url = `http://tententranslation.com/chaptereditchange?edit=${chapter.chapteredited}&novel=${chapter.novelid}&chapter=${chapter.chapterorder}`
+            const url = `http://127.0.0.1:5000/chaptereditchange?edit=${chapter.chapteredited}&novel=${chapter.novelid}&chapter=${chapter.chapterorder}`
             axios.put(url)
             .then(response => {
                 console.log('sent')
@@ -335,7 +334,7 @@ export default{
         },
         changeupload(chapter){
             const date = document.getElementById('date'+chapter.chapterorder).value
-            const url = `http://tententranslation.com/chapteruploadchange?offset=${timezoneOffset}&novel=${chapter.novelid}&chapter=${chapter.chapterorder}`
+            const url = `http://127.0.0.1:5000/chapteruploadchange?offset=${timezoneOffset}&novel=${chapter.novelid}&chapter=${chapter.chapterorder}`
             axios.put(url,{date:date}).then(response =>{
                 console.log('send')
             }).catch(err =>{
@@ -343,22 +342,25 @@ export default{
             })
         },
         uploadchapter(){
-            axios.put(`http://tententranslation.com/uploadchapter?novel=${this.novelData.novelid}`).then(response=>{
+            axios.put(`http://127.0.0.1:5000/uploadchapter?novel=${this.novelData.novelid}`).then(response=>{
                 console.log('send')
             }).catch(err=>{
                 console.log(err)
             })
         },
         resetschedule(){
-            axios.put(`http://tententranslation.com/resetschedule?novel=${this.novelData.novelid}`).then(response=>{
+            axios.put(`http://127.0.0.1:5000/resetschedule?novel=${this.novelData.novelid}`).then(response=>{
                 console.log('send')
             }).catch(err=>{
                 console.log(err)
             })
+        },
+        deletenovel(){
+            console.log('delete')
         }
     },
     created(){
-        axios.get('http://tententranslation.com/noveltitles')
+        axios.get('http://127.0.0.1:5000/noveltitles')
           .then(response => {
             console.log('Chapter API has recieved data')
             this.novelList = response.data
@@ -438,6 +440,17 @@ tr{
     width:100%;
     border-radius:5px;
     height:30px;
+    margin-top:15px;
+}
+#delete-button{
+    background-color:red;
+    color:black;
+    border:1px solid black;
+    width:100%;
+    border-radius:5px;
+    height:30px;
+    margin-top:15px;
+    font-weight:bold;
 }
 
 /*Chapter Editor*/

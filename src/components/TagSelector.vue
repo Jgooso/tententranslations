@@ -115,8 +115,7 @@ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2) inset, 0 6px 20px 0 rgba(0, 0, 0, 0.1
     color:black;
 }
 .unselected:hover{
-    background-color:blue;
-    color:white;
+    border:1px solid var(--styleColor);
 }
 #tagSelect{
     background:lightgray;

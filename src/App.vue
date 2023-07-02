@@ -18,7 +18,9 @@
       <router-link :to = "{name: 'contactPage'}" class='header-nav' style="text-decoration:none;">Contact</router-link>
       <router-link :to = "{name: 'uploadPage'}" class='header-nav' v-if='user.tier == 0'>Manage</router-link>
       <KoFiButton id = 'KoFi' v-else/>
-      <div class="menu-btn"  @click='changesidebar()' id = 'menubutton'><div class="menu-btn__burger" ></div></div>
+      <div class="menu-btn"  @click='changesidebar()' id = 'menubutton'>
+        <div class="menu-btn__burger"/>
+      </div>
     </div>
   </header>
  
@@ -53,7 +55,7 @@ export default {
       darkmode:($cookies.get('darkmode')=='true'),//WHETHER OR NOT IN DARK MODE
       user: [],//USER INFO
       url:'http://ipinfo.io/json',//FOR LOCATION TRACKING WHEN IMPLEMENTED TODO
-      status:1,//TIER AS A USER; SET TO ONE FOR NOW TODO
+      status:0,//TIER AS A USER; SET TO ONE FOR NOW TODO
       timezoneDiff:[]
       
     }

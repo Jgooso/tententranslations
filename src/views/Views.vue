@@ -1,5 +1,11 @@
 <template>
-{{data}}
+<body id = 'view'>
+    <div v-for='d in data' id = 'novels'>
+        <p>{{d[1]}}   </p>
+        <p>{{d[2]}}   </p><br>
+        <p>{{d[3]}}</p>
+    </div>
+</body>
 </template>
 
 <script>
@@ -15,7 +21,7 @@ export default{
     created(){
         this.novel = 'JVJSF6F'
         axios.get(`http://tententranslation.com/views?novel=${this.novel}`).then(response => {
-            this.data = response
+            this.data = response.data
           })
           .catch(err => {
             console.log(err)
@@ -23,3 +29,13 @@ export default{
     }
 }
 </script>
+<style>
+#view{
+    display:flex;
+    flex-direction:column;
+}
+#novels{
+ display:flex;
+flex-direction:row;
+}
+</style>

@@ -1,2 +1,0 @@
-from upload import schedule_upload
-schedule_upload

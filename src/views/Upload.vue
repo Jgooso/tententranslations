@@ -97,7 +97,7 @@ methods:{
             }catch{
                 console.log('no file')
             }
-            axios.post('http://tententranslation.com/novel/single',formData, {headers: {"Content-Type": "multipart/form-data"}}).then((res) => {
+            axios.post(`http://127.0.0.1:5000/novel/single`,formData, {headers: {"Content-Type": "multipart/form-data"}}).then((res) => {
                 console.log(res);
                 loadingscreen.style.display = 'none'
             })
@@ -158,7 +158,7 @@ methods:{
         },
     },
     created(){
-        getAPI.get('http://tententranslation.com/uploaddata')
+        axios.get('http://127.0.0.1:5000/uploaddata')
           .then(response => {
             this.genres = response.data['genres']
             this.tags = response.data['tags']

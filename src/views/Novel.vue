@@ -28,17 +28,17 @@
       'tier'
     ],
     created () {
-    const url = `http://tententranslation.com/novel/single?novel=${this.$route.params.title}&tier=${this.tier}`
+    const url = `http://127.0.0.1:5000/novel/single?novel=${this.$route.params.title}&tier=${this.tier}`
             axios.get(url)
           .then(response => {
             this.novelData=response.data['Novel']
-           const sections = response.data['Chapters'].filter(chapter => chapter.chapternumber == 0)
+           const sections = response.data['Chapters'].filter(chapter => chapter.chapter_number == 0)
             if(sections.length > 0){
                 this.sectionList = sections
             }else{
                 this.sectionList = [{'section':0}]
             }
-            this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapternumber != 0)
+            this.chapterList=response.data['Chapters'].filter(chapter => chapter.chapter_number != 0)
             this.isMounted=true
           })
           .catch(err => {

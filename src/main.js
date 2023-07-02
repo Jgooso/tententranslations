@@ -6,3 +6,4 @@ import { VueCookies } from 'vue-cookies';
 //import ipify from 'ipify';
 $cookies.config('1m')
 createApp(App).use(router,VueCookies).mount('#app')
+

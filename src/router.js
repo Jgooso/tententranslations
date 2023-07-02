@@ -12,14 +12,14 @@ const routes = [
   {path:'/:browsetype/:identifier/',name: 'explorePage',component: ()=> import('@/views/Browse.vue')},
   {path:'/about',name: 'aboutPage',component: ()=> import('@/views/About.vue')},
   {path:'/contact',name: 'contactPage',component: ()=> import('@/views/Contact.vue')},
-  {path:'/views',name: 'viewPage',component: ()=> import('@/views/Views.vue')},
   {path:'/manage',
     children:[
       {path:'upload',name:'uploadPage',component: ()=> import('@/views/Upload')},
       {path:'schedule',name:'schedulePage',component: ()=> import('@/views/Schedular')},
       {path:'edit',name:'editPage',component: ()=> import('@/views/Editor')},
       {path:'feedback',name:'feedbackPage',component: ()=> import('@/views/Feedback')},
-      {path:'descriptorbution',name:'descriptorPage',component: ()=> import('@/views/Descriptor')}
+      {path:'descriptorbution',name:'descriptorPage',component: ()=> import('@/views/Descriptor')},
+      {path:'views',name: 'viewPage',component: ()=> import('@/views/Views.vue')},
     ]
     ,name: 'managePage',component: ()=> import('@/views/Manage.vue')},
   {path:'/:pathmatch(.*)*',name:'not-found',component: ()=>import('@/views/Error.vue')}
